@@ -134,13 +134,15 @@
     .drop a{padding:9px 6px;font-size:14px;color:var(--ink-soft)}
     .drop a:hover{background:transparent}
   }
-  /* small phones: compact the header so it never overflows */
+  /* small phones: compact the header but KEEP the full logo + tagline, so it still fits */
   @media(max-width:520px){
-    .lock .tl{display:none}
-    .lock .mk{width:40px;height:40px}
-    .lock .wm{font-size:20px}
-    .nav .cta{padding:9px 15px;font-size:13.5px}
-    .wrap{padding:0 18px}
+    .lock .mk{width:38px;height:38px}
+    .lock .wm{font-size:19px}
+    .lock .tl{font-size:10px}
+    .nav{gap:10px}
+    .nav .cta{padding:8px 14px;font-size:13px}
+    .burger{width:42px;height:42px;padding:10px;margin-left:2px}
+    .wrap{padding:0 16px}
   }
   @media(prefers-reduced-motion:reduce){.lock .mk{animation:none}}
 
