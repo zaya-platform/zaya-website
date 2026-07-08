@@ -10,11 +10,19 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# PRODUCTION context enforces the F4 publish gate: it will FAIL to build until
-# site.json published=true AND real Privacy + Terms exist AND photo rights are
-# cleared. So the public site can never go live without them.
+# ⚑ TEMPORARY (pre-domain phase, 2026-07-08): main deploys the NOINDEX DRAFT build so
+# the site can go live on the free *.netlify.app address — accessible/shareable but
+# HIDDEN from Google — without needing published=true and without the gate failing.
+# The site cannot be indexed while published=false (noindex meta + robots Disallow).
+#
+# ⚑ RESTORE AT GO-LIVE (once zayaethiopia.com is registered + connected in Netlify):
+# switch this back to `npm run build` (the gated F4 build) AND set site.json
+# published=true, robots.txt Allow, add the sitemap. See GO-LIVE.md Step 4.
+# The gate itself (scripts/check-publish.mjs) is UNCHANGED — this only chooses which
+# build command the production context runs during the pre-domain phase.
 [context.production]
-  command = "npm run build"
+  command = "npm run build:draft"
+  # command = "npm run build"   # ← RESTORE at go-live (re-enables the F4 publish gate)
 
 # The CMS admin UI must never be indexed.
 [[headers]]
