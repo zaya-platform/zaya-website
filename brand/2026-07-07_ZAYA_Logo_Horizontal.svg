@@ -1,0 +1,28 @@
+<svg width="780" height="220" viewBox="0 0 780 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA App - Everything near you">
+  <title>ZAYA App horizontal logo</title>
+  <desc>The ZAYA location-pin mark beside the ZAYA wordmark with crossbar-less A letters, APP in coral, and the teal tagline Everything near you.</desc>
+  <defs>
+    <linearGradient id="gh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient>
+    <clipPath id="ch"><rect width="512" height="512" rx="115"/></clipPath>
+  </defs>
+  <g transform="translate(24,40) scale(0.2734375)">
+    <g clip-path="url(#ch)">
+      <rect width="512" height="512" fill="url(#gh)"/>
+      <circle cx="256" cy="200" r="150" fill="none" stroke="#fff" stroke-opacity="0.10" stroke-width="3"/>
+      <circle cx="256" cy="200" r="216" fill="none" stroke="#fff" stroke-opacity="0.07" stroke-width="3"/>
+      <circle cx="256" cy="200" r="290" fill="none" stroke="#fff" stroke-opacity="0.05" stroke-width="3"/>
+    </g>
+    <path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/>
+    <circle cx="256" cy="200" r="56" fill="#FF7A45"/>
+    <polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(214,60) scale(0.75)" fill="none" stroke="#1E2A4A" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 20 L109 20 L13 140 L109 140"/>
+    <path d="M137 140 L182 20 L227 140"/>
+    <path d="M255 20 L300 80 L345 20"/>
+    <path d="M300 80 L300 140"/>
+    <path d="M373 140 L418 20 L463 140"/>
+  </g>
+  <text x="226" y="201" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="26" letter-spacing="10" fill="#FF7A45">APP</text>
+  <text x="330" y="201" font-family="Poppins, Arial, sans-serif" font-weight="600" font-size="24" fill="#0EA5A4">Everything near you.</text>
+</svg>

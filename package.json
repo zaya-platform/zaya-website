@@ -1,0 +1,21 @@
+{
+  "name": "zaya-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ZAYA Digital Front Door — public marketing website + navigational gateway. Standalone; no backend, no auth, no payments. One backend, many front doors.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/check-publish.mjs && astro build",
+    "build:draft": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^4.15.0",
+    "@astrojs/sitemap": "^3.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

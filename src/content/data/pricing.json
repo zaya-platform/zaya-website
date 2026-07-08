@@ -1,0 +1,10 @@
+{
+  "currency": "ETB",
+  "note": "Save with 6-month (about 5%) and annual (about 10%) plans. Customers always use ZAYA free. No hidden fees.",
+  "tiers": [
+    { "name": "Free", "price": 0, "period": "forever", "from": false, "highlight": false, "blurb": "For the shop getting started.", "cta": "Start free", "features": ["Record every sale", "Track your stock", "Simple credit book", "Works on one phone"] },
+    { "name": "Starter", "price": 199, "period": "month", "from": false, "highlight": false, "blurb": "For a growing shop.", "cta": "Choose Starter", "features": ["Everything in Free", "Low-stock alerts", "Daily summary", "Barcode scan"] },
+    { "name": "Pro", "price": 299, "period": "month", "from": false, "highlight": true, "blurb": "For a busy shop or mini-market.", "cta": "Choose Pro", "features": ["Everything in Starter", "Customer credit accounts", "Price comparison listing", "Priority support"] },
+    { "name": "Premium Max", "price": 999, "period": "month", "from": true, "highlight": false, "blurb": "For supermarkets and multi-branch.", "cta": "Talk to us", "features": ["Multi-cashier", "Live dashboard", "Multiple branches", "Account manager"] }
+  ]
+}

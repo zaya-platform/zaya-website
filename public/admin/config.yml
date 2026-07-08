@@ -1,0 +1,130 @@
+# ZAYA website — admin content editing (Sveltia CMS, Decap-compatible config). doc 09 §2 + doc 12.
+# Content lives IN THIS REPO (no new backend, no new database). Editors sign in with a
+# SEPARATE website-editing GitHub account — entirely distinct from ZAYA platform user
+# auth. Admin panel served statically at /admin.
+#
+# Netlify Identity is deprecated — we use GitHub OAuth instead. Deploy the free
+# `sveltia-cms-auth` Cloudflare Worker (or any Decap-compatible OAuth relay), then set
+# `base_url` below to it. Steps are in docs/12-deploy-netlify.md.
+backend:
+  name: github
+  repo: zaya-platform/zaya-website   # ⚑ CONFIRM the actual GitHub owner/repo at deploy
+  branch: main
+  base_url: https://REPLACE-WITH-YOUR-OAUTH-WORKER.workers.dev   # ⚑ set at deploy (doc 12)
+publish_mode: editorial_workflow   # draft → review → publish (friendly for staff)
+media_folder: "src/assets/uploads"
+public_folder: "/uploads"
+site_url: "https://zaya.app"
+locale: "en"
+
+collections:
+  # ---- Marketing copy (homepage + audience pages), editable per locale ----
+  - name: pages
+    label: "Pages & sections"
+    folder: "src/content/pages"
+    create: true
+    format: "frontmatter"
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: locale, label: Language, widget: select, options: [en, am, om, ti], default: en }
+      - { name: draft, label: "Draft / unverified", widget: boolean, default: true }
+      - { name: body, label: Content, widget: markdown }
+
+  # ---- Pricing (tiers/prices/discounts) — data, no code change ----
+  - name: pricing
+    label: "Pricing"
+    files:
+      - name: tiers
+        label: "Tiers & discounts"
+        file: "src/content/data/pricing.json"
+        fields:
+          - { name: currency, label: Currency, widget: string, default: ETB }
+          - { name: note, label: "Footnote", widget: string }
+          - name: tiers
+            label: Tiers
+            widget: list
+            fields:
+              - { name: name, widget: string }
+              - { name: price, widget: number }
+              - { name: period, widget: string }
+              - { name: from, label: "From (≥)", widget: boolean, default: false }
+              - { name: highlight, widget: boolean, default: false }
+              - { name: blurb, widget: string }
+              - { name: cta, widget: string }
+              - { name: features, label: "Features", widget: list, field: { name: feature, widget: string } }
+
+  # ---- Contact details ----
+  - name: contact
+    label: "Contact"
+    files:
+      - name: details
+        label: "Contact details"
+        file: "src/content/data/contact.json"
+        fields:
+          - { name: email, widget: string }
+          - { name: phones, widget: list, field: { name: phone, widget: string } }
+          - { name: whatsapp, label: "WhatsApp number (digits only)", widget: string }
+          - { name: location, widget: string }
+          - { name: mapsQuery, label: "Google Maps search text", widget: string }
+
+  # ---- FAQ (homepage accordion) ----
+  - name: faq
+    label: "FAQ"
+    files:
+      - name: items
+        label: "Questions & answers"
+        file: "src/content/data/faq.json"
+        fields:
+          - name: items
+            label: Questions
+            widget: list
+            fields:
+              - { name: q, label: Question, widget: string }
+              - { name: a, label: Answer, widget: text }
+
+  # ---- Blog / News ----
+  - name: blog
+    label: "Blog & news"
+    folder: "src/content/blog"
+    create: true
+    fields:
+      - { name: title, widget: string }
+      - { name: date, widget: datetime }
+      - { name: locale, widget: select, options: [en, am, om, ti], default: en }
+      - { name: cover, label: "Cover image", widget: image, required: false }
+      - { name: excerpt, widget: text }
+      - { name: draft, widget: boolean, default: true }
+      - { name: body, widget: markdown }
+
+  # ---- Testimonials (marked placeholder until real — F4) ----
+  - name: testimonials
+    label: "Testimonials"
+    folder: "src/content/testimonials"
+    create: true
+    fields:
+      - { name: quote, widget: text }
+      - { name: person, widget: string }
+      - { name: role, widget: string }
+      - { name: placeholder, label: "Placeholder (not a real testimonial)", widget: boolean, default: true }
+
+  # ---- Partners (marked placeholder until real — F4) ----
+  - name: partners
+    label: "Partners"
+    folder: "src/content/partners"
+    create: true
+    fields:
+      - { name: name, widget: string }
+      - { name: logo, widget: image, required: false }
+      - { name: placeholder, widget: boolean, default: true }
+
+  # ---- Careers ----
+  - name: careers
+    label: "Careers"
+    folder: "src/content/careers"
+    create: true
+    fields:
+      - { name: title, widget: string }
+      - { name: location, widget: string }
+      - { name: type, widget: string }
+      - { name: draft, widget: boolean, default: true }
+      - { name: body, widget: markdown }

@@ -1,0 +1,10 @@
+{
+  "cleared": false,
+  "status": "placeholder",
+  "kind": "AI-generated (founder-created)",
+  "note": "The current homepage photos are AI-generated PLACEHOLDERS. Before publishing, confirm their commercial usage rights, or replace them with commissioned Haile Garment / Jemo pilot-shop photography (drop-in, same filenames). Set cleared:true here only once rights are confirmed. The publish gate (scripts/check-publish.mjs) blocks a production build until then.",
+  "photos": [
+    "storefront.jpg", "storefront-wide.jpg", "counter-sale.jpg", "supermarket.jpg",
+    "stock-check.jpg", "credit-book.jpg", "customer-app.jpg", "diaspora-family.jpg"
+  ]
+}

@@ -1,0 +1,56 @@
+/* ZAYA Digital Front Door — design tokens.
+ * Extracted DIRECTLY from the official brand assets (brand/ + the interactive
+ * brand reference), ruled the single source of truth (FDR flag F1, 2026-07-08).
+ * One file swaps the whole look. Do not hardcode brand values in components. */
+
+:root {
+  /* ---- Brand palette (official teal / coral / navy) ---- */
+  --teal:        #0EA5A4;  /* primary */
+  --teal-bright: #13B7B4;  /* pin gradient start */
+  --teal-deep:   #0B8B8A;  /* gradient end · primary hover */
+  --coral:       #FF7A45;  /* accent — APP, key CTAs, the pin's Z dot */
+  --navy:        #1E2A4A;  /* ink / dark ground */
+  --amber:       #F4A261;  /* secondary accent (warm gold-orange) */
+  --plum:        #6D5DD3;  /* tertiary accent (sparingly) */
+  --mint:        #5DCAA5;  /* tagline/accent on dark grounds */
+  --mint-pale:   #EAFBF7;  /* tagline/accent on teal grounds */
+
+  /* ---- Neutrals (hue-biased toward the brand, not pure grey) ---- */
+  --cloud:     #F4F7F8;  /* light section background */
+  --line:      #E4E8EC;  /* borders / dividers */
+  --ink:       #1E2A4A;  /* body text = navy */
+  --ink-muted: #5B6470;  /* secondary text */
+  --ink-faint: #8A929C;  /* captions / hints */
+  --white:     #FFFFFF;
+
+  /* ---- Semantic status (the honest live/roadmap vocabulary) ---- */
+  --status-live:        var(--teal-deep);
+  --status-launching:   #B4611F;
+  --status-roadmap:     #5648B0;
+  --status-future:      var(--ink-faint);
+
+  /* ---- Typography ---- */
+  --font-sans: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-ethi: 'Noto Sans Ethiopic', 'Nyala', 'Abyssinica SIL', var(--font-sans);
+  /* Poppins (Latin) + Noto Sans Ethiopic (am/ti) are self-hosted as woff2 in
+   * src/assets/fonts + declared via @font-face in typography.css; om uses Poppins. */
+
+  /* ---- Scale ---- */
+  --r-sm: 10px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(30,42,74,.06), 0 4px 14px rgba(30,42,74,.05);
+  --shadow-md: 0 10px 34px rgba(30,42,74,.10);
+  --ease: cubic-bezier(.2,.7,.2,1);
+  --dur-fast: 120ms; --dur: 250ms; --dur-slow: 400ms;
+  --maxw: 1180px;
+
+  /* radar / near-you motion (the signature motif, from the brand file's zradar) */
+  --radar-cycle: 3.4s;
+}
+
+/* Dark (navy) ground surface map — hero + diaspora + footer sections */
+[data-theme="dark"] {
+  --bg: var(--navy);
+  --fg: #FFFFFF;
+  --fg-muted: rgba(255,255,255,.78);
+  --accent-on-dark: var(--mint);
+}

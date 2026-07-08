@@ -1,0 +1,13 @@
+<svg width="476" height="210" viewBox="0 0 476 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA App wordmark">
+  <title>ZAYA App wordmark</title>
+  <desc>The word ZAYA drawn in navy with the two A's shown as open apex forms without crossbars, and APP set in coral beneath.</desc>
+  <defs><style>@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&amp;display=swap');</style></defs>
+  <g transform="translate(0,14)" fill="none" stroke="#1E2A4A" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 20 L109 20 L13 140 L109 140"/>
+    <path d="M137 140 L182 20 L227 140"/>
+    <path d="M255 20 L300 80 L345 20"/>
+    <path d="M300 80 L300 140"/>
+    <path d="M373 140 L418 20 L463 140"/>
+  </g>
+  <text x="238" y="198" text-anchor="middle" font-family="Poppins,'Segoe UI',Arial,sans-serif" font-weight="700" font-size="34" letter-spacing="18" fill="#FF7A45">APP</text>
+</svg>

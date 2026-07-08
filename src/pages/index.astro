@@ -1,0 +1,543 @@
+---
+import Base from '../layouts/Base.astro';
+import storefront from '../assets/photos/storefront.jpg';
+import counterSale from '../assets/photos/counter-sale.jpg';
+import supermarket from '../assets/photos/supermarket.jpg';
+import stockCheck from '../assets/photos/stock-check.jpg';
+import creditBook from '../assets/photos/credit-book.jpg';
+import customerApp from '../assets/photos/customer-app.jpg';
+import diasporaFamily from '../assets/photos/diaspora-family.jpg';
+import storefrontWide from '../assets/photos/storefront-wide.jpg';
+// CMS-managed content (admin edits these JSON files via Decap /admin)
+import pricing from '../content/data/pricing.json';
+import contact from '../content/data/contact.json';
+import faq from '../content/data/faq.json';
+const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
+---
+<Base>
+<header>
+  <div class="wrap nav">
+    <a class="lock" href="#" aria-label="ZAYA App — Everything near you">
+      <svg class="mk" viewBox="0 0 512 512" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="zg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient>
+          <clipPath id="zc"><rect width="512" height="512" rx="115"/></clipPath>
+          <style>.rr{transform-box:view-box;transform-origin:256px 200px;fill:none;stroke:#fff;stroke-width:4;opacity:0;animation:rad 3s linear infinite}.rr2{animation-delay:1s}.rr3{animation-delay:2s}@keyframes rad{0%{transform:scale(.12);opacity:0}12%{opacity:.55}100%{transform:scale(1);opacity:0}}@media(prefers-reduced-motion:reduce){.rr{animation:none;opacity:.12}}
+[id]{scroll-margin-top:96px}
+.priceg{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:8px}
+.pcard{border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 24px;background:#fff;display:flex;flex-direction:column;position:relative;box-shadow:var(--sh-sm)}
+.pcard.pfeat{border-color:var(--teal);box-shadow:0 0 0 2px rgba(19,183,180,.22),var(--sh-md)}
+.pcard .ptag{position:absolute;top:-11px;left:24px;background:var(--teal-deep);color:#fff;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:var(--pill)}
+.pcard .pn{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-deep)}
+.pcard .pp{font-size:32px;font-weight:800;margin:12px 0 2px;letter-spacing:-.02em;color:var(--navy)}
+.pcard .pp small{font-size:13px;font-weight:500;color:var(--ink-faint)}
+.pcard .pd{font-size:13.5px;color:var(--ink-soft);margin-bottom:18px;min-height:38px}
+.pcard ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
+.pcard li{font-size:13.5px;color:var(--ink);padding-left:24px;position:relative;line-height:1.4}
+.pcard li::before{content:"";position:absolute;left:0;top:2px;width:17px;height:17px;border-radius:50%;background:var(--teal-deep) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l4 4L19 7'/></svg>") center/11px no-repeat}
+.pcard .btn{margin-top:auto;width:100%;justify-content:center}
+.price-note{text-align:center;color:var(--ink-soft);font-size:14px;margin-top:24px}
+@media(max-width:940px){.priceg{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.priceg{grid-template-columns:1fr}}
+
+</style>
+        </defs>
+        <g clip-path="url(#zc)"><rect width="512" height="512" fill="url(#zg)"/>
+          <circle class="rr" cx="256" cy="200" r="288"/><circle class="rr rr2" cx="256" cy="200" r="288"/><circle class="rr rr3" cx="256" cy="200" r="288"/></g>
+        <path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/>
+        <circle cx="256" cy="200" r="56" fill="#FF7A45"/>
+        <polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="txt">
+        <span class="wm">ZAYA <b>App</b></span>
+        <span class="tl">Everything near you.</span>
+      </span>
+    </a>
+    <nav class="menu" aria-label="Primary">
+      <div class="item"><a href="#top">Home</a></div>
+      <div class="item"><a href="#solutions">Solutions <svg class="ch" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="drop">
+          <a href="#customers">Customers <span class="st launch">Launching</span></a>
+          <a href="#merchants">Merchants <span class="st live">Live · pilot</span></a>
+          <a href="#riders">Riders <span class="st road">Roadmap</span></a>
+          <a href="#why">Suppliers <span class="st soon">Future</span></a>
+          <a href="#diaspora">Diaspora <span class="st road">Roadmap</span></a>
+        </div>
+      </div>
+      <div class="item"><a href="#solutions">Products <svg class="ch" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="drop">
+          <a href="#merchants">Merchant App <span class="st live">Live · pilot</span></a>
+          <a href="#customers">Customer App <span class="st launch">Launching</span></a>
+          <a href="#riders">Rider App <span class="st road">Roadmap</span></a>
+          <a href="#solutions">Smart tools <span class="st road">Roadmap</span></a>
+        </div>
+      </div>
+      <div class="item"><a href="#pricing">Pricing</a></div>
+      <div class="item"><a href="#resources">Resources <svg class="ch" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="drop">
+          <a href="#resources">Documentation <span class="st soon">Soon</span></a>
+          <a href="#faq">FAQs</a><a href="#resources">Blog <span class="st soon">Soon</span></a><a href="#resources">Help Center <span class="st soon">Soon</span></a>
+        </div>
+      </div>
+      <div class="item"><a href="#why">Company <svg class="ch" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="drop"><a href="#why">About</a><a href="#contact">Careers <span class="st soon">Soon</span></a><a href="#contact">Contact</a></div>
+      </div>
+    </nav>
+    <a class="btn btn-ghost cta ghost" href="#">Sign in</a>
+    <a class="btn btn-primary cta" href="#contact">Join the pilot</a>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="wrap hero-in">
+    <div class="copy">
+      <span class="eyebrow">Everything near you</span>
+      <h1>Ethiopia's local commerce, <span class="g">connected</span> in one <span class="c">intelligent app</span>.</h1>
+      <p class="sub">ZAYA links the shops, customers, riders, suppliers, and families of your neighbourhood — so you can find what's near you, sell smarter, and provide for the people you love.</p>
+      <div class="who">
+        <span class="chip">For <b>customers</b></span>
+        <span class="chip">For <b>merchants</b></span>
+        <span class="chip">For <b>riders</b></span>
+        <span class="chip">For <b>suppliers</b></span>
+        <span class="chip">For the <b>diaspora</b></span>
+      </div>
+      <div class="hcta">
+        <a class="btn btn-primary" href="#contact"><span>Join the pilot</span><svg class="ar" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost" href="#solutions">See how it works</a>
+      </div>
+      <div class="status">
+        <div class="s l"><b>● Live in the pilot</b>Sales, stock &amp; the credit book for shops — plus the supermarket dashboard.</div>
+        <div class="s g"><b>● Launching</b>The customer app — search &amp; order nearby.</div>
+        <div class="s r"><b>● On the roadmap</b>Delivery, smart tools &amp; voice, the diaspora basket.</div>
+      </div>
+    </div>
+    <div class="stage">
+      <canvas id="eco" aria-hidden="true"></canvas>
+      <div class="badge"><div class="n">Everything near you</div><div class="t">ZAYA</div></div>
+    </div>
+  </div>
+</div>
+
+<section class="showcase">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">In real Ethiopian shops</span><h2>Built with the shops that run the neighbourhood.</h2><p>From the corner mini-market to the supermarket — this is where ZAYA works.</p></div>
+    <div class="mosaic">
+      <div class="shot reveal"><span class="tagpin">Live · pilot</span><img loading="lazy" src={storefront.src} alt="A ZAYA-powered neighbourhood mini market at dusk"><div class="cap">A modern mini market<span>Stocked, lit, and online</span></div></div>
+      <div class="shot reveal"><span class="tagpin">A sale in ~5s</span><img loading="lazy" src={counterSale.src} alt="A shop owner serving a customer at the counter"><div class="cap">Serve, ring up, done<span>The whole counter, in one phone</span></div></div>
+      <div class="shot reveal"><img loading="lazy" src={supermarket.src} alt="A modern Ethiopian supermarket aisle"><div class="cap">Shop to supermarket<span>One platform, any size</span></div></div>
+      <div class="shot reveal"><img loading="lazy" src={stockCheck.src} alt="A shop owner checking stock on the shelves with a phone"><div class="cap">Stock, always in hand<span>Know before you run out</span></div></div>
+    </div>
+  </div>
+</section>
+<section class="solve">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" id="solutions">How ZAYA helps</span>
+      <h2>One platform that removes the everyday friction of local commerce.</h2>
+      <p>Real tools for real problems — honestly labelled by what's live today and what's on the way.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div><h3>Find shops nearby</h3><p>Search the shops and services around you and see who has what, close to home.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 8h12M6 14h12"/></svg></div><h3>Compare fair prices</h3><p>Check prices across nearby shops before you spend a single Birr.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h3>Manage inventory <span class="st live">Live</span></h3><p>Track stock in one phone and get told before you run out.</p></div>
+      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 10h16"/></svg></div><h3>Digital credit ledger <span class="st live">Live</span></h3><p>Every debt written down and kept honest — never half-remembered.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM9 12l2 2 4-4"/></svg></div><h3>Smart search <span class="st road">Roadmap</span></h3><p>Ask in plain words and let ZAYA find the right shop and item.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v11M9 6l3-3 3 3M6 14v5h12v-5"/></svg></div><h3>Voice support <span class="st road">Roadmap</span></h3><p>Run your shop by voice, in Amharic, Afaan Oromoo, Tigrinya or English.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5zM9 9h6M9 13h6"/></svg></div><h3>OCR invoice scanning <span class="st road">Roadmap</span></h3><p>Snap a supplier invoice and let ZAYA add the stock for you.</p></div>
+      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M3 5h3l2 10h9l2-7H7"/></svg></div><h3>Local delivery <span class="st road">Roadmap</span></h3><p>Orders fulfilled by the shop and delivered by someone local.</p></div>
+      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>Provide for family <span class="st road">Roadmap</span></h3><p>Order real goods to a trusted neighbourhood shop — delivered, with proof.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class=""><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow" id="why">Why ZAYA</span>
+    <h2>Ethiopia's commerce, finally connected.</h2>
+    <p>One intelligent platform for the whole neighbourhood — the people who buy, the shops who sell, and everyone in between, working together in one place.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0 M12 3v6 M12 15v6 M3 12h6 M15 12h6"/></svg></div>
+      <h3>One platform, many front doors</h3>
+      <p>Customers, merchants, riders, suppliers and the diaspora all meet in one trusted system — no scattered apps, no middlemen, just your neighbourhood connected.</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.686-6-10a6 6 0 1 1 12 0c0 4.314-6 10-6 10z M12 11m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/></svg></div>
+      <h3>Built for Ethiopia</h3>
+      <p>Your languages, your Birr, your neighbourhood. Made for how commerce really works in Addis, and delivered by locals who know the streets.</p>
+    </div>
+    <div class="card co">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 5L19 9.6l-5 1.6L12 16l-1.6-5L5 9.6l5.4-1L12 3z M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8L18 15z"/></svg></div>
+      <h3>Honest and modern</h3>
+      <p>Real, working tools in shops today — sales, stock and credit that stand on their own. Smarter automation is on the roadmap, and we'll tell you plainly what's live and what's coming. No inflated claims.</p>
+    </div>
+  </div>
+</div></section>
+
+
+<section class="band"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow" id="problems">The problem today</span>
+    <h2>Everyday commerce runs on memory, paper, and guesswork.</h2>
+  </div>
+  <div class="pain-grid">
+    <div class="pain">
+      <h3><span class="d"></span>Customers</h3>
+      <ul>
+        <li>Hard to find the right shops nearby.</li>
+        <li>No way to know prices before you go.</li>
+        <li>Long trips across Addis for small errands.</li>
+        <li>Delivery is slow, informal, or unavailable.</li>
+      </ul>
+    </div>
+    <div class="pain">
+      <h3><span class="d"></span>Merchants</h3>
+      <ul>
+        <li>Stock counted by hand and by memory.</li>
+        <li>Credit tracked on paper that gets lost.</li>
+        <li>Little visibility into what actually sells.</li>
+        <li>No presence online for new customers to find.</li>
+      </ul>
+    </div>
+    <div class="pain">
+      <h3><span class="d"></span>Riders</h3>
+      <ul>
+        <li>No steady stream of delivery jobs.</li>
+        <li>Routes decided by luck, not by plan.</li>
+        <li>No record of the work they complete.</li>
+        <li>Earnings that are hard to predict or prove.</li>
+      </ul>
+    </div>
+    <div class="pain">
+      <h3><span class="d"></span>Diaspora</h3>
+      <ul>
+        <li>Hard to support family from far away.</li>
+        <li>Money sent home, hoping it becomes what's needed.</li>
+        <li>No visibility into whether goods arrived.</li>
+        <li>No simple way to buy the exact items back home.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+
+<section><div class="wrap">
+  <div class="love-grid">
+    <div class="love-intro">
+      <span class="eyebrow" id="merchants">For merchants</span>
+      <h2>Why merchants love ZAYA.</h2>
+      <p>Run the whole shop from one phone — stock, credit, and your daily numbers, all in one place.</p><div class="pframe reveal"><img loading="lazy" src={creditBook.src} alt="A shop owner keeping the credit book on their phone"><div class="cap">The credit book, in one phone</div></div>
+    </div>
+    <div class="ben-grid">
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4"/><path d="M12 11v10"/></svg></div>
+        <div>
+          <h3>Inventory <span class="st live">Live</span></h3>
+          <p>Track every item and see stock update the moment you make a sale.</p>
+        </div>
+      </div>
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 10h16"/><path d="M8 15h4"/></svg></div>
+        <div>
+          <h3>Credit book <span class="st live">Live</span></h3>
+          <p>Know exactly who owes what — no more torn paper or forgotten balances.</p>
+        </div>
+      </div>
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15l3-4 3 2 4-6"/></svg></div>
+        <div>
+          <h3>Day summary &amp; analytics <span class="st live">Live</span></h3>
+          <p>Close the day with clear totals and see what really sells.</p>
+        </div>
+      </div>
+      <div class="ben co">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 8H8L6 4H3"/><path d="M9 20a1 1 0 100-2 1 1 0 000 2z"/><path d="M18 20a1 1 0 100-2 1 1 0 000 2z"/></svg></div>
+        <div>
+          <h3>Orders <span class="st launch">Launching</span></h3>
+          <p>Receive customer orders straight to your phone and reply in a tap.</p>
+        </div>
+      </div>
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 3a5 5 0 015 5c0 2-1 3-2 4s-1 2-1 3H10c0-1 0-2-1-3s-2-2-2-4a5 5 0 015-5z"/><path d="M9 20h6"/></svg></div>
+        <div>
+          <h3>Smart insights <span class="st road">Roadmap</span></h3>
+          <p>Smart tips on what to restock and when, built for your shop.</p>
+        </div>
+      </div>
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M3 13h11v4H3z"/><path d="M14 9h4l3 4v4h-7z"/><path d="M7 20a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/><path d="M17 20a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg></div>
+        <div>
+          <h3>Local delivery <span class="st road">Roadmap</span></h3>
+          <p>Send orders across the neighborhood with a rider at your door.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+
+<section class="band"><div class="wrap">
+  <div class="love-grid">
+    <div class="love-intro">
+      <span class="eyebrow" id="customers">For customers</span>
+      <h2>Why customers love ZAYA.</h2>
+      <p>Find what you need from real shops near you in Nifas Silk Lafto — at a fair price, no guesswork.</p><div class="pframe reveal"><img loading="lazy" src={customerApp.src} alt="A shopper checking the ZAYA app in a supermarket aisle"><div class="cap">Compare, then choose</div></div>
+    </div>
+    <div class="ben-grid">
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+        <div>
+          <h3>Nearby shops <span class="st launch">Launching</span></h3>
+          <p>See what the shops around you actually stock, right now.</p>
+        </div>
+      </div>
+      <div class="ben co">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h9"/><circle cx="17" cy="18" r="2.5"/></svg></div>
+        <div>
+          <h3>Price comparison <span class="st launch">Launching</span></h3>
+          <p>Compare prices across shops in Birr before you walk out the door.</p>
+        </div>
+      </div>
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M3 13h11V6H3zM14 9h4l3 3v4h-7zM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
+        <div>
+          <h3>Fast local delivery <span class="st road">Roadmap</span></h3>
+          <p>Get your order brought to your door by a local rider.</p>
+        </div>
+      </div>
+      <div class="ben co">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM6 11a6 6 0 0 0 12 0M12 17v4"/></svg></div>
+        <div>
+          <h3>Voice &amp; smart search <span class="st road">Roadmap</span></h3>
+          <p>Just ask in your own words and let ZAYA find it for you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+
+<section><div class="wrap">
+  <div class="love-grid">
+    <div class="love-intro">
+      <span class="eyebrow" id="riders">For riders</span>
+      <h2>Why riders love ZAYA.</h2>
+      <p>Steady work close to home — earning from the shops and streets you already know. This is on our roadmap, not live yet.</p>
+    </div>
+    <div class="ben-grid">
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 3v18M8 7h6a3 3 0 0 1 0 6H8m0 0h7"/></svg></div>
+        <div>
+          <h3>Flexible income <span class="st road">Roadmap</span></h3>
+          <p>Pick up deliveries when it suits you and earn in Birr for every drop you complete.</p>
+        </div>
+      </div>
+      <div class="ben co">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.5 7-11a7 7 0 0 0-14 0c0 4.5 7 11 7 11zM12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
+        <div>
+          <h3>Jobs near you <span class="st road">Roadmap</span></h3>
+          <p>Get matched to orders in your own kebele, with clear navigation to each shop and door.</p>
+        </div>
+      </div>
+      <div class="ben">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M5 3h14a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM9 8h6M9 12h6M9 16h4"/></svg></div>
+        <div>
+          <h3>A simple app <span class="st road">Roadmap</span></h3>
+          <p>One clean screen for your jobs, your route and your earnings — with clear performance tracking.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+
+<section class=""><div class="wrap">
+  <div class="love-grid">
+    <div class="love-intro">
+      <span class="eyebrow" id="diaspora">For the diaspora</span>
+      <h2>Why diaspora families love ZAYA.</h2>
+      <p>Provide real goods — not cash into the dark.</p><div class="pframe reveal"><img loading="lazy" src={diasporaFamily.src} alt="A family at home with a box of essential goods"><div class="cap">Delivered, with proof</div></div>
+    </div>
+    <div class="ben-grid">
+      <div class="ben co">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 8h-12L6 6z"/><path d="M6 6L5 3H3"/><circle cx="9" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg></div>
+        <div>
+          <h3>Order for family <span class="st road">Roadmap</span></h3>
+          <p>Pick the goods your family needs from a trusted neighbourhood shop.</p>
+        </div>
+      </div>
+      <div class="ben co">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 10h16"/><path d="M8 15h3"/></svg></div>
+        <div>
+          <h3>Pay for goods, not remittance <span class="st road">Roadmap</span></h3>
+          <p>Shelf prices plus one clear fee — ZAYA is not money transfer.</p>
+        </div>
+      </div>
+      <div class="ben co">
+        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 7h4l1.5-2h5L16 7h4v11H4z"/><circle cx="12" cy="12.5" r="3.2"/></svg></div>
+        <div>
+          <h3>Delivered with proof <span class="st road">Roadmap</span></h3>
+          <p>A photo when it arrives — with an optional monthly basket.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+
+<section class="cine">
+  <div class="cbg" style={`background-image:url(${storefrontWide.src})`}></div>
+  <div class="wrap cin-c reveal">
+    <span class="eyebrow">Everything near you</span>
+    <h2>One platform behind every shop on the street.</h2>
+    <p>From the corner mini-market to the supermarket — ZAYA connects the whole neighbourhood.</p>
+    <div class="cchips"><span class="cchip">Find nearby</span><span class="cchip">Fair prices</span><span class="cchip">The credit book</span><span class="cchip">Delivered locally</span></div>
+  </div>
+</section>
+<section class="band" id="families">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Supporting families across Ethiopia</span>
+      <h2>Provide for your family — real goods, not cash into the dark.</h2>
+      <p>A trusted neighbourhood shop, delivered locally, with proof it arrived. <b style="color:#5648B0">On the roadmap.</b> ZAYA is not a money-transfer service.</p></div>
+    <div class="flow">
+      <div class="fstep"><div class="fn"><span class="num">1</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>You order from abroad</h3><p>Choose your family's trusted neighbourhood shop.</p></div>
+      <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="fstep"><div class="fn"><span class="num">2</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/><path d="M3 4h3l2.4 12h9.6l2-8H7"/></svg></div><h3>Order through ZAYA</h3><p>Shelf prices + one clear fee — no gift-shop markup.</p></div>
+      <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="fstep"><div class="fn"><span class="num">3</span><svg viewBox="0 0 24 24"><path d="M4 9l1-4h14l1 4M4 9v10h16V9M4 9h16M9 19v-5h6v5"/></svg></div><h3>The shop prepares it</h3><p>The neighbourhood merchant fulfils the order.</p></div>
+      <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="fstep"><div class="fn"><span class="num">4</span><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 18h6M6 18l4-9h4l2 4"/></svg></div><h3>Delivered locally</h3><p>A local rider completes the delivery.</p></div>
+      <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="fstep"><div class="fn"><span class="num">5</span><svg viewBox="0 0 24 24"><path d="M4 5h16v12H4z"/><path d="M8 21h8M9 11l2 2 4-4"/></svg></div><h3>Family receives — with proof</h3><p>You get a delivery photo. Optional monthly basket.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Stories</span><h2>Real voices, coming soon.</h2><p>We'll feature real pilot shopkeepers and customers here — never invented quotes.</p></div>
+    <div class="tstm-grid">
+      <div class="tstm"><div class="q">&ldquo;</div><p>A pilot shopkeeper's story will appear here once the pilot is underway.</p><span class="chip">Haile Garment · pilot</span></div>
+      <div class="tstm"><div class="q">&ldquo;</div><p>A customer's words about finding a fair price nearby.</p><span class="chip">Nifas Silk Lafto</span></div>
+      <div class="tstm"><div class="q">&ldquo;</div><p>A diaspora family's experience providing from abroad.</p><span class="chip">Roadmap</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow" id="faq">Questions</span><h2>Straight answers.</h2></div>
+  <div class="faq">
+    {faq.items.map((item) => (
+      <details class="acc"><summary>{item.q}<span class="pl"></span></summary><div class="acc-b">{item.a}</div></details>
+    ))}
+  </div>
+</div></section>
+
+
+<section><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow" id="resources">Resources</span>
+    <h2>Learn ZAYA in minutes.</h2>
+    <p>Guides and help — arriving as the pilot grows.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h9a3 3 0 0 1 3 3v11a2 2 0 0 0-2-2H4zM20 5h-4a3 3 0 0 0-3 3v11a2 2 0 0 1 2-2h5z"/></svg></div>
+      <h3>User guides <span class="st soon">Soon</span></h3>
+      <p>Step-by-step walkthroughs for logging sales, stock and credit in your shop.</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M8 3h6l4 4v14H6V5a2 2 0 0 1 2-2zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
+      <h3>Documentation <span class="st soon">Soon</span></h3>
+      <p>Reference pages that explain every screen and how the numbers add up.</p>
+    </div>
+    <div class="card co">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM17 9l4-2v10l-4-2M9 9l3 3-3 3z"/></svg></div>
+      <h3>Video tutorials <span class="st soon">Soon</span></h3>
+      <p>Short clips in plain language, made for a busy counter in Addis.</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v10m0 0l-4-4m4 4l4-4M5 18h14"/></svg></div>
+      <h3>Downloads <span class="st soon">Soon</span></h3>
+      <p>The merchant app and handy print-outs, ready when the pilot opens to you.</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9.5 9.5a2.5 2.5 0 0 1 4.5 1.5c0 1.5-2 2-2 3M12 17h.01"/></svg></div>
+      <h3>Help center <span class="st soon">Soon</span></h3>
+      <p>Answers to common questions and a way to reach a real person.</p>
+    </div>
+    <div class="card co">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM8 8h8M8 12h8M8 16h5"/></svg></div>
+      <h3>Blog &amp; updates <span class="st soon">Soon</span></h3>
+      <p>Notes from the pilot as new features arrive, shop by shop.</p>
+    </div>
+  </div>
+</div></section>
+
+
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow" id="pricing">Pricing</span><h2>Simple plans. No hidden fees.</h2><p>Customers use ZAYA free. Merchants start free — forever — and upgrade only when it helps.</p></div>
+    <div class="priceg">
+      {pricing.tiers.map((t) => (
+        <div class={t.highlight ? 'pcard pfeat' : 'pcard'}>
+          {t.highlight && <span class="ptag">Most popular</span>}
+          <div class="pn">{t.name}</div>
+          <div class="pp">{t.from ? 'from ' : ''}{t.price} {pricing.currency} <small>/ {t.from ? 'mo + branch' : (t.period === 'forever' ? 'forever' : 'month')}</small></div>
+          <div class="pd">{t.blurb}</div>
+          <ul>{t.features.map((f) => (<li>{f}</li>))}</ul>
+          <a class={t.highlight ? 'btn btn-primary' : 'btn btn-ghost'} href="#contact">{t.cta}</a>
+        </div>
+      ))}
+    </div>
+    <p class="price-note">{pricing.note}</p>
+  </div>
+</section>
+<section class="band" id="contact">
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">Contact us</span><h2>Let's grow your shop together.</h2><p>Call, message, email, or visit — we answer every message ourselves.</p></div>
+    <div class="contact-cards">
+      <a class="ccard" href={telHref(contact.phones[0])}><div class="ci"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></div><div class="ck">Call us</div><div class="cv">{contact.phones[0]}</div></a>
+      <a class="ccard co" href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noopener"><div class="ci"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.7L3 21l4.4-1.2A9 9 0 1 0 12 3z"/><path d="M8.5 8.5c0 4 3 7 7 7"/></svg></div><div class="ck">WhatsApp</div><div class="cv">Chat with us</div></a>
+      <a class="ccard" href={`mailto:${contact.email}`}><div class="ci"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg></div><div class="ck">Email</div><div class="cv">{contact.email}</div></a>
+      <a class="ccard co" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.mapsQuery)}`} target="_blank" rel="noopener"><div class="ci"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><div class="ck">Visit</div><div class="cv">{contact.location}</div></a>
+    </div>
+    <form class="pilot-form" name="pilot" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/?joined=1#contact">
+      <input type="hidden" name="form-name" value="pilot" />
+      <p class="pf-hp"><label>Leave this field empty <input name="bot-field" /></label></p>
+      <div class="pf-head">Join the pilot</div>
+      <div class="pf-row">
+        <label>Your name<input name="name" type="text" required autocomplete="name" /></label>
+        <label>Phone<input name="phone" type="tel" required autocomplete="tel" placeholder="+251 …" /></label>
+      </div>
+      <label>Shop name <span class="pf-opt">(optional)</span><input name="shop" type="text" /></label>
+      <label>Message<textarea name="message" rows="3" placeholder="Tell us a little about your shop"></textarea></label>
+      <button class="btn btn-primary" type="submit">Join the pilot</button>
+      <p class="pf-note">{contact.formPrivacyNote}</p>
+      <p class="pf-success" id="pfok">✓ Thank you — we&rsquo;ll be in touch about the pilot soon.</p>
+    </form>
+  </div>
+</section>
+
+<div class="lb" id="lb"><button class="lbx" aria-label="Close">&times;</button><img alt=""><div class="lbcap"></div></div>
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="fabout">
+        <span class="lock" style="pointer-events:none">
+          <svg class="mk" viewBox="0 0 512 512" aria-hidden="true" style="animation:none"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient><clipPath id="fc"><rect width="512" height="512" rx="115"/></clipPath></defs><g clip-path="url(#fc)"><rect width="512" height="512" fill="url(#fg)"/></g><path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/><circle cx="256" cy="200" r="56" fill="#FF7A45"/><polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="txt"><span class="wm">ZAYA <b>App</b></span><span class="tl">Everything near you.</span></span>
+        </span>
+        <p>The trusted digital front door to Ethiopia's commerce — connecting customers, merchants, riders, suppliers, and families.</p>
+      </div>
+      <div class="fcol"><h4>Solutions</h4><a href="#">Customers</a><a href="#">Merchants</a><a href="#">Riders</a><a href="#">Suppliers</a><a href="#diaspora">Diaspora</a></div>
+      <div class="fcol"><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#contact">Contact</a></div>
+      <div class="fcol"><h4>Legal</h4><a href="#">Terms &amp; Conditions</a><a href="#">Privacy Policy</a><a href="#">User Agreement</a></div>
+    </div>
+    <div class="foot-base"><span>© 2026 ZAYA App PLC · Addis Ababa, Ethiopia</span><span>Honestly labelled: <b style="color:var(--mint)">Live</b> · <b style="color:#F4A261">Launching</b> · <b style="color:#9c8ff0">Roadmap</b> · Future</span></div>
+  </div>
+</footer>
+</Base>

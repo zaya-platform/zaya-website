@@ -1,0 +1,47 @@
+{
+  "hero": {
+    "eyebrow": "Everything near you",
+    "headlineLead": "Ethiopia's local commerce,",
+    "headlineTeal": "connected",
+    "headlineMid": "in one",
+    "headlineCoral": "intelligent app",
+    "sub": "ZAYA links the shops, customers, riders, suppliers, and families of your neighbourhood — so you can find what's near you, sell smarter, and provide for the people you love.",
+    "audiences": ["customers", "merchants", "riders", "suppliers", "the diaspora"],
+    "ctaPrimary": "Join the pilot",
+    "ctaSecondary": "See how it works",
+    "statusLive": "Sales, stock & the credit book for shops — plus the supermarket dashboard.",
+    "statusLaunching": "The customer app — search & order nearby.",
+    "statusRoadmap": "Delivery, smart tools & voice, the diaspora basket."
+  },
+  "showcase": {
+    "eyebrow": "In real Ethiopian shops",
+    "heading": "Built with the shops that run the neighbourhood.",
+    "sub": "From the corner mini-market to the supermarket — this is where ZAYA works."
+  },
+  "solutions": {
+    "eyebrow": "How ZAYA helps",
+    "heading": "One platform that removes the everyday friction of local commerce.",
+    "sub": "Real tools for real problems — honestly labelled by what's live today and what's on the way."
+  },
+  "cinematic": {
+    "eyebrow": "Everything near you",
+    "heading": "One platform behind every shop on the street.",
+    "sub": "From the corner mini-market to the supermarket — ZAYA connects the whole neighbourhood.",
+    "chips": ["Find nearby", "Fair prices", "The credit book", "Delivered locally"]
+  },
+  "diaspora": {
+    "eyebrow": "Supporting families across Ethiopia",
+    "heading": "Provide for your family — real goods, not cash into the dark.",
+    "sub": "A trusted neighbourhood shop, delivered locally, with proof it arrived. ZAYA is not a money-transfer service."
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "heading": "Simple plans. No hidden fees.",
+    "sub": "Customers use ZAYA free. Merchants start free — forever — and upgrade only when it helps."
+  },
+  "contact": {
+    "eyebrow": "Contact us",
+    "heading": "Let's grow your shop together.",
+    "sub": "Call, message, email, or visit — we answer every message ourselves."
+  }
+}

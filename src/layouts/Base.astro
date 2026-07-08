@@ -1,0 +1,41 @@
+---
+import '../styles/typography.css';
+import '../styles/tokens.css';
+import '../styles/site.css';
+import site from '../content/data/site.json';
+
+interface Props { title?: string; description?: string; }
+const {
+  title = `${site.brandName} — ${site.tagline}`,
+  description = "Ethiopia's local commerce, connected in one intelligent app — for customers, merchants, riders, suppliers and the diaspora.",
+} = Astro.props;
+
+// F4 BINDING honesty gate: until real Privacy/Terms exist and site.published is
+// flipped true, the whole site stays noindex. robots.txt + scripts/check-publish.mjs
+// enforce the same rule at build time.
+const noindex = !site.published;
+// Config-driven canonical (Astro.site = $URL on Netlify, else zaya.app).
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/site.js';
+    </script>
+  </body>
+</html>

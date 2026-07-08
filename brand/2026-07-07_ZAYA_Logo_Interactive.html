@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAYA App — Logo & Brand Mark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+<style>
+  :root{--teal:#0EA5A4;--coral:#FF7A45;--navy:#1E2A4A;--amber:#F4A261;--plum:#6D5DD3;--cloud:#F4F7F8;--line:#E4E8EC;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Poppins',system-ui,'Segoe UI',Arial,sans-serif;color:var(--navy);background:#fff;line-height:1.6;}
+  .wrap{max-width:1040px;margin:0 auto;padding:40px 24px 72px;}
+  .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:600;margin:0 0 6px;}
+  h1{font-size:30px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em;}
+  .sub{color:#5b6470;font-size:16px;margin:0 0 30px;max-width:660px;}
+  h2{font-size:18px;font-weight:600;margin:38px 0 14px;}
+  .card{border:1px solid var(--line);border-radius:16px;padding:22px;background:#fff;}
+  .controls{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;margin-bottom:18px;}
+  .lbl{font-size:12px;color:#8a929c;margin-bottom:6px;}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .seg button{border:0;background:#fff;padding:9px 15px;font-family:inherit;font-size:14px;font-weight:500;color:#5b6470;cursor:pointer;display:flex;align-items:center;gap:7px;}
+  .seg button+button{border-left:1px solid var(--line);}
+  .seg button.active{background:var(--navy);color:#fff;}
+  .dot{width:13px;height:13px;border-radius:50%;border:1px solid rgba(0,0,0,.12);}
+  .sz{display:flex;align-items:center;gap:12px;font-size:14px;color:#5b6470;}
+  .sz input[type=range]{width:170px;accent-color:var(--teal);}
+  .szv{font-weight:600;color:var(--navy);min-width:58px;}
+  .heroStage{position:relative;display:flex;align-items:center;justify-content:center;padding:44px;border-radius:16px;transition:background .25s;margin-bottom:14px;}
+  .playbtn{position:absolute;top:14px;right:14px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-family:inherit;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:6px;}
+  .stage{border:1px solid var(--line);border-radius:16px;padding:36px 26px;display:flex;flex-direction:column;gap:30px;transition:background .25s;}
+  .lock{display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap;}
+  .lock.st{flex-direction:column;gap:12px;}
+  .col{display:flex;flex-direction:column;gap:8px;}
+  .tag{font-weight:600;color:var(--tg,var(--teal));line-height:1;}
+  .am{font-family:'Noto Sans Ethiopic','Poppins',sans-serif;font-weight:600;color:var(--wm,var(--navy));}
+  .divider{height:1px;background:var(--sl,rgba(0,0,0,.08));width:100%;}
+  .strip{display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap;padding:6px 2px;}
+  .cell{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .cap{font-size:12px;color:#8a929c;}
+  .palette{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .pal{border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .1s;}
+  .pal:hover{transform:translateY(-2px);}
+  .pal .chip{height:60px;}
+  .pal .m{padding:9px 12px;}
+  .pal .n{font-size:13px;font-weight:600;}
+  .pal .h{font-size:12px;color:#8a929c;display:flex;align-items:center;gap:5px;}
+  .dl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+  .dl button{font-family:inherit;font-size:14px;font-weight:500;padding:11px 17px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;display:flex;align-items:center;gap:8px;}
+  .dl button:hover{border-color:var(--teal);color:var(--teal);}
+  .dl button.pr{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .dl button.pr:hover{background:#0c8f8e;color:#fff;}
+  .st2{font-size:13px;color:var(--teal);font-weight:600;min-height:16px;}
+  .note{font-size:13px;color:#8a929c;margin-top:12px;}
+  .zpulse{transform-box:view-box;transform-origin:256px 200px;fill:none;stroke:#fff;stroke-width:4;opacity:0;}
+  .play .zpulse{animation:zradar 3s linear infinite;}
+  .play .zp2{animation-delay:1s;} .play .zp3{animation-delay:2s;}
+  @keyframes zradar{0%{transform:scale(.12);opacity:0}12%{opacity:.55}100%{transform:scale(1);opacity:0}}
+  .play .zdot{transform-box:view-box;transform-origin:256px 200px;animation:zpp 3s ease-in-out infinite;}
+  @keyframes zpp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">ZAYA App · Brand mark</p>
+  <h1>ZAYA App logo system</h1>
+  <p class="sub">A location pin holding the Z monogram, framed by "zone" rings that pulse like a live nearby-search. The wordmark drops the crossbars on both A's for a distinct apex form; APP sits beneath in a brand accent you can switch. Change backgrounds, scale it, play the motion, and download files.</p>
+
+  <div class="controls">
+    <div>
+      <div class="lbl">Background</div>
+      <div class="seg" id="seg">
+        <button data-s="cloud" class="active"><span class="dot" style="background:#F4F7F8"></span>Cloud</button>
+        <button data-s="white"><span class="dot" style="background:#fff"></span>White</button>
+        <button data-s="navy"><span class="dot" style="background:#1E2A4A"></span>Navy</button>
+        <button data-s="teal"><span class="dot" style="background:#0EA5A4"></span>Teal</button>
+      </div>
+    </div>
+    <div>
+      <div class="lbl">APP colour</div>
+      <div class="seg" id="appseg">
+        <button data-c="#FF7A45" class="active"><span class="dot" style="background:#FF7A45"></span>Coral</button>
+        <button data-c="#F4A261"><span class="dot" style="background:#F4A261"></span>Amber</button>
+        <button data-c="#6D5DD3"><span class="dot" style="background:#6D5DD3"></span>Plum</button>
+        <button data-c="#0EA5A4"><span class="dot" style="background:#0EA5A4"></span>Teal</button>
+      </div>
+    </div>
+    <div>
+      <div class="lbl">App icon size</div>
+      <div class="sz"><i class="ti ti-photo"></i><input type="range" id="rng" min="48" max="340" value="210" step="8"><span class="szv"><span id="rv">210</span> px</span></div>
+    </div>
+  </div>
+
+  <div class="heroStage play" id="hero">
+    <button class="playbtn" id="playbtn"><i class="ti ti-player-pause"></i>Pause search</button>
+    <div id="heroIcon"></div>
+  </div>
+
+  <h2>Lockups</h2>
+  <div class="stage" id="stage">
+    <div class="lock" id="lh"></div>
+    <div class="divider"></div>
+    <div class="lock st" id="ls"></div>
+    <div class="divider"></div>
+    <div class="lock st" id="lb"></div>
+  </div>
+
+  <h2>Scales cleanly — 16px to app store</h2>
+  <div class="card"><div class="strip" id="strip"></div></div>
+
+  <h2>Colour palette</h2>
+  <div class="palette" id="palette"></div>
+
+  <h2>Download</h2>
+  <div class="dl" id="dl">
+    <button class="pr" id="d1"><i class="ti ti-download"></i>App icon · SVG</button>
+    <button id="d1b"><i class="ti ti-player-play"></i>Animated icon · SVG</button>
+    <button id="d2"><i class="ti ti-download"></i>Wordmark · SVG</button>
+    <button id="d3"><i class="ti ti-download"></i>Horizontal · SVG</button>
+    <button id="d4"><i class="ti ti-photo"></i>PNG 512</button>
+    <button id="d5"><i class="ti ti-photo"></i>PNG 1024</button>
+    <span class="st2" id="st2"></span>
+  </div>
+  <p class="note">SVG stays razor-sharp at any size. The animated SVG loops the search pulse in browsers and websites; static PNGs are ready for app-store upload and documents. Wordmark uses Poppins; the Amharic lockup uses Noto Sans Ethiopic.</p>
+</div>
+
+<script>
+var C={teal:'#0EA5A4',coral:'#FF7A45',navy:'#1E2A4A',amber:'#F4A261',plum:'#6D5DD3',cloud:'#F4F7F8'};
+var app='#FF7A45';
+var ZP='<path d="M13 20 L109 20 L13 140 L109 140"/><path d="M137 140 L182 20 L227 140"/><path d="M255 20 L300 80 L345 20"/><path d="M300 80 L300 140"/><path d="M373 140 L418 20 L463 140"/>';
+
+function iconInner(id,anim){
+  var rings=anim
+    ? '<circle class="zpulse" cx="256" cy="200" r="288"/><circle class="zpulse zp2" cx="256" cy="200" r="288"/><circle class="zpulse zp3" cx="256" cy="200" r="288"/>'
+    : '<circle cx="256" cy="200" r="150" fill="none" stroke="#fff" stroke-opacity="0.10" stroke-width="3"/><circle cx="256" cy="200" r="216" fill="none" stroke="#fff" stroke-opacity="0.07" stroke-width="3"/><circle cx="256" cy="200" r="290" fill="none" stroke="#fff" stroke-opacity="0.05" stroke-width="3"/>';
+  return '<defs><linearGradient id="g'+id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient><clipPath id="c'+id+'"><rect width="512" height="512" rx="115"/></clipPath></defs>'
+  +'<g clip-path="url(#c'+id+')"><rect width="512" height="512" fill="url(#g'+id+')"/>'+rings+'</g>'
+  +'<path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/>'
+  +'<circle class="zdot" cx="256" cy="200" r="56" fill="#FF7A45"/>'
+  +'<polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+function icon(px,id,anim){return '<svg width="'+px+'" height="'+px+'" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA app icon">'+iconInner(id,anim)+'</svg>';}
+function wm(caps){
+  var w=(caps*476/120).toFixed(1),h=(caps*210/120).toFixed(1);
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 476 210" xmlns="http://www.w3.org/2000/svg" style="color:var(--wm,#1E2A4A)" role="img" aria-label="ZAYA App">'
+  +'<g transform="translate(0,14)" fill="none" stroke="currentColor" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">'+ZP+'</g>'
+  +'<text x="238" y="198" text-anchor="middle" font-family="Poppins,Arial,sans-serif" font-weight="700" font-size="34" letter-spacing="18" fill="'+app+'">APP</text></svg>';
+}
+function renderLockups(){
+  document.getElementById('lh').innerHTML=icon(96,'lh',false)+'<div class="col">'+wm(58)+'<div class="tag" style="font-size:18px;padding-left:2px">Everything near you.</div></div>';
+  document.getElementById('ls').innerHTML=icon(100,'ls',false)+wm(52)+'<div class="tag" style="font-size:16px">Everything near you.</div>';
+  document.getElementById('lb').innerHTML=icon(88,'lb',false)+'<div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center">'+wm(46)+'<div class="am" style="font-size:52px">ዛያ</div></div><div class="tag am" style="font-size:18px;color:var(--tg)">ሁሉም ነገር በቅርብዎ።</div>';
+}
+document.getElementById('heroIcon').innerHTML=icon(210,'hero',true);
+renderLockups();
+
+var strip=document.getElementById('strip');
+[128,64,48,32,16].forEach(function(s){var c=document.createElement('div');c.className='cell';c.innerHTML=icon(s,'s'+s,false)+'<div class="cap">'+s+'px</div>';strip.appendChild(c);});
+
+var PAL=[['Teal','Primary',C.teal],['Coral','CTA',C.coral],['Navy','Text',C.navy],['Amber','Support',C.amber],['Plum','AI',C.plum],['Cloud','Surface',C.cloud]];
+var pal=document.getElementById('palette');
+PAL.forEach(function(p){var d=document.createElement('div');d.className='pal';d.title='Copy '+p[2];d.innerHTML='<div class="chip" style="background:'+p[2]+'"></div><div class="m"><div class="n">'+p[0]+' · <span style="color:#8a929c;font-weight:500">'+p[1]+'</span></div><div class="h"><i class="ti ti-copy"></i>'+p[2]+'</div></div>';d.onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(p[2]);flash('Copied '+p[2]);};pal.appendChild(d);});
+
+var SURF={cloud:{bg:'#F4F7F8',wm:'#1E2A4A',tg:'#0EA5A4',sl:'rgba(0,0,0,.08)'},white:{bg:'#FFFFFF',wm:'#1E2A4A',tg:'#0EA5A4',sl:'rgba(0,0,0,.08)'},navy:{bg:'#1E2A4A',wm:'#FFFFFF',tg:'#5DCAA5',sl:'rgba(255,255,255,.14)'},teal:{bg:'#0EA5A4',wm:'#FFFFFF',tg:'#EAFBF7',sl:'rgba(255,255,255,.2)'}};
+function surf(s){var v=SURF[s],st=document.getElementById('stage'),h=document.getElementById('hero');st.style.background=v.bg;h.style.background=v.bg;[st,h].forEach(function(e){e.style.setProperty('--wm',v.wm);e.style.setProperty('--tg',v.tg);e.style.setProperty('--sl',v.sl);});}
+document.querySelectorAll('#seg button').forEach(function(b){b.onclick=function(){document.querySelectorAll('#seg button').forEach(function(x){x.classList.remove('active')});b.classList.add('active');surf(b.dataset.s);};});
+surf('cloud');
+
+document.querySelectorAll('#appseg button').forEach(function(b){b.onclick=function(){document.querySelectorAll('#appseg button').forEach(function(x){x.classList.remove('active')});b.classList.add('active');app=b.dataset.c;renderLockups();flash('APP set to '+app);};});
+
+var rng=document.getElementById('rng');rng.oninput=function(){document.getElementById('rv').textContent=rng.value;document.getElementById('heroIcon').innerHTML=icon(+rng.value,'hero',document.getElementById('hero').classList.contains('play'));};
+
+var pb=document.getElementById('playbtn');pb.onclick=function(){var h=document.getElementById('hero');var on=h.classList.toggle('play');pb.innerHTML=on?'<i class="ti ti-player-pause"></i>Pause search':'<i class="ti ti-player-play"></i>Play search';document.getElementById('heroIcon').innerHTML=icon(+rng.value,'hero',on);};
+
+function animatedSVG(){
+  return '<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA animated app icon"><defs><linearGradient id="zg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient><clipPath id="zc"><rect width="512" height="512" rx="115"/></clipPath><style>.ring{transform-box:view-box;transform-origin:256px 200px;fill:none;stroke:#fff;stroke-width:4;opacity:0;animation:radar 3s linear infinite}.r2{animation-delay:1s}.r3{animation-delay:2s}@keyframes radar{0%{transform:scale(.12);opacity:0}12%{opacity:.55}100%{transform:scale(1);opacity:0}}.dot{transform-box:view-box;transform-origin:256px 200px;animation:pulse 3s ease-in-out infinite}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}</style></defs><g clip-path="url(#zc)"><rect width="512" height="512" fill="url(#zg)"/><circle class="ring" cx="256" cy="200" r="288"/><circle class="ring r2" cx="256" cy="200" r="288"/><circle class="ring r3" cx="256" cy="200" r="288"/></g><path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/><circle class="dot" cx="256" cy="200" r="56" fill="#FF7A45"/><polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function staticIconSVG(){return '<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA app icon">'+iconInner('dl',false)+'</svg>';}
+function wmSVG(){return '<svg width="476" height="210" viewBox="0 0 476 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA App wordmark"><g transform="translate(0,14)" fill="none" stroke="#1E2A4A" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">'+ZP+'</g><text x="238" y="198" text-anchor="middle" font-family="Poppins,Arial,sans-serif" font-weight="700" font-size="34" letter-spacing="18" fill="'+app+'">APP</text></svg>';}
+function horizSVG(){
+  return '<svg width="780" height="220" viewBox="0 0 780 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA App - Everything near you"><defs><linearGradient id="gh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient><clipPath id="chh"><rect width="512" height="512" rx="115"/></clipPath></defs><g transform="translate(24,40) scale(0.2734375)"><g clip-path="url(#chh)"><rect width="512" height="512" fill="url(#gh)"/><circle cx="256" cy="200" r="150" fill="none" stroke="#fff" stroke-opacity="0.10" stroke-width="3"/><circle cx="256" cy="200" r="216" fill="none" stroke="#fff" stroke-opacity="0.07" stroke-width="3"/><circle cx="256" cy="200" r="290" fill="none" stroke="#fff" stroke-opacity="0.05" stroke-width="3"/></g><path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/><circle cx="256" cy="200" r="56" fill="#FF7A45"/><polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="translate(214,60) scale(0.75)" fill="none" stroke="#1E2A4A" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">'+ZP+'</g><text x="226" y="201" font-family="Poppins,Arial,sans-serif" font-weight="700" font-size="26" letter-spacing="10" fill="'+app+'">APP</text><text x="330" y="201" font-family="Poppins,Arial,sans-serif" font-weight="600" font-size="24" fill="#0EA5A4">Everything near you.</text></svg>';
+}
+function flash(m){var e=document.getElementById('st2');e.textContent=m;setTimeout(function(){if(e.textContent===m)e.textContent='';},1800);}
+function dlBlob(str,name){var b=new Blob([str],{type:'image/svg+xml'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);flash('Downloading '+name);}
+function dlPng(size,name){var img=new Image();img.onload=function(){var cv=document.createElement('canvas');cv.width=size;cv.height=size;cv.getContext('2d').drawImage(img,0,0,size,size);cv.toBlob(function(b){var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);flash('Downloading '+name);});};img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(staticIconSVG())));}
+document.getElementById('d1').onclick=function(){dlBlob(staticIconSVG(),'ZAYA_AppIcon.svg');};
+document.getElementById('d1b').onclick=function(){dlBlob(animatedSVG(),'ZAYA_AppIcon_Animated.svg');};
+document.getElementById('d2').onclick=function(){dlBlob(wmSVG(),'ZAYA_Wordmark.svg');};
+document.getElementById('d3').onclick=function(){dlBlob(horizSVG(),'ZAYA_Horizontal.svg');};
+document.getElementById('d4').onclick=function(){dlPng(512,'ZAYA_AppIcon_512.png');};
+document.getElementById('d5').onclick=function(){dlPng(1024,'ZAYA_AppIcon_1024.png');};
+</script>
+</body>
+</html>
