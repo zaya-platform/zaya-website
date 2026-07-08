@@ -14,7 +14,7 @@ const {
 // flipped true, the whole site stays noindex. robots.txt + scripts/check-publish.mjs
 // enforce the same rule at build time.
 const noindex = !site.published;
-// Config-driven canonical (Astro.site = $URL on Netlify, else zaya.app).
+// Config-driven canonical (Astro.site = $URL on Netlify, else zayaethiopia.com).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 <!doctype html>

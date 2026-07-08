@@ -7,4 +7,4 @@ Disallow: /
 # (Post-publish this becomes:)
 # User-agent: *
 # Allow: /
-# Sitemap: https://zaya.app/sitemap-index.xml
+# Sitemap: https://zayaethiopia.com/sitemap-index.xml

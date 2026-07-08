@@ -4,7 +4,7 @@ Everything is built, wired, and already on GitHub at **github.com/zaya-platform/
 (private). Below is exactly what *you* click. Nothing here needs coding.
 
 There are 4 steps. You can do **Steps 1–2 now** (free subdomain); **Steps 3–4** when your
-lawyer and the zaya.app domain are ready.
+lawyer and the zayaethiopia.com domain are ready.
 
 ---
 
@@ -52,22 +52,22 @@ We built a safety rule: the site **refuses to go public** until real Privacy + T
    editor can.
 
 ## Step 4 — Your domain + going live
-1. **Domain:** once **zaya.app** is registered, Netlify → **Domain settings → Add a domain →**
-   `zaya.app`, and follow the DNS instructions it shows. The whole site switches to zaya.app
+1. **Domain:** once **zayaethiopia.com** is registered, Netlify → **Domain settings → Add a domain →**
+   `zayaethiopia.com`, and follow the DNS instructions it shows. The whole site switches to zayaethiopia.com
    automatically — nothing to rebuild.
 2. **Go live:** on GitHub, open **`src/content/data/site.json`** and change
    `"published": false` → `"published": true`, and open **`public/robots.txt`** and change
    `Disallow: /` → `Allow: /`. Commit both. *(Tell me and I’ll do this in one step.)*
-3. Netlify redeploys — the site is now **public and visible on Google** at zaya.app.
+3. Netlify redeploys — the site is now **public and visible on Google** at zayaethiopia.com.
 
 ---
 
 ### What’s already done for you (no action needed)
 Netlify config · Netlify Forms “Join the pilot” form (submissions appear under
 **Netlify → Forms**) · Sveltia CMS + GitHub login (no deprecated Netlify Identity) ·
-self-hosted fonts · works on the free subdomain now and swaps to zaya.app with zero rework ·
+self-hosted fonts · works on the free subdomain now and swaps to zayaethiopia.com with zero rework ·
 the noindex + publish safety gate · the private GitHub repo.
 
 ### Still needed from you
-zaya.app registration · final Privacy/Terms wording · confirmed/commissioned photos
+zayaethiopia.com registration · final Privacy/Terms wording · confirmed/commissioned photos
 (the current ones are marked placeholders). When those land, going live is Steps 3–4 above.

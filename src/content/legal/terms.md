@@ -7,7 +7,7 @@ updated: 8 July 2026
 **Effective date:** _set at go-live_ · **Last updated:** 8 July 2026
 
 ## 1. About these terms
-These Terms of Use govern your use of the ZAYA public website at **zaya.app**
+These Terms of Use govern your use of the ZAYA public website at **zayaethiopia.com**
 ("the site"), operated by **ZAYA App PLC** ("ZAYA", "we", "us"), Addis Ababa,
 Ethiopia. By using the site, you agree to these terms. If you do not agree,
 please do not use the site.

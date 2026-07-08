@@ -7,13 +7,13 @@ updated: 8 July 2026
 **Effective date:** _set at go-live_ · **Last updated:** 8 July 2026
 
 ## 1. Who we are
-This website (zaya.app) is operated by **ZAYA App PLC** ("ZAYA", "we", "us"),
+This website (zayaethiopia.com) is operated by **ZAYA App PLC** ("ZAYA", "we", "us"),
 Addis Ababa, Ethiopia (company registration in progress). This Privacy Policy
 explains how we handle personal information you provide through this website.
 Contact: **zayaapp@gmail.com · +251 91 283 5922 · +251 96 519 6475**.
 
 ## 2. What this policy covers
-This policy covers only the ZAYA **public website** (zaya.app). The ZAYA mobile
+This policy covers only the ZAYA **public website** (zayaethiopia.com). The ZAYA mobile
 apps and platform, when available, will have their own separate privacy terms.
 
 ## 3. Information we collect

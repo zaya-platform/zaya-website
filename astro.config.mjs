@@ -2,11 +2,11 @@ import { defineConfig } from 'astro/config';
 // import sitemap from '@astrojs/sitemap';
 
 // Canonical URL is CONFIG-DRIVEN so it works on the free Netlify subdomain now and
-// swaps to zaya.app later with zero rework: Netlify sets $URL to the site's primary
+// swaps to zayaethiopia.com later with zero rework: Netlify sets $URL to the site's primary
 // address (subdomain, then the custom domain once added), so canonical links + OG
-// tags follow automatically. Falls back to zaya.app for local builds. (F2)
+// tags follow automatically. Falls back to zayaethiopia.com for local builds. (F2)
 export default defineConfig({
-  site: process.env.URL || process.env.SITE_URL || 'https://zaya.app',
+  site: process.env.URL || process.env.SITE_URL || 'https://zayaethiopia.com',
   // English-only for now (founder ruling 2026-07-08): localization is DEFERRED to
   // a later phase (draft am/om/ti needed native-speaker quality work). The single-
   // locale i18n block was removed because it tripped @astrojs/sitemap; re-add

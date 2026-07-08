@@ -2,8 +2,8 @@
 export const site = {
   name: 'ZAYA',
   tagline: 'Everything near you.',
-  url: 'https://zaya.app', // F2 — canonical host
-  portalUrl: 'https://app.zaya.app', // Sign-In / role links target this (coming-soon)
+  url: 'https://zayaethiopia.com', // F2 — canonical host
+  portalUrl: 'https://app.zayaethiopia.com', // Sign-In / role links target this (coming-soon)
   defaultLocale: 'en',
   // English-only for now (founder ruling 2026-07-08): the draft am/om/ti
   // translations need native-speaker quality work, so the language selector is
