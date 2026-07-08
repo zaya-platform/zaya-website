@@ -50,3 +50,27 @@
   from = "/callback"
   to = "/.netlify/functions/callback"
   status = 200
+
+# Ethiopian flagship domains → 301 to the primary (zayaethiopia.com), so ZAYA keeps
+# ONE canonical site while owning the local .et brand. Register zaya.et and/or
+# zaya.com.et, add them as secondary domains on this Netlify site (keep
+# zayaethiopia.com as PRIMARY), and every path forwards to the primary.
+# NOTE: .et registration goes via Ethio Telecom / the .et NIC and must allow pointing
+# DNS at Netlify — confirm that before relying on it (see docs/13).
+[[redirects]]
+  from = "https://zaya.et/*"
+  to = "https://zayaethiopia.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.zaya.et/*"
+  to = "https://zayaethiopia.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://zaya.com.et/*"
+  to = "https://zayaethiopia.com/:splat"
+  status = 301
+  force = true
