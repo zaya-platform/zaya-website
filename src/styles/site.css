@@ -50,6 +50,13 @@
   .st.live{color:var(--teal-deep);background:#E4F5F4} .st.launch{color:#B4611F;background:#FFF1E8}
   .st.road{color:#5648B0;background:#EEEBFB} .st.soon{color:var(--ink-faint);background:#F1F3F5}
   .nav .cta{margin-left:6px}
+  /* hamburger (mobile/tablet only) */
+  .burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;flex:none;
+    margin-left:8px;padding:11px;background:#fff;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+  .burger span{display:block;height:2px;width:100%;background:var(--navy);border-radius:2px;transition:transform .25s var(--ease),opacity .2s}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   .btn{display:inline-flex;align-items:center;gap:9px;font-family:inherit;font-weight:650;font-size:14.5px;border-radius:var(--pill);
     padding:11px 20px;border:1.5px solid transparent;cursor:pointer;transition:.2s;white-space:nowrap}
   .btn-primary{background:var(--coral);color:#fff;box-shadow:0 8px 20px -6px rgba(255,122,69,.5)}
@@ -107,8 +114,33 @@
   @media(max-width:940px){
     .hero-in{grid-template-columns:1fr;gap:14px;min-height:auto;padding:36px 0 40px}
     .stage{max-height:380px;order:-1;width:min(100%,340px);margin:8px auto 0}
-    .menu,.nav .cta.ghost{display:none}
+    .nav .cta.ghost{display:none}
     .cards{grid-template-columns:1fr}
+    .burger{display:flex}
+    .nav{gap:12px}
+    /* slide-down mobile/tablet menu panel */
+    .menu{position:fixed;top:76px;left:0;right:0;z-index:49;flex-direction:column;align-items:stretch;gap:0;
+      background:#fff;border-top:1px solid var(--line);box-shadow:var(--sh-md);
+      padding:6px 20px 26px;max-height:calc(100dvh - 76px);overflow-y:auto;
+      transform:translateY(-12px);opacity:0;visibility:hidden;pointer-events:none;transition:.22s var(--ease)}
+    header.nav-open .menu{transform:none;opacity:1;visibility:visible;pointer-events:auto}
+    .menu>.item{position:static;width:100%;border-bottom:1px solid var(--line)}
+    .menu>.item:last-child{border-bottom:0}
+    .menu>.item>a{padding:14px 6px;font-size:16px;font-weight:700;color:var(--navy);border-radius:0}
+    .menu>.item>a:hover{background:transparent}
+    .menu>.item>a .ch{display:none}
+    .drop{position:static;opacity:1;visibility:visible;transform:none;box-shadow:none;border:0;min-width:0;
+      padding:0 0 12px 14px;background:transparent}
+    .drop a{padding:9px 6px;font-size:14px;color:var(--ink-soft)}
+    .drop a:hover{background:transparent}
+  }
+  /* small phones: compact the header so it never overflows */
+  @media(max-width:520px){
+    .lock .tl{display:none}
+    .lock .mk{width:40px;height:40px}
+    .lock .wm{font-size:20px}
+    .nav .cta{padding:9px 15px;font-size:13.5px}
+    .wrap{padding:0 18px}
   }
   @media(prefers-reduced-motion:reduce){.lock .mk{animation:none}}
 

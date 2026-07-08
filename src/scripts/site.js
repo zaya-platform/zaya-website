@@ -83,3 +83,14 @@
     }
   }catch(e){}
 })();
+
+// Mobile/tablet menu: toggle the slide-down nav; close on link tap, Escape, or resize to desktop.
+(function(){
+  var burger=document.querySelector('.burger'), hdr=document.querySelector('header');
+  if(!burger||!hdr) return;
+  function set(open){ hdr.classList.toggle('nav-open',open); burger.setAttribute('aria-expanded',open?'true':'false'); }
+  burger.addEventListener('click',function(){ set(!hdr.classList.contains('nav-open')); });
+  hdr.querySelectorAll('.menu a').forEach(function(a){ a.addEventListener('click',function(){ set(false); }); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') set(false); });
+  window.addEventListener('resize',function(){ if(window.innerWidth>940) set(false); });
+})();
