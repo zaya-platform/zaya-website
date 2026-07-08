@@ -10,7 +10,7 @@ backend:
   name: github
   repo: zaya-platform/zaya-website
   branch: main
-  base_url: https://YOUR-SITE.netlify.app   # ⚑ set to your Netlify site URL (then zayaethiopia.com)
+  base_url: https://zayaethiopia.netlify.app   # OAuth relay lives here; update to https://zayaethiopia.com after the domain is connected
   auth_endpoint: /auth
 publish_mode: editorial_workflow   # draft → review → publish (friendly for staff)
 media_folder: "src/assets/uploads"
