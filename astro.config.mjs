@@ -1,20 +1,14 @@
 import { defineConfig } from 'astro/config';
-// import sitemap from '@astrojs/sitemap';
 
-// Canonical URL is CONFIG-DRIVEN so it works on the free Netlify subdomain now and
-// swaps to zaya.app later with zero rework: Netlify sets $URL to the site's primary
-// address (subdomain, then the custom domain once added), so canonical links + OG
-// tags follow automatically. Falls back to zaya.app for local builds. (F2)
+// GO-LIVE (zaya.app final, 2026-07-08): canonical host pinned to zaya.app so all
+// canonical + OG URLs match the public domain (override with SITE_URL if ever needed).
 export default defineConfig({
-  site: process.env.URL || process.env.SITE_URL || 'https://zaya.app',
-  // English-only for now (founder ruling 2026-07-08): localization is DEFERRED to
-  // a later phase (draft am/om/ti needed native-speaker quality work). The single-
-  // locale i18n block was removed because it tripped @astrojs/sitemap; re-add
-  // `i18n: { defaultLocale, locales, routing }` here + the selector when verified
-  // translations land — content is already structured for it.
-  // sitemap() temporarily disabled: @astrojs/sitemap 3.2 crashes on this build
-  // ("reduce of undefined"). Re-enable at publish (bump the plugin / pass an
-  // explicit `serialize`); the site is noindex until published anyway (F4).
+  site: process.env.SITE_URL || 'https://zaya.app',
+  // English-only for now (F3): localization DEFERRED; re-add the i18n block when
+  // verified am/om/ti translations land — content is already structured for it.
+  // @astrojs/sitemap 3.2 crashes on this build ("reduce of undefined"), so a STATIC
+  // sitemap is shipped in public/ (sitemap-index.xml + sitemap-0.xml). Regenerate it
+  // when adding pages, or re-enable the plugin once a compatible version is available.
   integrations: [],
   build: { inlineStylesheets: 'auto' },
   // Static-first, zero backend (Part 0). No server adapter, no SSR.

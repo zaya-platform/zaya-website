@@ -1,10 +1,5 @@
-# F4 BINDING carve-out: the site must NOT be indexed until real Privacy + Terms
-# and real content exist (site.published === true). Until then, block all crawlers.
-# When published, a build step regenerates this to allow indexing + link the sitemap.
+# ZAYA is live at zaya.app — indexing enabled.
 User-agent: *
-Disallow: /
+Allow: /
 
-# (Post-publish this becomes:)
-# User-agent: *
-# Allow: /
-# Sitemap: https://zaya.app/sitemap-index.xml
+Sitemap: https://zaya.app/sitemap-index.xml
