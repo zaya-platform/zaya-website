@@ -3,14 +3,15 @@
 # SEPARATE website-editing GitHub account — entirely distinct from ZAYA platform user
 # auth. Admin panel served statically at /admin.
 #
-# Netlify Identity is deprecated — we use GitHub OAuth instead. Deploy the free
-# `sveltia-cms-auth` Cloudflare Worker (or any Decap-compatible OAuth relay), then set
-# `base_url` below to it. Steps are in docs/12-deploy-netlify.md.
+# Netlify Identity is deprecated — we use GitHub OAuth instead. The OAuth relay runs as
+# Netlify Functions ON THIS SAME SITE (netlify/functions/auth + callback) — no Cloudflare.
+# One deploy-time edit: set base_url to your Netlify site address (see GO-LIVE.md §2).
 backend:
   name: github
-  repo: zaya-platform/zaya-website   # ⚑ CONFIRM the actual GitHub owner/repo at deploy
+  repo: zaya-platform/zaya-website
   branch: main
-  base_url: https://REPLACE-WITH-YOUR-OAUTH-WORKER.workers.dev   # ⚑ set at deploy (doc 12)
+  base_url: https://YOUR-SITE.netlify.app   # ⚑ set to your Netlify site URL (then zaya.app)
+  auth_endpoint: /auth
 publish_mode: editorial_workflow   # draft → review → publish (friendly for staff)
 media_folder: "src/assets/uploads"
 public_folder: "/uploads"

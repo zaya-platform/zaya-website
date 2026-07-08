@@ -25,14 +25,16 @@ in the browser):
 1. **GitHub → Settings → Developer settings → OAuth Apps → New**:
    - Homepage URL: `https://zaya.app`
    - Authorization callback URL: your relay's `/callback` (from step 2).
-   - Copy the **Client ID** + **Client Secret**.
-2. Deploy the free **`sveltia-cms-auth`** Cloudflare Worker (maintained by the Sveltia author):
-   - Set its `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `ALLOWED_DOMAINS=zaya.app`.
-   - It gives you a URL like `https://zaya-auth.<you>.workers.dev`.
-3. In `config.yml` set `backend.base_url` to that Worker URL.
+   - Callback URL: `https://<your-netlify-site>/callback`. Copy the **Client ID** + **Client Secret**.
+2. The OAuth relay is **already in this repo** as Netlify Functions (`netlify/functions/auth.mjs`
+   + `callback.mjs`, routed via `netlify.toml`) — **no Cloudflare/Netlify-Identity needed**.
+   In Netlify → Site configuration → Environment variables, add `GITHUB_CLIENT_ID` and
+   `GITHUB_CLIENT_SECRET`.
+3. In `public/admin/config.yml` set `backend.base_url` to your Netlify site URL.
 4. **Invite editors** = add them as **collaborators** (write) on the GitHub repo. They visit
-   `https://zaya.app/admin`, sign in with GitHub, and edit via the draft → review → publish workflow.
+   `/admin`, sign in with GitHub, and edit via the draft → review → publish workflow.
    Their saves commit to the repo → Netlify rebuilds → the site updates. No new database.
+   *(Non-technical, step-by-step version: **GO-LIVE.md**.)*
 
 > Alternative (also fine): keep **Decap CMS** with the same GitHub backend + the same OAuth relay.
 > Sveltia is recommended purely because it's actively maintained and faster.
