@@ -52,9 +52,11 @@
       ctx.font=(m.t==='p'?'700 ':'600 ')+(m.t==='p'?13:11)+"px 'Segoe UI',system-ui,sans-serif";
       ctx.fillStyle=m.t==='p'?NAVY:'#54617A';
       var ly=q.y + (q.y<cy? -rad-11 : rad+13);
+      // keep the whole label inside the canvas horizontally (no edge clipping)
+      var lw=ctx.measureText(m.l).width, lx=Math.max(lw/2+3, Math.min(W-lw/2-3, q.x));
       // white halo for legibility
-      ctx.lineWidth=3; ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.strokeText(m.l,q.x,ly);
-      ctx.fillText(m.l,q.x,ly);
+      ctx.lineWidth=3; ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.strokeText(m.l,lx,ly);
+      ctx.fillText(m.l,lx,ly);
     }
   }
   var raf; function loop(tt){ draw(tt||0); raf=requestAnimationFrame(loop); }

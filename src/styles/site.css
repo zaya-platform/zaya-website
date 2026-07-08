@@ -76,7 +76,7 @@
   .status .s b{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
   .status .s.l b{color:var(--teal-deep)} .status .s.g b{color:#B4611F} .status .s.r b{color:#5648B0}
 
-  .stage{position:relative;aspect-ratio:1/1;max-height:560px;width:100%}
+  .stage{position:relative;aspect-ratio:1/1;max-height:520px;width:100%;align-self:start;margin-top:8px}
   #eco{width:100%;height:100%;display:block}
   .stage .badge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
   .stage .badge .t{font-weight:800;font-size:15px;color:var(--navy);letter-spacing:.02em}
@@ -106,7 +106,7 @@
 
   @media(max-width:940px){
     .hero-in{grid-template-columns:1fr;gap:14px;min-height:auto;padding:36px 0 40px}
-    .stage{max-height:420px;order:-1}
+    .stage{max-height:380px;order:-1;width:min(100%,340px);margin:8px auto 0}
     .menu,.nav .cta.ghost{display:none}
     .cards{grid-template-columns:1fr}
   }
