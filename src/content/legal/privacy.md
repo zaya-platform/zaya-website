@@ -4,7 +4,7 @@ updated: 8 July 2026
 ---
 # ZAYA Website — Privacy Policy
 
-**Effective date:** 8 July 2026 · **Last updated:** 8 July 2026
+**Effective date:** _set at go-live_ · **Last updated:** 8 July 2026
 
 ## 1. Who we are
 This website (zaya.app) is operated by **ZAYA App PLC** ("ZAYA", "we", "us"),

@@ -4,7 +4,7 @@ updated: 8 July 2026
 ---
 # ZAYA Website — Terms of Use
 
-**Effective date:** 8 July 2026 · **Last updated:** 8 July 2026
+**Effective date:** _set at go-live_ · **Last updated:** 8 July 2026
 
 ## 1. About these terms
 These Terms of Use govern your use of the ZAYA public website at **zaya.app**
