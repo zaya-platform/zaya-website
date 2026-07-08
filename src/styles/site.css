@@ -262,3 +262,15 @@
 .pilot-form.sent .pf-success{display:block}
 .pilot-form.sent .pf-row,.pilot-form.sent > label,.pilot-form.sent > button,.pilot-form.sent .pf-head,.pilot-form.sent .pf-note{display:none}
 @media(max-width:560px){.pilot-form .pf-row{grid-template-columns:1fr}}
+
+/* ---- Legal pages (/privacy, /terms) ---- */
+.legal-page{padding:52px 0 80px;background:linear-gradient(180deg,var(--cloud),#fff);min-height:70vh}
+.legal-back{display:inline-block;color:var(--teal-deep);font-weight:600;font-size:14px;margin-bottom:22px;text-decoration:none}
+.legal-back:hover{text-decoration:underline}
+.legal-prose{max-width:760px;color:var(--ink)}
+.legal-prose h1{font-size:clamp(28px,4vw,38px);color:var(--navy);letter-spacing:-.02em;margin:0 0 6px}
+.legal-prose h2{font-size:19px;color:var(--navy);margin:28px 0 8px}
+.legal-prose p,.legal-prose li{color:var(--ink-muted);font-size:15.5px;line-height:1.7;margin:0 0 12px}
+.legal-prose ul{padding-left:20px;margin:0 0 12px}
+.legal-prose strong{color:var(--ink)}
+.legal-prose a{color:var(--teal-deep);font-weight:600}

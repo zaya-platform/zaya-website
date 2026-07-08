@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { getEntry } from 'astro:content';
+const entry = await getEntry('legal', 'privacy');
+const { Content } = await entry.render();
+---
+<Base title="Privacy Policy — ZAYA App" description="How ZAYA handles the personal information you provide through the website.">
+  <div class="legal-page">
+    <div class="wrap">
+      <a class="legal-back" href="/">&larr; Back to ZAYA</a>
+      <article class="legal-prose"><Content /></article>
+    </div>
+  </div>
+</Base>

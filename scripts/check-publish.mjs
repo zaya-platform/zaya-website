@@ -16,6 +16,11 @@ for (const legal of ['privacy', 'terms']) {
   if (!existsSync(p)) fail(`real ${legal} page is missing (src/content/legal/${legal}.md).`);
   const body = readFileSync(p, 'utf8');
   if (/placeholder/i.test(body) || body.trim().length < 400) fail(`${legal} still looks like a placeholder.`);
+  // Belt-and-suspenders: an unreviewed draft must never go live by accident.
+  if (/\bDRAFT\b/.test(body)) fail(`${legal} still contains "DRAFT" — only the endorsed final text may publish.`);
+  if (/\[Lawyer/i.test(body)) fail(`${legal} still contains a "[Lawyer …]" review note.`);
+  // Unresolved [bracket] placeholder (ignores markdown links like [text](url)).
+  if (/\[[^\]]+\](?!\()/.test(body)) fail(`${legal} still contains an unresolved [bracket] placeholder.`);
 }
 
 // Photo rights gate (founder ruling 2026-07-08): no supplied photo may enter a

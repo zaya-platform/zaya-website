@@ -49,4 +49,13 @@ const careers = defineCollection({
   }),
 });
 
-export const collections = { pages, blog, testimonials, partners, careers };
+// Legal pages (Privacy, Terms) — endorsed by the legal officer; rendered at /privacy
+// and /terms. The publish gate (scripts/check-publish.mjs) reads these files raw and
+// refuses a production build if they are missing, too short, or still contain DRAFT
+// markers or unresolved [brackets].
+const legal = defineCollection({
+  type: 'content',
+  schema: z.object({ title: z.string(), updated: z.string().optional() }),
+});
+
+export const collections = { pages, blog, testimonials, partners, careers, legal };
