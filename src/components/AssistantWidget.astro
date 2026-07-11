@@ -15,7 +15,7 @@
     </svg>
   </button>
 
-  <section id="zassist-panel" role="dialog" aria-label="ZAYA assistant" hidden>
+  <section id="zassist-panel" role="dialog" aria-label="ZAYA assistant" aria-hidden="true">
     <header>
       <div>
         <strong>ZAYA Assistant</strong>
@@ -53,8 +53,17 @@
   </section>
 </div>
 
-<style>
+<!-- is:global so runtime-created message bubbles (.m/.me/.bot, added by the
+     script below) actually receive their styles — Astro's scoped selectors
+     carry a data-astro-cid attribute that runtime elements don't have. Every
+     rule is namespaced under #zassist, so global scope is safe. The panel is
+     shown/hidden with the .zopen class, NOT the [hidden] attribute: a scoped
+     `display:flex` would override the UA `[hidden]{display:none}` and pin the
+     panel permanently open (the review's HIGH). -->
+<style is:global>
   #zassist { position: fixed; right: 18px; bottom: 18px; z-index: 60; font-family: var(--font-sans); }
+  #zassist-panel { display: none; }
+  #zassist-panel.zopen { display: flex; }
   #zassist-fab {
     width: 56px; height: 56px; border-radius: 50%; border: 0; cursor: pointer;
     background: linear-gradient(135deg, var(--teal-bright), var(--teal-deep));
@@ -68,7 +77,7 @@
   #zassist-panel {
     position: absolute; right: 0; bottom: 68px; width: min(360px, calc(100vw - 36px));
     background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg);
-    box-shadow: var(--shadow-md); overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: var(--shadow-md); overflow: hidden; flex-direction: column;
     max-height: min(560px, calc(100vh - 120px));
   }
   #zassist-panel header {
@@ -134,20 +143,32 @@
     return el;
   }
 
+  const isOpen = () => panel.classList.contains('zopen');
   function openPanel() {
-    panel.hidden = false;
+    panel.classList.add('zopen');
+    panel.setAttribute('aria-hidden', 'false');
     fab.setAttribute('aria-expanded', 'true');
     if (!greeted) { add('bot', GREETINGS[lang.value] || GREETINGS.en); greeted = true; }
     input.focus();
   }
-  function closePanel() { panel.hidden = true; fab.setAttribute('aria-expanded', 'false'); fab.focus(); }
-  fab.addEventListener('click', () => (panel.hidden ? openPanel() : closePanel()));
+  function closePanel() {
+    panel.classList.remove('zopen');
+    panel.setAttribute('aria-hidden', 'true');
+    fab.setAttribute('aria-expanded', 'false');
+    fab.focus();
+  }
+  fab.addEventListener('click', () => (isOpen() ? closePanel() : openPanel()));
   closeBtn.addEventListener('click', closePanel);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) closePanel(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) closePanel(); });
 
   let busy = false;
   async function ask(q) {
-    if (busy || !q.trim()) return;
+    if (!q.trim()) return;
+    if (busy) {
+      // A reply is still pending — keep the visitor's text instead of eating it.
+      if (input.value.trim() === '') input.value = q;
+      return;
+    }
     busy = true;
     add('me', q);
     const wait = add('bot wait', '…');

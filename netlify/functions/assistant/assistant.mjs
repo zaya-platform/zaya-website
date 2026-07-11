@@ -19,7 +19,7 @@
 // migration = repoint the widget's endpoint.
 
 import { ENTRIES, LOCALES, STRINGS, TOPIC_WORDS } from './kb.mjs';
-import { hasEthiopic, rateLimited, scrubPII, violatesHonesty } from './guard.mjs';
+import { hasEthiopic, isEnglishReply, looksOromo, rateLimited, scrubPII, violatesHonesty } from './guard.mjs';
 
 const MAX_MESSAGE_CHARS = 500;
 const MODEL_TIMEOUT_MS = 9000;
@@ -43,14 +43,17 @@ function isOnTopic(normalized) {
 }
 
 // ── the rule layer ───────────────────────────────────────────────────────────
-const GREETING_RE = /^(hi|hello|hey|selam|salam|akkam|ሰላም|good (morning|afternoon|evening))\b|^ሰላም/iu;
-const THANKS_RE = /^(thanks|thank you|amesegnallehu|galatoomi|አመሰግናለሁ|የቐንየለይ)\b/iu;
+// Ethiopic letters are not \w, so a trailing \b never matches after them —
+// match Ethiopic greetings/thanks without a word-boundary anchor.
+const GREETING_RE = /^(hi|hello|hey|selam|salam|akkam)\b|^(ሰላም|good (morning|afternoon|evening))/iu;
+const THANKS_RE = /^(thanks|thank you|amesegnallehu|galatoomi)\b|^(አመሰግናለሁ|የቐንየለይ|ገላቶሚ)/iu;
 
 function ruleAnswer(normalized, raw, strings) {
-  if (GREETING_RE.test(raw.trim()) && normalized.split(' ').length <= 4) {
+  const trimmed = raw.trim();
+  if (GREETING_RE.test(trimmed) && normalized.split(' ').length <= 4) {
     return strings.greeting;
   }
-  if (THANKS_RE.test(raw.trim())) return strings.thanks;
+  if (THANKS_RE.test(trimmed)) return strings.thanks;
   return null;
 }
 
@@ -65,8 +68,10 @@ function curatedAnswer(normalized, locale) {
       bestScore = s;
     }
   }
-  // threshold: one strong phrase match or two keyword hits
-  if (!best || bestScore < 3) return null;
+  // threshold: a single keyword hit (weight 2) is enough — the entries are
+  // distinct and the topic-lock guards nonsense; the earlier >=3 made most
+  // single-intent am/om/ti questions (one localized keyword) unreachable.
+  if (!best || bestScore < 2) return null;
   const answer = best.answers[locale];
   return answer ? { reply: answer, entry: best } : null; // no cross-locale substitution (W-D5 stays clean)
 }
@@ -147,27 +152,33 @@ export const handler = async (event) => {
   const message = scrubPII(rawMessage);
   const normalized = normalize(message);
 
-  // 1. rules (free)
-  const ruled = ruleAnswer(normalized, message, strings);
-  if (ruled) return reply(200, { reply: ruled, source: 'rule', locale });
-
-  // 2. curated FAQ/KB (free; all four languages; the ONLY am/om/ti answer path)
+  // The BINDING cascade order (CR-027 constraint 5): FAQ/KB → rules → model.
+  // 1. curated FAQ/KB (free; all four languages; the ONLY am/om/ti answer path)
   const curated = curatedAnswer(normalized, locale);
   if (curated) return reply(200, { reply: curated.reply, source: 'kb', locale });
+
+  // 2. rules (free): greetings / thanks the curated layer didn't catch
+  const ruled = ruleAnswer(normalized, message, strings);
+  if (ruled) return reply(200, { reply: ruled, source: 'rule', locale });
 
   // topic-lock: anything off ZAYA/commerce ground never reaches the model
   if (!isOnTopic(normalized) && !hasEthiopic(message)) {
     return reply(200, { reply: strings.offTopic, source: 'rule', locale });
   }
 
-  // 3. the model — LAST, English-only (W-D5), key present, grounded or nothing
+  // 3. the model — LAST, English-only (W-D5), key present, grounded or nothing.
+  //    W-D5 by construction: the model is invoked ONLY when the locale is en,
+  //    the message carries no Ethiopic AND does not look like romanized Afaan
+  //    Oromoo — any non-English question is served from the curated layers or
+  //    handed off, never generated.
   const apiKey = process.env.GEMINI_API_KEY;
-  if (locale === 'en' && apiKey && !hasEthiopic(message)) {
+  if (locale === 'en' && apiKey && !hasEthiopic(message) && !looksOromo(message)) {
     const grounding = topGrounding(normalized);
     if (grounding) {
       try {
         const text = await modelAnswer(message, grounding, apiKey);
-        if (text && !violatesHonesty(text, grounding)) {
+        // Output post-check: honest, grounded, AND clean English (guard.mjs).
+        if (text && isEnglishReply(text) && !violatesHonesty(text, grounding)) {
           return reply(200, { reply: text, source: 'model', locale });
         }
       } catch {

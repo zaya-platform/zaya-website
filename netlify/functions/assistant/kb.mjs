@@ -70,7 +70,7 @@ export const ENTRIES = [
   {
     id: 'what-is-zaya',
     status: 'fact',
-    keywords: ['what is zaya', 'zaya', 'about', 'platform', 'company', 'app', 'ዛያ', 'ምንድን', 'እንታይ', 'maali'],
+    keywords: ['what is zaya', 'about zaya', 'zaya', 'super app', 'platform', 'ዛያ', 'ምንድን', 'እንታይ', 'maali'],
     answers: {
       en: "ZAYA is Ethiopia's local-commerce platform — connecting shops, customers, riders, suppliers and diaspora families in one intelligent app. Everything near you.",
       am: 'ዛያ የኢትዮጵያ የአካባቢ ንግድ መድረክ ነው — ሱቆችን፣ ደንበኞችን፣ አቅራቢዎችንና የዲያስፖራ ቤተሰቦችን በአንድ አፕ የሚያገናኝ። ሁሉም ነገር በአቅራቢያዎ።',
@@ -94,10 +94,10 @@ export const ENTRIES = [
     status: 'fact',
     keywords: ['price', 'cost', 'pricing', 'plan', 'fee', 'pay', 'birr', 'etb', 'how much', 'subscription', 'ዋጋ', 'ክፍያ', 'gatii', 'kaffaltii'],
     answers: {
-      en: 'Customers use ZAYA free, always. Merchant plans: Free (0 ETB, forever — sales, stock, credit book, one phone), Starter (199 ETB/month), Pro (299 ETB/month) and Premium Max (999 ETB/month, for supermarkets/multi-branch). Roughly 5% off on 6-month and 10% off on annual plans. No hidden fees.',
-      am: 'ደንበኞች ዛያን ሁልጊዜ በነጻ ይጠቀማሉ። የነጋዴ እቅዶች፦ ነጻ (0 ብር)፣ Starter (199 ብር/ወር)፣ Pro (299 ብር/ወር)፣ Premium Max (999 ብር/ወር)። የ6 ወርና የዓመት እቅዶች ቅናሽ አላቸው። የተደበቀ ክፍያ የለም።',
-      om: "Maamiltoonni ZAYA yeroo hunda bilisaan fayyadamu. Karoorri daldaltootaa: Bilisa (0 ETB), Starter (199 ETB/ji'a), Pro (299 ETB/ji'a), Premium Max (999 ETB/ji'a). Kaffaltiin dhokataan hin jiru.",
-      ti: 'ዓማዊል ዛያ ኩሉ ግዜ ብነጻ ይጥቀሙ። መደባት ነጋዶ፦ ነጻ (0 ብር)፣ Starter (199 ብር/ወርሒ)፣ Pro (299 ብር/ወርሒ)፣ Premium Max (999 ብር/ወርሒ)። ሕቡእ ክፍሊት የለን።',
+      en: 'Customers use ZAYA free, always. Merchant plans: Free (0 ETB, forever — sales, stock, credit book, one phone), Starter (199 ETB/month), Pro (299 ETB/month) and Premium Max (from 999 ETB/month, per branch, for supermarkets/multi-branch). Roughly 5% off on 6-month and 10% off on annual plans. No hidden fees.',
+      am: 'ደንበኞች ዛያን ሁልጊዜ በነጻ ይጠቀማሉ። የነጋዴ እቅዶች፦ ነጻ (0 ብር)፣ Starter (199 ብር/ወር)፣ Pro (299 ብር/ወር)፣ Premium Max (ከ999 ብር/ወር ጀምሮ፣ በቅርንጫፍ)። የ6 ወርና የዓመት እቅዶች ቅናሽ አላቸው። የተደበቀ ክፍያ የለም።',
+      om: "Maamiltoonni ZAYA yeroo hunda bilisaan fayyadamu. Karoorri daldaltootaa: Bilisa (0 ETB), Starter (199 ETB/ji'a), Pro (299 ETB/ji'a), Premium Max (999 ETB/ji'a irraa eegalee, damee tokkoon). Kaffaltiin dhokataan hin jiru.",
+      ti: 'ዓማዊል ዛያ ኩሉ ግዜ ብነጻ ይጥቀሙ። መደባት ነጋዶ፦ ነጻ (0 ብር)፣ Starter (199 ብር/ወርሒ)፣ Pro (299 ብር/ወርሒ)፣ Premium Max (ካብ 999 ብር/ወርሒ ጀሚሩ፣ ብጨንፈር)። ሕቡእ ክፍሊት የለን።',
     },
   },
   {

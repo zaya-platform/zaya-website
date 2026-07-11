@@ -44,15 +44,18 @@ where required by law or to protect our legal rights.
 
 ## 5a. The website assistant (AI chat)
 This site offers a small **assistant chat**. Most answers come from ZAYA's own
-published website content. For some English questions, the **text you type may
-be sent to Google (Gemini)** — a third-party AI provider whose servers are
-outside Ethiopia — to generate an answer. Before anything is sent, we
-automatically remove email addresses and phone-number patterns, and we attach
-**no account, no name, and no identity** to your message. Even so, **please do
-not include personal details in the chat** — anything you type may be processed
-by Google under its own terms. The assistant never handles orders, payments or
-accounts, and if you want to reach a person, use the contact form (Section 3),
-which does **not** go through any AI provider.
+published website content. For some **English** questions, the **text you type
+may be sent to Google (Gemini)** — a third-party AI provider whose servers are
+outside Ethiopia — to generate an answer. We attach **no account, no name, and
+no identity** to your message, and before it is sent we **try to strip out
+common email and phone-number patterns**. That automatic filtering is a
+safeguard, **not a guarantee** — so **please do not type personal details
+(names, phone numbers, addresses) into the chat**, because anything you enter
+may be processed by Google under its own terms. Questions you ask in Amharic,
+Afaan Oromoo or Tigrinya are answered only from our own content and are **not**
+sent to the AI provider. The assistant never handles orders, payments or
+accounts; to reach a person, use the contact form (Section 3), which does
+**not** go through any AI provider.
 
 ## 6. Where your information is stored
 Our website and form service are provided by reputable third-party providers

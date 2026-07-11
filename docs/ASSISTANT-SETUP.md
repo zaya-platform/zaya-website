@@ -42,9 +42,13 @@ a request header only — it never reaches the browser.
   Roadmap items (delivery, diaspora basket, rides…) are always "coming /
   on the roadmap" — never "available".
 - **አማርኛ / Afaan Oromoo / ትግርኛ answers come only from the curated layers** —
-  the AI generates English only (your W-D5 ruling). ⚠ The am/om/ti strings
-  are **draft-unverified** — your native-speaker review of
-  `netlify/functions/assistant/kb.mjs` is a W-D4b (public-launch) precondition.
+  the AI generates English only (your W-D5 ruling), enforced in code both by
+  the input gate (Ethiopic OR romanized-Oromo questions never reach the model)
+  AND a positive English-only check on any model reply. ⚠ The am/om/ti strings
+  are **draft-unverified** — your native-speaker review is a W-D4b
+  (public-launch) precondition, and it covers **both**
+  `netlify/functions/assistant/kb.mjs` (the answers) **and** the four greeting
+  strings in `src/components/AssistantWidget.astro`.
 - Emails/phone numbers a visitor types are scrubbed **before** any AI call;
   the widget tells people not to include personal details; the Privacy Policy
   now discloses the AI data flow (Section 5a).
