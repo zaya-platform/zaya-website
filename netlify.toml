@@ -59,6 +59,14 @@
   to = "/.netlify/functions/callback"
   status = 200
 
+# Website AI Assistant relay (CR-027/ADR-024, FDR-019 W-D4a — founder-access
+# preview). GEMINI_API_KEY lives ONLY in Netlify env; the curated FAQ/KB/rules
+# cascade works fully without it (only the English model-fallback is dark).
+[[redirects]]
+  from = "/api/assistant"
+  to = "/.netlify/functions/assistant"
+  status = 200
+
 # Ethiopian flagship domains → 301 to the primary (zayaethiopia.com), so ZAYA keeps
 # ONE canonical site while owning the local .et brand. Register zaya.et and/or
 # zaya.com.et, add them as secondary domains on this Netlify site (keep

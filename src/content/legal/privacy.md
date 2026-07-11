@@ -1,10 +1,10 @@
 ---
 title: Privacy Policy
-updated: 8 July 2026
+updated: 12 July 2026
 ---
 # ZAYA Website — Privacy Policy
 
-**Effective date:** _set at go-live_ · **Last updated:** 8 July 2026
+**Effective date:** _set at go-live_ · **Last updated:** 12 July 2026
 
 ## 1. Who we are
 This website (zayaethiopia.com) is operated by **ZAYA App PLC** ("ZAYA", "we", "us"),
@@ -41,6 +41,18 @@ We do **not** sell your personal information. We share it only: with the
 service providers that operate this website and its forms on our behalf (our
 website host and form service), who process it only as instructed by us; and
 where required by law or to protect our legal rights.
+
+## 5a. The website assistant (AI chat)
+This site offers a small **assistant chat**. Most answers come from ZAYA's own
+published website content. For some English questions, the **text you type may
+be sent to Google (Gemini)** — a third-party AI provider whose servers are
+outside Ethiopia — to generate an answer. Before anything is sent, we
+automatically remove email addresses and phone-number patterns, and we attach
+**no account, no name, and no identity** to your message. Even so, **please do
+not include personal details in the chat** — anything you type may be processed
+by Google under its own terms. The assistant never handles orders, payments or
+accounts, and if you want to reach a person, use the contact form (Section 3),
+which does **not** go through any AI provider.
 
 ## 6. Where your information is stored
 Our website and form service are provided by reputable third-party providers

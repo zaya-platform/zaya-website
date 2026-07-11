@@ -1,0 +1,182 @@
+---
+// ZAYA Website Assistant widget (CR-027/ADR-024, ACCEPTED — FDR-019).
+// FOUNDER-ACCESS PREVIEW (W-D4a): ships on the parked site (published:false).
+// Honesty by construction: labelled an AI assistant answering from ZAYA's
+// PUBLISHED information (D-022); "don't include personal details" microcopy
+// (W-D3); unknowns hand off to the existing contact section — the assistant
+// never captures leads itself. All strings the SERVER answers with live in
+// the relay's curated layers; this component only carries UI chrome.
+---
+<div id="zassist" data-endpoint="/api/assistant">
+  <button id="zassist-fab" type="button" aria-label="Open the ZAYA assistant" aria-expanded="false">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-1.6c.9.2 1.8.4 2.8.4 5 0 9-3.6 9-8.8S17 3 12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="8.6" cy="11" r="1.15" fill="currentColor"/><circle cx="12" cy="11" r="1.15" fill="currentColor"/><circle cx="15.4" cy="11" r="1.15" fill="currentColor"/>
+    </svg>
+  </button>
+
+  <section id="zassist-panel" role="dialog" aria-label="ZAYA assistant" hidden>
+    <header>
+      <div>
+        <strong>ZAYA Assistant</strong>
+        <span class="zassist-ai">AI · answers from ZAYA's published information</span>
+      </div>
+      <div class="zassist-controls">
+        <select id="zassist-lang" aria-label="Assistant language">
+          <option value="en" selected>English</option>
+          <option value="am">አማርኛ</option>
+          <option value="om">Afaan Oromoo</option>
+          <option value="ti">ትግርኛ</option>
+        </select>
+        <button id="zassist-close" type="button" aria-label="Close the assistant">✕</button>
+      </div>
+    </header>
+
+    <p class="zassist-note">Please don't include personal details (like phone numbers) in your questions.</p>
+
+    <div id="zassist-log" aria-live="polite"></div>
+
+    <div class="zassist-chips" id="zassist-chips">
+      <button type="button" data-q="What is ZAYA?">What is ZAYA?</button>
+      <button type="button" data-q="What does it cost for merchants?">Merchant plans</button>
+      <button type="button" data-q="How do I join the pilot?">Join the pilot</button>
+    </div>
+
+    <form id="zassist-form" autocomplete="off">
+      <input id="zassist-input" type="text" maxlength="500" placeholder="Ask about ZAYA…" aria-label="Your question" required />
+      <button type="submit" aria-label="Send">➤</button>
+    </form>
+
+    <footer>
+      <a href="/#contact">Prefer a human? Contact the team ↗</a>
+    </footer>
+  </section>
+</div>
+
+<style>
+  #zassist { position: fixed; right: 18px; bottom: 18px; z-index: 60; font-family: var(--font-sans); }
+  #zassist-fab {
+    width: 56px; height: 56px; border-radius: 50%; border: 0; cursor: pointer;
+    background: linear-gradient(135deg, var(--teal-bright), var(--teal-deep));
+    color: #fff; box-shadow: var(--shadow-md); display: grid; place-items: center;
+    transition: transform .15s var(--ease);
+  }
+  #zassist-fab:hover { transform: scale(1.06); }
+  #zassist-fab:focus-visible, #zassist button:focus-visible, #zassist a:focus-visible, #zassist input:focus-visible, #zassist select:focus-visible {
+    outline: 2px solid var(--coral); outline-offset: 2px;
+  }
+  #zassist-panel {
+    position: absolute; right: 0; bottom: 68px; width: min(360px, calc(100vw - 36px));
+    background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--shadow-md); overflow: hidden; display: flex; flex-direction: column;
+    max-height: min(560px, calc(100vh - 120px));
+  }
+  #zassist-panel header {
+    background: var(--navy); color: #fff; padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  #zassist-panel header strong { font-size: 15px; display: block; }
+  .zassist-ai { font-size: 11px; color: var(--mint); display: block; margin-top: 2px; }
+  .zassist-controls { display: flex; align-items: center; gap: 6px; }
+  #zassist-lang {
+    background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.25);
+    border-radius: var(--r-sm); font-size: 12px; padding: 4px 6px;
+  }
+  #zassist-lang option { color: var(--ink); }
+  #zassist-close { background: none; border: 0; color: #fff; font-size: 15px; cursor: pointer; padding: 4px 6px; }
+  .zassist-note { font-size: 11.5px; color: var(--ink-muted); background: var(--cloud); margin: 0; padding: 8px 14px; border-bottom: 1px solid var(--line); }
+  #zassist-log { padding: 12px 14px; overflow-y: auto; flex: 1; min-height: 120px; display: flex; flex-direction: column; gap: 8px; }
+  #zassist-log .m { max-width: 85%; padding: 9px 12px; border-radius: var(--r-md); font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: break-word; font-family: var(--font-ethi); }
+  #zassist-log .me { align-self: flex-end; background: var(--teal); color: #fff; border-bottom-right-radius: 4px; }
+  #zassist-log .bot { align-self: flex-start; background: var(--cloud); color: var(--ink); border-bottom-left-radius: 4px; }
+  #zassist-log .bot.wait { color: var(--ink-faint); font-style: italic; }
+  .zassist-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
+  .zassist-chips button {
+    border: 1px solid var(--line); background: var(--white); color: var(--teal-deep);
+    border-radius: var(--r-pill); font-size: 12px; padding: 5px 11px; cursor: pointer;
+  }
+  .zassist-chips button:hover { border-color: var(--teal); }
+  #zassist-form { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); }
+  #zassist-input { flex: 1; border: 1px solid var(--line); border-radius: var(--r-pill); padding: 9px 14px; font-size: 13.5px; font-family: var(--font-ethi); }
+  #zassist-form button { border: 0; border-radius: 50%; width: 38px; height: 38px; background: var(--coral); color: #fff; cursor: pointer; font-size: 14px; }
+  #zassist-panel footer { padding: 8px 14px 12px; }
+  #zassist-panel footer a { font-size: 12px; color: var(--teal-deep); text-decoration: none; }
+  #zassist-panel footer a:hover { text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) { #zassist-fab { transition: none; } }
+</style>
+
+<script>
+  const root = document.getElementById('zassist');
+  const endpoint = root.dataset.endpoint;
+  const fab = document.getElementById('zassist-fab');
+  const panel = document.getElementById('zassist-panel');
+  const closeBtn = document.getElementById('zassist-close');
+  const log = document.getElementById('zassist-log');
+  const form = document.getElementById('zassist-form');
+  const input = document.getElementById('zassist-input');
+  const lang = document.getElementById('zassist-lang');
+  const chips = document.getElementById('zassist-chips');
+
+  const GREETINGS = {
+    en: "Hello! I'm the ZAYA assistant. Ask me about ZAYA, the pilot or merchant plans.",
+    am: 'ሰላም! የዛያ ረዳት ነኝ። ስለ ዛያ ወይም ስለ ሙከራው ይጠይቁኝ።',
+    om: "Akkam! Ani gargaaraa ZAYA ti. Waa'ee ZAYA na gaafadhaa.",
+    ti: 'ሰላም! ናይ ዛያ ሓጋዚ እየ። ብዛዕባ ዛያ ሕተቱኒ።',
+  };
+
+  let greeted = false;
+  function add(kind, text) {
+    const el = document.createElement('div');
+    el.className = `m ${kind}`;
+    el.textContent = text;
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+    return el;
+  }
+
+  function openPanel() {
+    panel.hidden = false;
+    fab.setAttribute('aria-expanded', 'true');
+    if (!greeted) { add('bot', GREETINGS[lang.value] || GREETINGS.en); greeted = true; }
+    input.focus();
+  }
+  function closePanel() { panel.hidden = true; fab.setAttribute('aria-expanded', 'false'); fab.focus(); }
+  fab.addEventListener('click', () => (panel.hidden ? openPanel() : closePanel()));
+  closeBtn.addEventListener('click', closePanel);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) closePanel(); });
+
+  let busy = false;
+  async function ask(q) {
+    if (busy || !q.trim()) return;
+    busy = true;
+    add('me', q);
+    const wait = add('bot wait', '…');
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ message: q.slice(0, 500), locale: lang.value }),
+      });
+      const body = await res.json().catch(() => null);
+      wait.remove();
+      add('bot', (body && body.reply) || 'Something went wrong — please try the contact section below.');
+    } catch {
+      wait.remove();
+      add('bot', 'Network hiccup — please try again, or use the contact section below.');
+    } finally {
+      busy = false;
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = input.value;
+    input.value = '';
+    ask(q);
+  });
+  chips.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-q]');
+    if (b) ask(b.dataset.q);
+  });
+  lang.addEventListener('change', () => { add('bot', GREETINGS[lang.value] || GREETINGS.en); });
+</script>

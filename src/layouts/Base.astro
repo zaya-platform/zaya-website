@@ -3,6 +3,7 @@ import '../styles/typography.css';
 import '../styles/tokens.css';
 import '../styles/site.css';
 import site from '../content/data/site.json';
+import AssistantWidget from '../components/AssistantWidget.astro';
 
 interface Props { title?: string; description?: string; }
 const {
@@ -34,6 +35,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   </head>
   <body>
     <slot />
+    {/* Website AI Assistant — founder-access preview (CR-027/ADR-024, FDR-019 W-D4a).
+        Ships while published:false; the public launch is the W-D4b gate. */}
+    <AssistantWidget />
     <script>
       import '../scripts/site.js';
     </script>

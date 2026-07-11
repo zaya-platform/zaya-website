@@ -9,7 +9,8 @@
     "build": "node scripts/check-publish.mjs && astro build",
     "build:draft": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "test:assistant": "node scripts/test-assistant.mjs"
   },
   "dependencies": {
     "astro": "^4.15.0",
