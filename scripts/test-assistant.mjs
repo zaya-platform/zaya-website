@@ -36,6 +36,8 @@ console.log('curated cascade (no key set):');
   check('curated answers include safe guided follow-ups', Array.isArray(r.suggestions) && r.suggestions.length >= 2 && r.suggestions.every((x) => Array.isArray(x) && x.length === 2));
   const p = await call('How much does the Pro plan cost?');
   check('pricing comes from the curated KB with the real number', p.source === 'kb' && p.reply.includes('299'));
+  const guidedPlan = await call('What does ZAYA cost for merchants?');
+  check('brand name does not overpower pricing intent', guidedPlan.source === 'kb' && guidedPlan.entryId === 'pricing' && guidedPlan.reply.includes('299'));
   const d = await call('Can I get delivery today?');
   check('roadmap honesty: delivery is "roadmap", never available', d.source === 'kb' && /roadmap/i.test(d.reply) && !/\bis (now )?available\b/i.test(d.reply));
   const m = await call('Can I send money to my family with ZAYA?');

@@ -33,7 +33,11 @@ function normalize(text) {
 function scoreEntry(entry, normalized) {
   let score = 0;
   for (const kw of entry.keywords) {
-    if (normalized.includes(kw.toLowerCase())) score += kw.includes(' ') ? 3 : 2;
+    if (!normalized.includes(kw.toLowerCase())) continue;
+    // Brand mentions are useful context, but should never beat a real intent
+    // word such as "cost", "delivery" or "inventory" on their own.
+    const lowSignal = kw.toLowerCase() === 'zaya' || kw === 'ዛያ';
+    score += kw.includes(' ') ? 3 : (lowSignal ? 0.5 : 2);
   }
   return score;
 }
