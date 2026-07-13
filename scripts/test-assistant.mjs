@@ -33,6 +33,7 @@ console.log('curated cascade (no key set):');
 {
   const r = await call('What is ZAYA?');
   check('FAQ answers "What is ZAYA?" from the KB', r.status === 200 && r.source === 'kb' && /local-commerce/.test(r.reply));
+  check('curated answers include safe guided follow-ups', Array.isArray(r.suggestions) && r.suggestions.length >= 2 && r.suggestions.every((x) => Array.isArray(x) && x.length === 2));
   const p = await call('How much does the Pro plan cost?');
   check('pricing comes from the curated KB with the real number', p.source === 'kb' && p.reply.includes('299'));
   const d = await call('Can I get delivery today?');

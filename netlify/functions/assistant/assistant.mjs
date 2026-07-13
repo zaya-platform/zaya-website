@@ -125,6 +125,24 @@ async function modelAnswer(question, grounding, apiKey) {
 const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
 const reply = (statusCode, payload) => ({ statusCode, headers: JSON_HEADERS, body: JSON.stringify(payload) });
 
+// Contextual follow-up prompts let the widget guide a visitor to the next
+// useful answer without asking the model to invent a conversation path.
+const FOLLOW_UPS = {
+  'what-is-zaya': [['What is live now?','Which ZAYA features are live in the pilot?'],['Merchant plans','What does ZAYA cost for merchants?'],['Join the pilot','How do I join the ZAYA pilot?']],
+  'is-zaya-live': [['Live merchant tools','Which merchant tools are live in the pilot?'],['Customer app','When will the ZAYA customer app launch?'],['Product roadmap','What is on the ZAYA roadmap?']],
+  pricing: [['Compare merchant plans','What is included in the ZAYA merchant plans?'],['Live merchant tools','Which merchant tools are live in the pilot?'],['Join the pilot','How do I join the ZAYA pilot?']],
+  languages: [['What is live now?','Which ZAYA features are live in the pilot?'],['Smart tools','What smart and voice tools are planned?'],['Contact the team','How can I contact the ZAYA team?']],
+  diaspora: [['How it will work','How will the ZAYA diaspora basket work?'],['Delivery status','Is ZAYA delivery available now?'],['Product roadmap','What is on the ZAYA roadmap?']],
+  'join-pilot': [['Merchant plans','What does ZAYA cost for merchants?'],['Pilot location','Where is the ZAYA pilot running?'],['Contact the team','How can I contact the ZAYA team?']],
+  delivery: [['What is live now?','Which ZAYA features are live in the pilot?'],['Rider tools','What is planned for ZAYA riders?'],['Diaspora basket','How will the ZAYA diaspora basket work?']],
+  'smart-tools': [['Merchant tools','Which merchant tools are live in the pilot?'],['Supported languages','Which languages does ZAYA support?'],['Product roadmap','What is on the ZAYA roadmap?']],
+  'other-verticals': [['Local commerce first','What does ZAYA do today?'],['Delivery status','Is ZAYA delivery available now?'],['Join the pilot','How do I join the ZAYA pilot?']],
+  contact: [['Join the pilot','How do I join the ZAYA pilot?'],['Merchant plans','What does ZAYA cost for merchants?'],['What is live now?','Which ZAYA features are live in the pilot?']],
+  'merchant-features': [['Compare plans','What does ZAYA cost for merchants?'],['Join the pilot','How do I join the ZAYA pilot?'],['Smart tools','What smart tools are on the roadmap?']],
+};
+const DEFAULT_FOLLOW_UPS = [['Live merchant tools','Which merchant tools are live in the pilot?'],['Merchant plans','What does ZAYA cost for merchants?'],['Join the pilot','How do I join the ZAYA pilot?']];
+const suggestionsFor = (entryId, locale) => locale === 'en' ? (FOLLOW_UPS[entryId] || DEFAULT_FOLLOW_UPS) : [];
+
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') return reply(405, { error: 'POST only' });
 
@@ -155,15 +173,22 @@ export const handler = async (event) => {
   // The BINDING cascade order (CR-027 constraint 5): FAQ/KB → rules → model.
   // 1. curated FAQ/KB (free; all four languages; the ONLY am/om/ti answer path)
   const curated = curatedAnswer(normalized, locale);
-  if (curated) return reply(200, { reply: curated.reply, source: 'kb', locale });
+  if (curated) return reply(200, {
+    reply: curated.reply,
+    source: 'kb',
+    locale,
+    entryId: curated.entry.id,
+    featureStatus: curated.entry.status,
+    suggestions: suggestionsFor(curated.entry.id, locale),
+  });
 
   // 2. rules (free): greetings / thanks the curated layer didn't catch
   const ruled = ruleAnswer(normalized, message, strings);
-  if (ruled) return reply(200, { reply: ruled, source: 'rule', locale });
+  if (ruled) return reply(200, { reply: ruled, source: 'rule', locale, suggestions: suggestionsFor(null, locale) });
 
   // topic-lock: anything off ZAYA/commerce ground never reaches the model
   if (!isOnTopic(normalized) && !hasEthiopic(message)) {
-    return reply(200, { reply: strings.offTopic, source: 'rule', locale });
+    return reply(200, { reply: strings.offTopic, source: 'rule', locale, suggestions: suggestionsFor(null, locale) });
   }
 
   // 3. the model — LAST, English-only (W-D5), key present, grounded or nothing.
@@ -179,16 +204,21 @@ export const handler = async (event) => {
         const text = await modelAnswer(message, grounding, apiKey);
         // Output post-check: honest, grounded, AND clean English (guard.mjs).
         if (text && isEnglishReply(text) && !violatesHonesty(text, grounding)) {
-          return reply(200, { reply: text, source: 'model', locale });
+          return reply(200, { reply: text, source: 'model', locale, suggestions: suggestionsFor(null, locale) });
         }
       } catch {
         // timeouts / provider failures fall through to the handoff
       }
     }
-    return reply(200, { reply: strings.handoff, source: 'handoff', locale });
+    return reply(200, { reply: strings.handoff, source: 'handoff', locale, suggestions: suggestionsFor('contact', locale) });
   }
 
   // 4. non-English locales hand off (the model is never an option there —
   //    W-D5); English without a key gets the honest "AI-fallback is dark" copy.
-  return reply(200, { reply: locale === 'en' && !apiKey ? strings.aiDark : strings.handoff, source: 'handoff', locale });
+  return reply(200, {
+    reply: locale === 'en' && !apiKey ? strings.aiDark : strings.handoff,
+    source: 'handoff',
+    locale,
+    suggestions: suggestionsFor('contact', locale),
+  });
 };

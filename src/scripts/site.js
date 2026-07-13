@@ -74,6 +74,51 @@
     els.forEach(function(e){io.observe(e);});
   })();
 
+// Interactive audience explorer: accessible tabs, keyboard support, and hero shortcuts.
+(function(){
+  var explorer=document.querySelector('[data-role-explorer]'); if(!explorer) return;
+  var tabs=Array.prototype.slice.call(explorer.querySelectorAll('[role="tab"][data-role]'));
+  var panes=Array.prototype.slice.call(explorer.querySelectorAll('[data-role-pane]'));
+  function activate(role,moveFocus){
+    var next=tabs.find(function(t){return t.dataset.role===role;}); if(!next) return;
+    tabs.forEach(function(tab){
+      var active=tab===next;
+      tab.setAttribute('aria-selected',active?'true':'false');
+      tab.tabIndex=active?0:-1;
+    });
+    panes.forEach(function(pane){
+      var active=pane.dataset.rolePane===role;
+      pane.hidden=!active;
+      pane.classList.toggle('is-active',active);
+    });
+    if(moveFocus) next.focus();
+  }
+  tabs.forEach(function(tab,index){
+    tab.addEventListener('click',function(){activate(tab.dataset.role,false);});
+    tab.addEventListener('keydown',function(event){
+      var next=index;
+      if(event.key==='ArrowRight'||event.key==='ArrowDown') next=(index+1)%tabs.length;
+      else if(event.key==='ArrowLeft'||event.key==='ArrowUp') next=(index-1+tabs.length)%tabs.length;
+      else if(event.key==='Home') next=0;
+      else if(event.key==='End') next=tabs.length-1;
+      else return;
+      event.preventDefault(); activate(tabs[next].dataset.role,true);
+    });
+  });
+  document.querySelectorAll('[data-role-jump]').forEach(function(link){
+    link.addEventListener('click',function(){activate(link.dataset.roleJump,false);});
+  });
+})();
+
+// Keep the FAQ focused: opening one answer closes the previous answer.
+(function(){
+  var items=Array.prototype.slice.call(document.querySelectorAll('.faq details'));
+  items.forEach(function(item){item.addEventListener('toggle',function(){
+    if(!item.open) return;
+    items.forEach(function(other){if(other!==item) other.open=false;});
+  });});
+})();
+
 // Netlify Forms: show an on-brand success note after a submission redirect (?joined).
 (function(){
   try{
@@ -90,7 +135,7 @@
   if(!burger||!hdr) return;
   function set(open){ hdr.classList.toggle('nav-open',open); burger.setAttribute('aria-expanded',open?'true':'false'); }
   burger.addEventListener('click',function(){ set(!hdr.classList.contains('nav-open')); });
-  hdr.querySelectorAll('.menu a').forEach(function(a){ a.addEventListener('click',function(){ set(false); }); });
+  hdr.querySelectorAll('.menu a,.menu button').forEach(function(a){ a.addEventListener('click',function(){ set(false); }); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') set(false); });
   window.addEventListener('resize',function(){ if(window.innerWidth>940) set(false); });
 })();

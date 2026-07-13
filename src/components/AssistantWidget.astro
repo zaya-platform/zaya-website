@@ -8,6 +8,10 @@
 // the relay's curated layers; this component only carries UI chrome.
 ---
 <div id="zassist" data-endpoint="/api/assistant">
+  <button id="zassist-invite" type="button" data-open-assistant>
+    <span aria-hidden="true">&#10022;</span>
+    <span><b>Ask ZAYA AI</b><small>Pilot, plans &amp; product status</small></span>
+  </button>
   <button id="zassist-fab" type="button" aria-label="Open the ZAYA assistant" aria-expanded="false">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-1.6c.9.2 1.8.4 2.8.4 5 0 9-3.6 9-8.8S17 3 12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -17,9 +21,12 @@
 
   <section id="zassist-panel" role="dialog" aria-label="ZAYA assistant" aria-hidden="true">
     <header>
-      <div>
-        <strong>ZAYA Assistant</strong>
-        <span class="zassist-ai">AI · answers from ZAYA's published information</span>
+      <div class="zassist-brand">
+        <span class="zassist-orb" aria-hidden="true">&#10022;</span>
+        <div>
+          <strong>ZAYA Assistant</strong>
+          <span class="zassist-ai"><i aria-hidden="true"></i> Grounded in ZAYA's approved information</span>
+        </div>
       </div>
       <div class="zassist-controls">
         <select id="zassist-lang" aria-label="Assistant language">
@@ -28,27 +35,30 @@
           <option value="om">Afaan Oromoo</option>
           <option value="ti">ትግርኛ</option>
         </select>
-        <button id="zassist-close" type="button" aria-label="Close the assistant">✕</button>
+        <button id="zassist-reset" type="button" aria-label="Start a new conversation" title="New conversation">↻</button>
+        <button id="zassist-close" type="button" aria-label="Close the assistant">&times;</button>
       </div>
     </header>
 
-    <p class="zassist-note">Please don't include personal details (like phone numbers) in your questions.</p>
+    <p class="zassist-note"><span aria-hidden="true">&#9671;</span> For your privacy, don't include phone numbers, email addresses or other personal details.</p>
 
     <div id="zassist-log" aria-live="polite"></div>
 
     <div class="zassist-chips" id="zassist-chips">
-      <button type="button" data-q="What is ZAYA?">What is ZAYA?</button>
-      <button type="button" data-q="What does it cost for merchants?">Merchant plans</button>
-      <button type="button" data-q="How do I join the pilot?">Join the pilot</button>
+      <button type="button" data-q="Which merchant tools are live in the pilot?"><span aria-hidden="true">01</span> Live merchant tools</button>
+      <button type="button" data-q="What does ZAYA cost for merchants?"><span aria-hidden="true">02</span> Merchant plans</button>
+      <button type="button" data-q="How do I join the ZAYA pilot?"><span aria-hidden="true">03</span> Join the pilot</button>
+      <button type="button" data-q="What is on the ZAYA roadmap?"><span aria-hidden="true">04</span> Product roadmap</button>
     </div>
 
     <form id="zassist-form" autocomplete="off">
       <input id="zassist-input" type="text" maxlength="500" placeholder="Ask about ZAYA…" aria-label="Your question" required />
-      <button type="submit" aria-label="Send">➤</button>
+      <button type="submit" aria-label="Send question"><span aria-hidden="true">&uarr;</span></button>
     </form>
 
     <footer>
-      <a href="/#contact">Prefer a human? Contact the team ↗</a>
+      <span>AI answers are labelled by source.</span>
+      <a href="/#contact">Prefer a human? Contact the team &rarr;</a>
     </footer>
   </section>
 </div>
@@ -61,86 +71,161 @@
      `display:flex` would override the UA `[hidden]{display:none}` and pin the
      panel permanently open (the review's HIGH). -->
 <style is:global>
-  #zassist { position: fixed; right: 18px; bottom: 18px; z-index: 60; font-family: var(--font-sans); }
+  #zassist { position: fixed; right: 20px; bottom: 20px; z-index: 80; font-family: var(--font-sans); }
   #zassist-panel { display: none; }
   #zassist-panel.zopen { display: flex; }
+  #zassist-invite {
+    position: absolute; right: 68px; bottom: 3px; height: 52px; min-width: 208px; border: 1px solid rgba(30,42,74,.08);
+    border-radius: 17px; padding: 8px 13px; background: rgba(255,255,255,.96); color: var(--navy); cursor: pointer;
+    display: flex; align-items: center; gap: 10px; text-align: left; box-shadow: 0 16px 46px -18px rgba(16,35,63,.42);
+    backdrop-filter: blur(14px); transition: transform .2s var(--ease), opacity .2s;
+  }
+  #zassist-invite:hover { transform: translateY(-2px); }
+  #zassist-invite>span:first-child { width: 30px; height: 30px; display: grid; place-items: center; flex: none; border-radius: 10px; color: #fff; background: linear-gradient(135deg,var(--plum),var(--teal)); }
+  #zassist-invite b,#zassist-invite small { display: block; line-height: 1.2; }
+  #zassist-invite b { font-size: 12px; }
+  #zassist-invite small { margin-top: 3px; font-size: 9.5px; color: var(--ink-faint); }
+  #zassist:has(#zassist-panel.zopen) #zassist-invite { opacity: 0; pointer-events: none; }
   #zassist-fab {
-    width: 56px; height: 56px; border-radius: 50%; border: 0; cursor: pointer;
-    background: linear-gradient(135deg, var(--teal-bright), var(--teal-deep));
-    color: #fff; box-shadow: var(--shadow-md); display: grid; place-items: center;
-    transition: transform .15s var(--ease);
+    width: 58px; height: 58px; border-radius: 19px; border: 0; cursor: pointer;
+    background: linear-gradient(145deg, var(--teal-bright), var(--teal-deep)); color: #fff;
+    box-shadow: 0 18px 44px -14px rgba(11,139,138,.68); display: grid; place-items: center;
+    transition: transform .2s var(--ease), border-radius .2s;
   }
-  #zassist-fab:hover { transform: scale(1.06); }
-  #zassist-fab:focus-visible, #zassist button:focus-visible, #zassist a:focus-visible, #zassist input:focus-visible, #zassist select:focus-visible {
-    outline: 2px solid var(--coral); outline-offset: 2px;
-  }
+  #zassist-fab:hover { transform: translateY(-3px) rotate(-2deg); }
+  #zassist-fab[aria-expanded="true"] { border-radius: 50%; transform: rotate(4deg); }
+  #zassist-fab:focus-visible, #zassist button:focus-visible, #zassist a:focus-visible, #zassist input:focus-visible, #zassist select:focus-visible { outline: 3px solid rgba(255,122,69,.62); outline-offset: 3px; }
   #zassist-panel {
-    position: absolute; right: 0; bottom: 68px; width: min(360px, calc(100vw - 36px));
-    background: var(--white); border: 1px solid var(--line); border-radius: var(--r-lg);
-    box-shadow: var(--shadow-md); overflow: hidden; flex-direction: column;
-    max-height: min(560px, calc(100vh - 120px));
+    position: absolute; right: 0; bottom: 72px; width: min(420px, calc(100vw - 32px));
+    background: #fff; border: 1px solid rgba(30,42,74,.1); border-radius: 25px;
+    box-shadow: 0 34px 90px -24px rgba(16,35,63,.52); overflow: hidden; flex-direction: column;
+    max-height: min(650px, calc(100dvh - 118px)); padding: 0; transform-origin: bottom right; animation: zassistOpen .28s var(--ease);
   }
+  @keyframes zassistOpen { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
   #zassist-panel header {
-    background: var(--navy); color: #fff; padding: 12px 14px;
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    background: linear-gradient(125deg,#14213d,var(--navy) 58%,#12424b); color: #fff; padding: 15px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; position: static; flex: none;
+    border: 0; box-shadow: none; backdrop-filter: none;
   }
-  #zassist-panel header strong { font-size: 15px; display: block; }
-  .zassist-ai { font-size: 11px; color: var(--mint); display: block; margin-top: 2px; }
-  .zassist-controls { display: flex; align-items: center; gap: 6px; }
-  #zassist-lang {
-    background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.25);
-    border-radius: var(--r-sm); font-size: 12px; padding: 4px 6px;
-  }
+  .zassist-brand { min-width: 0; display: flex; align-items: center; gap: 10px; }
+  .zassist-orb { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(135deg,var(--plum),var(--teal)); box-shadow: 0 10px 24px rgba(2,10,28,.3); }
+  #zassist-panel header strong { font-size: 14px; display: block; line-height: 1.2; }
+  .zassist-ai { font-size: 9.5px; color: rgba(255,255,255,.64); display: flex; align-items: center; gap: 5px; margin-top: 4px; white-space: nowrap; }
+  .zassist-ai i { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 3px rgba(93,202,165,.12); }
+  .zassist-controls { display: flex; align-items: center; gap: 5px; }
+  #zassist-lang { max-width: 76px; background: rgba(255,255,255,.09); color: #fff; border: 1px solid rgba(255,255,255,.18); border-radius: 9px; font-size: 10px; padding: 6px 5px; }
   #zassist-lang option { color: var(--ink); }
-  #zassist-close { background: none; border: 0; color: #fff; font-size: 15px; cursor: pointer; padding: 4px 6px; }
-  .zassist-note { font-size: 11.5px; color: var(--ink-muted); background: var(--cloud); margin: 0; padding: 8px 14px; border-bottom: 1px solid var(--line); }
-  #zassist-log { padding: 12px 14px; overflow-y: auto; flex: 1; min-height: 120px; display: flex; flex-direction: column; gap: 8px; }
-  #zassist-log .m { max-width: 85%; padding: 9px 12px; border-radius: var(--r-md); font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: break-word; font-family: var(--font-ethi); }
-  #zassist-log .me { align-self: flex-end; background: var(--teal); color: #fff; border-bottom-right-radius: 4px; }
-  #zassist-log .bot { align-self: flex-start; background: var(--cloud); color: var(--ink); border-bottom-left-radius: 4px; }
-  #zassist-log .bot.wait { color: var(--ink-faint); font-style: italic; }
-  .zassist-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
-  .zassist-chips button {
-    border: 1px solid var(--line); background: var(--white); color: var(--teal-deep);
-    border-radius: var(--r-pill); font-size: 12px; padding: 5px 11px; cursor: pointer;
+  #zassist-close,#zassist-reset { width: 29px; height: 29px; display: grid; place-items: center; background: rgba(255,255,255,.08); border: 0; border-radius: 9px; color: #fff; font-size: 16px; cursor: pointer; }
+  #zassist-close:hover,#zassist-reset:hover { background: rgba(255,255,255,.17); }
+  .zassist-note { display: flex; align-items: flex-start; gap: 7px; font-size: 10px; line-height: 1.45; color: var(--ink-muted); background: #f8fbfb; margin: 0; padding: 9px 16px; border-bottom: 1px solid rgba(30,42,74,.07); }
+  .zassist-note span { color: var(--teal-deep); }
+  #zassist-log { padding: 16px; overflow-y: auto; flex: 1; min-height: 150px; display: flex; flex-direction: column; gap: 11px; scroll-behavior: smooth; }
+  #zassist-log .zassist-msg { max-width: 88%; display: flex; flex-direction: column; gap: 5px; }
+  #zassist-log .zassist-msg.is-me { align-self: flex-end; align-items: flex-end; }
+  #zassist-log .zassist-msg.is-bot { align-self: flex-start; align-items: flex-start; }
+  #zassist-log .m { padding: 10px 13px; border-radius: 16px; font-size: 12.5px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: break-word; font-family: var(--font-ethi); }
+  #zassist-log .me { background: linear-gradient(135deg,var(--teal),var(--teal-deep)); color: #fff; border-bottom-right-radius: 5px; box-shadow: 0 8px 20px -14px rgba(11,139,138,.7); }
+  #zassist-log .bot { background: #f2f7f7; color: var(--ink); border: 1px solid rgba(30,42,74,.06); border-bottom-left-radius: 5px; }
+  #zassist-log .zassist-meta { display: flex; align-items: center; gap: 5px; font-size: 8.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .07em; font-weight: 650; }
+  #zassist-log .zassist-meta::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--teal); }
+  #zassist-log .zassist-meta.model::before { background: var(--plum); }
+  #zassist-log .zassist-meta.handoff::before { background: var(--coral); }
+  #zassist-log .bot.wait { display: inline-flex; gap: 4px; align-items: center; min-width: 48px; }
+  #zassist-log .bot.wait i { width: 5px; height: 5px; border-radius: 50%; background: var(--ink-faint); animation: zassistDot 1s ease-in-out infinite; }
+  #zassist-log .bot.wait i:nth-child(2){animation-delay:.15s}#zassist-log .bot.wait i:nth-child(3){animation-delay:.3s}
+  @keyframes zassistDot { 0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-3px);opacity:1} }
+  .zassist-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding: 0 16px 12px; }
+  .zassist-chips button { min-width: 0; border: 1px solid rgba(30,42,74,.09); background: #fff; color: var(--navy); border-radius: 12px; font-size: 10.5px; font-weight: 600; padding: 8px 9px; cursor: pointer; text-align: left; transition: .18s; }
+  .zassist-chips button span { margin-right: 5px; color: var(--coral); font-size: 8px; letter-spacing: .08em; }
+  .zassist-chips button:hover { border-color: rgba(14,165,164,.46); background: var(--mint-pale); transform: translateY(-1px); }
+  #zassist-form { display: flex; gap: 8px; margin: 0 12px; padding: 9px 10px; border: 1px solid rgba(30,42,74,.1); border-radius: 16px; background: #f8fbfb; box-shadow: inset 0 1px 2px rgba(16,35,63,.03); }
+  #zassist-input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; padding: 4px 3px; font-size: 12.5px; color: var(--ink); font-family: var(--font-ethi); }
+  #zassist-input::placeholder { color: var(--ink-faint); }
+  #zassist-form button { border: 0; border-radius: 11px; width: 34px; height: 34px; background: var(--coral); color: #fff; cursor: pointer; font-size: 17px; font-weight: 700; transition: .18s; }
+  #zassist-form button:hover { background: #f0632f; transform: translateY(-1px); }
+  #zassist-form button:disabled { cursor: wait; opacity: .55; transform: none; }
+  #zassist-panel footer { padding: 10px 15px 13px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; color: var(--ink-faint); text-align: left; font-size: inherit; }
+  #zassist-panel footer span { font-size: 8.5px; color: var(--ink-faint); }
+  #zassist-panel footer a { font-size: 10.5px; color: var(--teal-deep); font-weight: 650; text-decoration: none; white-space: nowrap; }
+  #zassist-panel footer a:hover { color: var(--navy); }
+  @media (max-width: 560px) {
+    #zassist { right: 12px; bottom: 12px; }
+    #zassist-invite { display: none; }
+    #zassist-panel { right: -4px; bottom: 68px; width: calc(100vw - 16px); max-height: calc(100dvh - 92px); border-radius: 22px; }
+    #zassist-fab { width: 54px; height: 54px; border-radius: 17px; }
+    .zassist-ai { max-width: 165px; overflow: hidden; text-overflow: ellipsis; }
   }
-  .zassist-chips button:hover { border-color: var(--teal); }
-  #zassist-form { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); }
-  #zassist-input { flex: 1; border: 1px solid var(--line); border-radius: var(--r-pill); padding: 9px 14px; font-size: 13.5px; font-family: var(--font-ethi); }
-  #zassist-form button { border: 0; border-radius: 50%; width: 38px; height: 38px; background: var(--coral); color: #fff; cursor: pointer; font-size: 14px; }
-  #zassist-panel footer { padding: 8px 14px 12px; }
-  #zassist-panel footer a { font-size: 12px; color: var(--teal-deep); text-decoration: none; }
-  #zassist-panel footer a:hover { text-decoration: underline; }
-  @media (prefers-reduced-motion: reduce) { #zassist-fab { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { #zassist *,#zassist *::before,#zassist *::after { animation: none!important; transition: none!important; } }
 </style>
 
 <script>
   const root = document.getElementById('zassist');
   const endpoint = root.dataset.endpoint;
   const fab = document.getElementById('zassist-fab');
+  const invite = document.getElementById('zassist-invite');
   const panel = document.getElementById('zassist-panel');
   const closeBtn = document.getElementById('zassist-close');
+  const resetBtn = document.getElementById('zassist-reset');
   const log = document.getElementById('zassist-log');
   const form = document.getElementById('zassist-form');
   const input = document.getElementById('zassist-input');
+  const sendBtn = form.querySelector('button[type="submit"]');
   const lang = document.getElementById('zassist-lang');
   const chips = document.getElementById('zassist-chips');
 
   const GREETINGS = {
-    en: "Hello! I'm the ZAYA assistant. Ask me about ZAYA, the pilot or merchant plans.",
+    en: "Selam! I'm the ZAYA assistant. I can help you understand what is live in the pilot, compare merchant plans, or explore what is coming next.",
     am: 'ሰላም! የዛያ ረዳት ነኝ። ስለ ዛያ ወይም ስለ ሙከራው ይጠይቁኝ።',
     om: "Akkam! Ani gargaaraa ZAYA ti. Waa'ee ZAYA na gaafadhaa.",
     ti: 'ሰላም! ናይ ዛያ ሓጋዚ እየ። ብዛዕባ ዛያ ሕተቱኒ።',
   };
+  const QUICK = {
+    en: [
+      ['Live merchant tools','Which merchant tools are live in the pilot?'],
+      ['Merchant plans','What does ZAYA cost for merchants?'],
+      ['Join the pilot','How do I join the ZAYA pilot?'],
+      ['Product roadmap','What is on the ZAYA roadmap?'],
+    ],
+    am: [['ዛያ ምንድን ነው?','What is ZAYA?'],['የነጋዴ ዋጋ','What does ZAYA cost for merchants?'],['ሙከራውን ይቀላቀሉ','How do I join the ZAYA pilot?'],['የምርት እቅድ','What is on the ZAYA roadmap?']],
+    om: [['ZAYA maali?','What is ZAYA?'],['Gatii daldalaa','What does ZAYA cost for merchants?'],['Pilotitti makamuu','How do I join the ZAYA pilot?'],['Karoora oomishaa','What is on the ZAYA roadmap?']],
+    ti: [['ዛያ እንታይ እዩ?','What is ZAYA?'],['ዋጋ ነጋዳይ','What does ZAYA cost for merchants?'],['ኣብ ፈተነ ተጸንበሩ','How do I join the ZAYA pilot?'],['መደብ ፍርያት','What is on the ZAYA roadmap?']],
+  };
+  const SOURCE_LABELS = { kb: 'Verified ZAYA knowledge', rule: 'ZAYA guidance', model: 'AI · grounded answer', handoff: 'Human follow-up recommended' };
 
   let greeted = false;
-  function add(kind, text) {
-    const el = document.createElement('div');
-    el.className = `m ${kind}`;
-    el.textContent = text;
-    log.appendChild(el);
+  let busy = false;
+  function add(kind, text, source = '') {
+    const wrap = document.createElement('div');
+    const isMe = kind === 'me';
+    wrap.className = `zassist-msg ${isMe ? 'is-me' : 'is-bot'}`;
+    const bubble = document.createElement('div');
+    bubble.className = `m ${kind}`;
+    if (kind.includes('wait')) bubble.innerHTML = '<i></i><i></i><i></i>';
+    else bubble.textContent = text;
+    wrap.appendChild(bubble);
+    if (!isMe && source) {
+      const meta = document.createElement('span');
+      meta.className = `zassist-meta ${source}`;
+      meta.textContent = SOURCE_LABELS[source] || SOURCE_LABELS.kb;
+      wrap.appendChild(meta);
+    }
+    log.appendChild(wrap);
     log.scrollTop = log.scrollHeight;
-    return el;
+    return wrap;
+  }
+  function renderQuick(items) {
+    const list = items && items.length ? items.map((item) => Array.isArray(item) ? item : [item, item]) : QUICK[lang.value] || QUICK.en;
+    chips.replaceChildren();
+    list.slice(0, 4).forEach((item, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.q = item[1];
+      const number = document.createElement('span');
+      number.setAttribute('aria-hidden','true');
+      number.textContent = String(index + 1).padStart(2,'0');
+      button.append(number, document.createTextNode(` ${item[0]}`));
+      chips.appendChild(button);
+    });
   }
 
   const isOpen = () => panel.classList.contains('zopen');
@@ -148,7 +233,7 @@
     panel.classList.add('zopen');
     panel.setAttribute('aria-hidden', 'false');
     fab.setAttribute('aria-expanded', 'true');
-    if (!greeted) { add('bot', GREETINGS[lang.value] || GREETINGS.en); greeted = true; }
+    if (!greeted) { add('bot', GREETINGS[lang.value] || GREETINGS.en, 'rule'); greeted = true; }
     input.focus();
   }
   function closePanel() {
@@ -159,19 +244,34 @@
   }
   fab.addEventListener('click', () => (isOpen() ? closePanel() : openPanel()));
   closeBtn.addEventListener('click', closePanel);
+  resetBtn.addEventListener('click', () => {
+    log.replaceChildren();
+    input.value = '';
+    greeted = false;
+    renderQuick();
+    openPanel();
+  });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) closePanel(); });
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-open-assistant]');
+    if (!trigger) return;
+    event.preventDefault();
+    openPanel();
+    const question = trigger.dataset.assistantQuestion;
+    if (question) ask(question);
+  });
 
-  let busy = false;
   async function ask(q) {
-    if (!q.trim()) return;
+    q = q.trim();
+    if (!q) return;
     if (busy) {
-      // A reply is still pending — keep the visitor's text instead of eating it.
       if (input.value.trim() === '') input.value = q;
       return;
     }
     busy = true;
+    sendBtn.disabled = true;
     add('me', q);
-    const wait = add('bot wait', '…');
+    const wait = add('bot wait', '');
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -180,12 +280,16 @@
       });
       const body = await res.json().catch(() => null);
       wait.remove();
-      add('bot', (body && body.reply) || 'Something went wrong — please try the contact section below.');
+      const source = body?.source || 'handoff';
+      add('bot', body?.reply || 'Something went wrong — please try the contact section below.', source);
+      if (body?.suggestions?.length) renderQuick(body.suggestions);
     } catch {
       wait.remove();
-      add('bot', 'Network hiccup — please try again, or use the contact section below.');
+      add('bot', 'Network hiccup — please try again, or use the contact section below.', 'handoff');
     } finally {
       busy = false;
+      sendBtn.disabled = false;
+      input.focus();
     }
   }
 
@@ -199,5 +303,12 @@
     const b = e.target.closest('button[data-q]');
     if (b) ask(b.dataset.q);
   });
-  lang.addEventListener('change', () => { add('bot', GREETINGS[lang.value] || GREETINGS.en); });
+  lang.addEventListener('change', () => {
+    log.replaceChildren();
+    greeted = true;
+    add('bot', GREETINGS[lang.value] || GREETINGS.en, 'rule');
+    renderQuick();
+    input.focus();
+  });
+  renderQuick();
 </script>

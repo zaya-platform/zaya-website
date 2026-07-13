@@ -17,6 +17,7 @@ const {
 const noindex = !site.published;
 // Config-driven canonical (Astro.site = $URL on Netlify, else zayaethiopia.com).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const socialImage = new URL('/og.png', Astro.site).href;
 ---
 <!doctype html>
 <html lang="en">
@@ -25,12 +26,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#1E2A4A" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ZAYA App" />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content="ZAYA App — Your neighbourhood, within reach." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
