@@ -19,12 +19,12 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
 const HUB = { x: 220, y: 205 };
 const WEB_R = 150;
 const WEB_NODES = [
-  { key: 'merchants', label: 'Merchants',   tone: 'teal' },
-  { key: 'customers', label: 'Customers',   tone: 'teal' },
-  { key: 'nearby',    label: 'Find nearby', tone: 'mint' },
-  { key: 'orders',    label: 'Orders',      tone: 'mint' },
-  { key: 'credit',    label: 'Credit book', tone: 'coral' },
-  { key: 'diaspora',  label: 'Diaspora',    tone: 'coral' },
+  { key: 'merchants', label: 'Merchants',   tone: 'teal',  status: 'live' },
+  { key: 'customers', label: 'Customers',   tone: 'teal',  status: 'launch' },
+  { key: 'nearby',    label: 'Find nearby', tone: 'mint',  status: 'launch' },
+  { key: 'orders',    label: 'Orders',      tone: 'mint',  status: 'launch' },
+  { key: 'credit',    label: 'Credit book', tone: 'coral', status: 'live' },
+  { key: 'diaspora',  label: 'Diaspora',    tone: 'coral', status: 'road' },
 ].map((n, i, a) => {
   const t = (-90 + i * (360 / a.length)) * Math.PI / 180;
   return { ...n, x: Math.round((HUB.x + WEB_R * Math.cos(t)) * 10) / 10, y: Math.round((HUB.y + WEB_R * Math.sin(t)) * 10) / 10 };
@@ -111,18 +111,18 @@ const WEB_ICONS = {
         <a class="btn btn-ghost" href="#experience">See how it works</a>
       </div>
     </div>
-    <div class="hero-visual reveal">
+    <div class="hero-visual">
       <div class="hero-orbit orbit-a" aria-hidden="true"></div>
       <div class="hero-orbit orbit-b" aria-hidden="true"></div>
-      <div class="hero-web" aria-label="ZAYA connects your neighbourhood — shops, customers and the things they need">
+      <div class="hero-web" role="img" aria-label="ZAYA connects your neighbourhood — shops, customers and the things they need, with the diaspora basket on the roadmap">
         <svg class="hw-svg" viewBox="0 0 440 430" fill="none" aria-hidden="true">
           <defs>
             <radialGradient id="hubg" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></radialGradient>
           </defs>
           {WEB_NODES.map((n) => (<line class="hw-line" x1={HUB.x} y1={HUB.y} x2={n.x} y2={n.y} />))}
-          {WEB_NODES.map((n, i) => (<line class={`hw-flow t-${n.tone}`} x1={HUB.x} y1={HUB.y} x2={n.x} y2={n.y} style={`animation-delay:${(i * 0.5).toFixed(2)}s`} />))}
+          {WEB_NODES.map((n, i) => (<line class={`hw-flow t-${n.tone} s-${n.status}`} x1={HUB.x} y1={HUB.y} x2={n.x} y2={n.y} style={`animation-delay:${(i * 0.5).toFixed(2)}s`} />))}
           {WEB_NODES.map((n, i) => (
-            <g class={`hw-node t-${n.tone}`} style={`--d:${(i * 0.45).toFixed(2)}s`}>
+            <g class={`hw-node t-${n.tone} s-${n.status}`} style={`--d:${(i * 0.45).toFixed(2)}s`}>
               <circle class="hw-dot" cx={n.x} cy={n.y} r="26" />
               <svg class="hw-ic" x={n.x - 12} y={n.y - 12} width="24" height="24" viewBox="0 0 24 24"><path d={WEB_ICONS[n.key]} /></svg>
               <text class="hw-label" x={n.x} y={n.y + 44} text-anchor="middle">{n.label}</text>

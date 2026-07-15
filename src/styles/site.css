@@ -30,7 +30,7 @@
   .nav{display:flex;align-items:center;gap:30px;height:76px}
   .lock{display:flex;align-items:center;gap:12px;margin-right:auto}
   .lock .mk{width:58px;height:58px;flex:none;filter:drop-shadow(0 6px 14px rgba(11,139,138,.28));animation:floaty 5s var(--ease) infinite}
-  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes floaty{0%,100%{translate:0 0}50%{translate:0 -4px}}
   .lock .txt{display:flex;flex-direction:column;line-height:1}
   .lock .wm{font-weight:800;font-size:22px;letter-spacing:-.01em;color:var(--navy);display:flex;align-items:baseline;gap:5px}
   .lock .wm b{color:var(--coral);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
@@ -313,11 +313,12 @@ button{font:inherit}
 @keyframes pilotPulse{0%{box-shadow:0 0 0 0 rgba(93,202,165,.42)}70%,100%{box-shadow:0 0 0 8px rgba(93,202,165,0)}}
 
 .nav{height:72px;gap:22px}
-.lock .mk{width:55px;height:55px}
+.lock .mk{width:58px;height:58px}
 .lock .mk .rr{fill:none;stroke:#fff;stroke-width:4;opacity:0;transform-box:view-box;transform-origin:256px 200px;animation:mkRadar var(--radar-cycle,3.4s) linear infinite}
 .lock .mk .rr2{animation-delay:1.13s}.lock .mk .rr3{animation-delay:2.26s}
 @keyframes mkRadar{0%{transform:scale(.12);opacity:0}12%{opacity:.5}100%{transform:scale(1);opacity:0}}
-.lock:hover .mk{transform:scale(1.06) rotate(-3deg);transition:transform .3s var(--ease)}
+.lock:hover .mk{scale:1.06;rotate:-3deg;transition:scale .3s var(--ease),rotate .3s var(--ease)}
+@media(max-width:520px){.lock .mk{width:48px;height:48px}}
 .menu{gap:2px}
 .skip-link{position:absolute;left:-9999px;top:0;z-index:300;background:var(--navy);color:#fff;padding:11px 18px;border-radius:0 0 10px 0;font-weight:700;font-size:13px}
 .skip-link:focus{left:0}
@@ -383,6 +384,13 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .hw-hub{filter:drop-shadow(0 10px 22px rgba(0,0,0,.42))}
 .hw-pulse{fill:none;stroke:rgba(19,183,180,.55);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:hwPulse 3.1s ease-out infinite}
 @keyframes hwPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.3);opacity:0}}
+/* honesty: roadmap/vision links don't "flow" (they're coming) — static, dashed + dimmed,
+   so an unbuilt vertical can't read as live; launching links flow a touch softer. */
+.hw-flow.s-road{animation:none;stroke-dasharray:4 7;opacity:.4}
+.hw-flow.s-launch{opacity:.85}
+.hw-node.s-road .hw-dot{opacity:.6}
+.hw-node.s-road .hw-ic{opacity:.72}
+.hw-node.s-road .hw-label{fill:rgba(255,255,255,.6)}
 .float-card{position:absolute;z-index:3;display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.93);border:1px solid rgba(255,255,255,.85);border-radius:18px;padding:12px 15px;color:var(--navy);box-shadow:0 20px 50px -18px rgba(16,35,63,.38);backdrop-filter:blur(14px)}
 .float-card small{display:block;font-size:8.5px;letter-spacing:.11em;font-weight:750;color:var(--ink-faint);line-height:1.2;margin-bottom:3px}
 .float-card b{display:block;font-size:12px;line-height:1.25}
@@ -519,7 +527,7 @@ section{padding:88px 0}
 }
 @media(prefers-reduced-motion:reduce){
   .pilot-strip-in i,.hero-orbit,.float-card,.role-pane,.hw-flow,.hw-node,.hw-pulse,.lock .mk,html.js .hero .copy>*{animation:none!important}
-  .lock .mk .rr{animation:none!important;opacity:.16}
+  .lock .mk .rr{animation:none!important;opacity:0}
   .hw-flow{stroke-dasharray:none;opacity:.35}
   .hw-pulse{opacity:0}
   .hero-web{transform:none!important}
