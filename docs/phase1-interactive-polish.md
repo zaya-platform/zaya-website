@@ -146,3 +146,57 @@ npm run preview -- --host 0.0.0.0 --port 4330
   and you approve.
 - **Localised entrance copy** once am/om/ti native review lands (deferred site-wide today).
 - Re-run the full budget on each and keep the same before/after discipline.
+
+---
+
+## Pass 2 — assistant declutter, home tightening & exhaustive honesty (founder-approved fold)
+
+Folded onto the same PR after the founder reviewed the live preview. Driven by a 5-lens
+audit + a 4-lens adversarial review (10 confirmed findings, incl. one user-facing leak).
+
+**Assistant → the intentional minimal set (founder spec):** persistent widget (the AI
+home) **+ ONE header entry + ONE mid-page invitation**. Removed the nav duplicate→restored
+as the single header entry, the hero ghost button (→ "See how it works"), the hero
+float-ai card, and the 3 role-pane "Ask about X" triggers. **In-page triggers 7 → 2**;
+every trigger just opens the same widget (verified single, un-duplicated).
+
+**Home page → one story, pain-first (~18 → 11 sections):** cut "Why ZAYA", the
+"For customers"/"For diaspora" repeat-grids, the cinematic band; kept the merchant
+deep-dive; folded the diaspora into one "Our vision" section; **moved "The problem today"
+up to lead**. Flow: headline → the pain → who it's for → real shops → how ZAYA helps →
+merchant depth → diaspora vision → pricing → FAQ → ask → contact.
+
+**Exhaustive honesty (F4) — instances cleared: ~21 across 6 files.**
+| File | Reconciled |
+|---|---|
+| `src/pages/index.astro` | "For riders" section, Riders problem-column, footer Riders/Suppliers links + blurb, "Why ZAYA" riders/suppliers copy, 2 rider delivery lines → shop-managed, footer orphan "· Future", "4 languages on the roadmap"→"in the app" |
+| `src/layouts/Base.astro` | meta/OG/Twitter description dropped riders/suppliers |
+| `src/content/data/faq.json` | "What is ZAYA?" dropped riders/suppliers |
+| `src/content/data/home.json` | hero.sub + audiences[] dropped riders/suppliers; orphaned `cinematic` block deleted; diaspora.eyebrow → "Our vision" |
+| `src/scripts/site.js` | deleted the dead `#eco` canvas IIFE (declared retired Riders/Suppliers nodes) |
+| `netlify/functions/assistant/kb.mjs` | **the one the review caught** — "what-is-zaya" answer (EN + am/om/ti) dropped riders/suppliers |
+
+`site.json` verified clean (no change). Diaspora/voice/delivery shown only as
+labelled vision/roadmap. No live-payments claim exists (pilot is COD; the Privacy page
+already states the assistant never handles payments). The AI is framed as "grounded in
+ZAYA's approved information" — curated, not magic. **No invented metrics** anywhere.
+
+**a11y (review):** added a `<main id="main">` landmark + a skip-to-content link; made the
+reduced-motion reset beat the even-photo Ken-Burns (`!important` + `nth-child`).
+
+**Measured (build:draft vs the pre-Phase-1 baseline):** **NET −3,608 B gzipped**
+(JS −1,092 incl. the dead canvas, CSS −409, index.html −2,107). 0 new deps, 0 new JS
+bundles, 0 new assets. Tests `npm test` green (assistant suite + the extended interaction
+contracts).
+
+### Flags for the founder (deliberate — need your call)
+1. **Customer status:** kept the toggle's honest **"Launching"** for the customer app
+   (browse rolling out, ordering still gated / `ORDERS_ENABLED` off). Your note said
+   "Customer live" — say the word and I'll flip it to "Live".
+2. **Section order:** I led with the pain then **audiences → how ZAYA helps** (the
+   advisor's endorsed order). Your one-line narrative put *solve* immediately before
+   *audiences*; if you prefer that exact order I'll swap the two (small, safe).
+3. **`privacy.md`** still lists "rider" as a selectable role — **legal copy, hands-off.**
+   Align it on your next legal pass.
+4. **am/om/ti KB strings** were edited to drop "suppliers"; per the standing rule they
+   want a **native-speaker check** before public launch (site is `published:false`).
