@@ -10,7 +10,9 @@
     "build:draft": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test:assistant": "node scripts/test-assistant.mjs"
+    "test:assistant": "node scripts/test-assistant.mjs",
+    "test:interactions": "node scripts/test-interactions.mjs",
+    "test": "node scripts/test-assistant.mjs && node scripts/test-interactions.mjs"
   },
   "dependencies": {
     "astro": "^4.15.0",

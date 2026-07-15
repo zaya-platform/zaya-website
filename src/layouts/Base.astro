@@ -41,6 +41,10 @@ const socialImage = new URL('/og.png', Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* Enable JS-gated entrance/scroll animations. If JS is off or the bundle
+        fails, this never runs and the full static page renders (no hidden copy).
+        Runs before first paint, so there is no flash of un-animated content. */}
+    <script is:inline>document.documentElement.classList.add('js')</script>
   </head>
   <body>
     <slot />

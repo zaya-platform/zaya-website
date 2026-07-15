@@ -60,11 +60,10 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
     <div class="copy">
       <span class="eyebrow">Built in Ethiopia &middot; Made for every neighbourhood</span>
       <h1>Your neighbourhood, <span class="g">within reach.</span></h1>
-      <p class="sub">ZAYA connects nearby shops, customers, riders, suppliers and families in one trusted local-commerce network &mdash; so every search, sale and delivery starts closer to home.</p>
+      <p class="sub">ZAYA connects nearby shops, customers and families in one trusted local-commerce network &mdash; so every search, sale and delivery starts closer to home.</p>
       <div class="who">
         <a class="chip" href="#experience" data-role-jump="merchant">For <b>merchants</b></a>
         <a class="chip" href="#experience" data-role-jump="customer">For <b>customers</b></a>
-        <a class="chip" href="#experience" data-role-jump="rider">For <b>riders</b></a>
         <a class="chip" href="#experience" data-role-jump="diaspora">For the <b>diaspora</b></a>
       </div>
       <div class="hcta">
@@ -121,8 +120,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <div class="role-tabs" role="tablist" aria-label="Choose how you use ZAYA">
         <button type="button" role="tab" id="role-tab-merchant" aria-controls="role-pane-merchant" aria-selected="true" data-role="merchant"><span>01</span>Merchant</button>
         <button type="button" role="tab" id="role-tab-customer" aria-controls="role-pane-customer" aria-selected="false" data-role="customer" tabindex="-1"><span>02</span>Customer</button>
-        <button type="button" role="tab" id="role-tab-rider" aria-controls="role-pane-rider" aria-selected="false" data-role="rider" tabindex="-1"><span>03</span>Rider</button>
-        <button type="button" role="tab" id="role-tab-diaspora" aria-controls="role-pane-diaspora" aria-selected="false" data-role="diaspora" tabindex="-1"><span>04</span>Diaspora</button>
+        <button type="button" role="tab" id="role-tab-diaspora" aria-controls="role-pane-diaspora" aria-selected="false" data-role="diaspora" tabindex="-1"><span>03</span>Diaspora</button>
       </div>
 
       <article class="role-pane is-active" role="tabpanel" id="role-pane-merchant" aria-labelledby="role-tab-merchant" data-role-pane="merchant">
@@ -135,14 +133,9 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
         <div class="role-copy"><span class="role-kicker">Find what you need closer to home</span><h3>Nearby shops, clearer choices and fewer wasted trips.</h3><p>The customer experience is being prepared to help people discover real local stock and compare prices before leaving home.</p><ul><li>Nearby shop discovery</li><li>Price comparison in Birr</li><li>Simple local ordering</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Get launch updates</a><button type="button" class="text-btn" data-open-assistant data-assistant-question="When will the ZAYA customer app launch?">Ask about the launch &rarr;</button></div></div>
       </article>
 
-      <article class="role-pane" role="tabpanel" id="role-pane-rider" aria-labelledby="role-tab-rider" data-role-pane="rider" hidden>
-        <div class="role-media"><img loading="lazy" src={counterSale.src} alt="A local shop preparing a neighbourhood order" /><span class="role-status road">Roadmap</span></div>
-        <div class="role-copy"><span class="role-kicker">Earn from the streets you already know</span><h3>Local jobs, clearer routes and a simple record of every delivery.</h3><p>Rider tools are on the roadmap. The goal is steady, transparent work connected to real shops and orders nearby.</p><ul><li>Jobs matched close to home</li><li>Clear pickup and drop-off flow</li><li>Simple earnings history</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Register interest</a><button type="button" class="text-btn" data-open-assistant data-assistant-question="Are ZAYA rider and delivery tools available now?">Ask about delivery &rarr;</button></div></div>
-      </article>
-
       <article class="role-pane" role="tabpanel" id="role-pane-diaspora" aria-labelledby="role-tab-diaspora" data-role-pane="diaspora" hidden>
-        <div class="role-media"><img loading="lazy" src={diasporaFamily.src} alt="A family receiving essential goods at home" /><span class="role-status road">Roadmap</span></div>
-        <div class="role-copy"><span class="role-kicker">Support family with real goods</span><h3>Choose the basket. Trust the local shop. See proof it arrived.</h3><p>The diaspora basket is a roadmap service for buying goods&mdash;not sending money&mdash;through a trusted neighbourhood merchant.</p><ul><li>Choose essential goods</li><li>One clear shelf-price flow</li><li>Local delivery with proof</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Follow the roadmap</a><button type="button" class="text-btn" data-open-assistant data-assistant-question="How will the ZAYA diaspora basket work?">Ask about family support &rarr;</button></div></div>
+        <div class="role-media"><img loading="lazy" src={diasporaFamily.src} alt="A family receiving essential goods at home" /><span class="role-status road">Our vision</span></div>
+        <div class="role-copy"><span class="role-kicker">Our vision for the diaspora</span><h3>Choose the basket. Trust the local shop. See proof it arrived.</h3><p>Where we want to take ZAYA next: choose real goods&mdash;not send money&mdash;through a trusted neighbourhood shop, delivered with proof. On the roadmap, not live yet.</p><ul><li>Choose essential goods</li><li>One clear shelf-price flow</li><li>Local delivery with proof</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Follow the roadmap</a><button type="button" class="text-btn" data-open-assistant data-assistant-question="How will the ZAYA diaspora basket work?">Ask about family support &rarr;</button></div></div>
       </article>
     </div>
   </div>
@@ -261,7 +254,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <h2>Why merchants love ZAYA.</h2>
       <p>Run the whole shop from one phone — stock, credit, and your daily numbers, all in one place.</p><div class="pframe reveal"><img loading="lazy" src={creditBook.src} alt="A shop owner keeping the credit book on their phone"><div class="cap">The credit book, in one phone</div></div>
     </div>
-    <div class="ben-grid">
+    <div class="ben-grid reveal-seq">
       <div class="ben">
         <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4"/><path d="M12 11v10"/></svg></div>
         <div>
@@ -316,7 +309,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <h2>Why customers love ZAYA.</h2>
       <p>Find what you need from real shops near you in Nifas Silk Lafto — at a fair price, no guesswork.</p><div class="pframe reveal"><img loading="lazy" src={customerApp.src} alt="A shopper checking the ZAYA app in a supermarket aisle"><div class="cap">Compare, then choose</div></div>
     </div>
-    <div class="ben-grid">
+    <div class="ben-grid reveal-seq">
       <div class="ben">
         <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
         <div>
@@ -391,7 +384,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <h2>Why diaspora families love ZAYA.</h2>
       <p>Provide real goods — not cash into the dark.</p><div class="pframe reveal"><img loading="lazy" src={diasporaFamily.src} alt="A family at home with a box of essential goods"><div class="cap">Delivered, with proof</div></div>
     </div>
-    <div class="ben-grid">
+    <div class="ben-grid reveal-seq">
       <div class="ben co">
         <div class="bi"><svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 8h-12L6 6z"/><path d="M6 6L5 3H3"/><circle cx="9" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg></div>
         <div>
@@ -432,7 +425,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
     <div class="sec-head"><span class="eyebrow">Supporting families across Ethiopia</span>
       <h2>Provide for your family — real goods, not cash into the dark.</h2>
       <p>A trusted neighbourhood shop, delivered locally, with proof it arrived. <b style="color:#5648B0">On the roadmap.</b> ZAYA is not a money-transfer service.</p></div>
-    <div class="flow">
+    <div class="flow reveal-seq">
       <div class="fstep"><div class="fn"><span class="num">1</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>You order from abroad</h3><p>Choose your family's trusted neighbourhood shop.</p></div>
       <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       <div class="fstep"><div class="fn"><span class="num">2</span><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/><path d="M3 4h3l2.4 12h9.6l2-8H7"/></svg></div><h3>Order through ZAYA</h3><p>Shelf prices + one clear fee — no gift-shop markup.</p></div>
@@ -457,7 +450,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
 
 
 <section class="ask-band">
-  <div class="wrap ask-band-in">
+  <div class="wrap ask-band-in reveal-seq">
     <div class="ask-orb" aria-hidden="true">&#10022;</div>
     <div><span class="eyebrow">Need a quick answer?</span><h2>Ask ZAYA before you scroll another step.</h2><p>Get a grounded answer about the pilot, merchant plans, product status or the roadmap.</p></div>
     <button class="btn btn-primary" type="button" data-open-assistant>Start a conversation <span aria-hidden="true">&rarr;</span></button>
