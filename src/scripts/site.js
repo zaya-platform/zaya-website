@@ -13,6 +13,21 @@
     document.querySelectorAll('.shot,.pframe').forEach(function(el){el.addEventListener('click',function(){var g=el.querySelector('img');if(!g)return;im.src=g.src;var c=el.querySelector('.cap');cp.textContent=c?c.textContent:'';lb.classList.add('open');});});
     lb.addEventListener('click',function(){lb.classList.remove('open');});
   })();
+  // Hero radar parallax: tilt the radar toward the cursor (desktop + motion-OK only).
+  // Purely decorative — the radar animates on its own; touch + reduced-motion skip it.
+  (function(){
+    var radar = document.querySelector('.hero-web');
+    var hero = document.querySelector('.hero-visual');
+    if(!radar || !hero) return;
+    if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    if(!window.matchMedia('(hover:hover)').matches) return;
+    hero.addEventListener('mousemove', function(e){
+      var r = hero.getBoundingClientRect();
+      var dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+      radar.style.transform = 'rotateY(' + (dx * 7).toFixed(2) + 'deg) rotateX(' + (-dy * 7).toFixed(2) + 'deg)';
+    });
+    hero.addEventListener('mouseleave', function(){ radar.style.transform = ''; });
+  })();
   // scroll reveal
   (function(){var els=document.querySelectorAll('.reveal,.reveal-seq');if(!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')});return;}
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});

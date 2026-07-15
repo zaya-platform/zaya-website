@@ -65,7 +65,21 @@ console.log('\nreduced-motion is honoured (same content, no motion):');
   check('reveal + reveal-seq are shown, un-transformed under reduced-motion',
     css.includes('html.js .reveal,html.js .reveal-seq>*{opacity:1!important;transform:none!important'));
   check('the hero entrance + role-pane crossfade are disabled under reduced-motion',
-    css.includes('.role-pane,html.js .hero .copy>*{animation:none!important}'));
+    /\.role-pane[^{]*html\.js \.hero \.copy>\*\{animation:none!important\}/.test(css));
+}
+
+console.log('\nhero "near-you web" network + professional wave logo (founder rework):');
+{
+  check('the static hero photo is replaced by the interconnected network', !/hero-photo/.test(index) && /hero-web/.test(index));
+  check('six honest icon nodes wired to a central ZAYA hub', /hw-node/.test(index) && (index.match(/\{ key: '/g) || []).length === 6 && /hw-hub/.test(index) && /hw-pin/.test(index));
+  check('pulses flow OUTWARD along the links (the brand wave)', /hw-flow/.test(index) && /@keyframes hwFlow/.test(css) && /stroke-dashoffset:-155/.test(css));
+  check('nodes carry icons + labels, coloured by the brand tokens', /hw-ic/.test(index) && /hw-label/.test(index) && /\.hw-node\.t-teal \.hw-dot\{stroke:#13B7B4\}/.test(css));
+  check('the network names only honest nodes (no rider/supplier)', /Merchants[\s\S]*Customers[\s\S]*Diaspora/.test(index) && !/WEB_NODES[\s\S]*rider/i.test(index));
+  check('the removed photo import is gone (no unused import / stale asset)', !/storefront-wide/.test(index) && !/storefrontWide/.test(index));
+  check('the logo radar rings are now styled + animated (the "wave" — was unstyled)', /\.lock \.mk \.rr\{[^}]*stroke:#fff[^}]*animation:mkRadar/.test(css));
+  check('the logo is enlarged ~25% (58px desktop, up from 46px)', /\.lock \.mk\{width:58px/.test(css));
+  check('the network tilts toward the cursor (desktop + motion-OK only)', /querySelector\('\.hero-web'\)/.test(siteJs) && /hover:hover/.test(siteJs));
+  check('reduced-motion gives a calm STATIC constellation (no flow/pulse/tilt)', /\.hw-flow\{stroke-dasharray:none/.test(css) && /\.hero-web\{transform:none!important\}/.test(css));
 }
 
 console.log('\nJS-gated fallback (no-JS / failed bundle shows the full static page):');

@@ -7,12 +7,36 @@ import stockCheck from '../assets/photos/stock-check.jpg';
 import creditBook from '../assets/photos/credit-book.jpg';
 import customerApp from '../assets/photos/customer-app.jpg';
 import diasporaFamily from '../assets/photos/diaspora-family.jpg';
-import storefrontWide from '../assets/photos/storefront-wide.jpg';
 // CMS-managed content (admin edits these JSON files via Decap /admin)
 import pricing from '../content/data/pricing.json';
 import contact from '../content/data/contact.json';
 import faq from '../content/data/faq.json';
 const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
+
+// Hero "near-you web": honest audiences + capabilities as icon nodes, wired to a
+// central ZAYA hub, with pulses flowing outward along the links (the brand wave).
+// Positions are COMPUTED here (evenly on a ring) so nothing is mis-placed by hand.
+const HUB = { x: 220, y: 205 };
+const WEB_R = 150;
+const WEB_NODES = [
+  { key: 'merchants', label: 'Merchants',   tone: 'teal' },
+  { key: 'customers', label: 'Customers',   tone: 'teal' },
+  { key: 'nearby',    label: 'Find nearby', tone: 'mint' },
+  { key: 'orders',    label: 'Orders',      tone: 'mint' },
+  { key: 'credit',    label: 'Credit book', tone: 'coral' },
+  { key: 'diaspora',  label: 'Diaspora',    tone: 'coral' },
+].map((n, i, a) => {
+  const t = (-90 + i * (360 / a.length)) * Math.PI / 180;
+  return { ...n, x: Math.round((HUB.x + WEB_R * Math.cos(t)) * 10) / 10, y: Math.round((HUB.y + WEB_R * Math.sin(t)) * 10) / 10 };
+});
+const WEB_ICONS = {
+  merchants: 'M4 9l1-4h14l1 4M4 9v10h16V9M4 9h16M9 19v-5h6v5',
+  customers: 'M12 11a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4zM5.6 19a6.4 6.4 0 0112.8 0',
+  nearby: 'M12 21s-6.4-5.1-6.4-10.4A6.4 6.4 0 0112 4.2a6.4 6.4 0 016.4 6.4C18.4 15.9 12 21 12 21zM12 12.4a2 2 0 100-4 2 2 0 000 4z',
+  orders: 'M6.5 8h11l-1 11h-9l-1-11zM9.5 8V6.2a2.5 2.5 0 015 0V8',
+  credit: 'M5 5h13a1 1 0 011 1v13H6a1 1 0 01-1-1V5zM5 15h14',
+  diaspora: 'M12 20s-6.6-4.3-6.6-9.4A3.9 3.9 0 0112 7.2a3.9 3.9 0 016.6 3.4C18.6 15.7 12 20 12 20z',
+};
 ---
 <Base>
 <header class="site-header">
@@ -90,10 +114,28 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
     <div class="hero-visual reveal">
       <div class="hero-orbit orbit-a" aria-hidden="true"></div>
       <div class="hero-orbit orbit-b" aria-hidden="true"></div>
-      <div class="hero-photo">
-        <img src={storefrontWide.src} alt="A modern Ethiopian neighbourhood shop powered by ZAYA" />
-        <div class="hero-photo-shade"></div>
-        <div class="hero-photo-copy"><span>Everything near you</span><strong>One connected neighbourhood.</strong></div>
+      <div class="hero-web" aria-label="ZAYA connects your neighbourhood — shops, customers and the things they need">
+        <svg class="hw-svg" viewBox="0 0 440 430" fill="none" aria-hidden="true">
+          <defs>
+            <radialGradient id="hubg" cx="50%" cy="42%" r="62%"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></radialGradient>
+          </defs>
+          {WEB_NODES.map((n) => (<line class="hw-line" x1={HUB.x} y1={HUB.y} x2={n.x} y2={n.y} />))}
+          {WEB_NODES.map((n, i) => (<line class={`hw-flow t-${n.tone}`} x1={HUB.x} y1={HUB.y} x2={n.x} y2={n.y} style={`animation-delay:${(i * 0.5).toFixed(2)}s`} />))}
+          {WEB_NODES.map((n, i) => (
+            <g class={`hw-node t-${n.tone}`} style={`--d:${(i * 0.45).toFixed(2)}s`}>
+              <circle class="hw-dot" cx={n.x} cy={n.y} r="26" />
+              <svg class="hw-ic" x={n.x - 12} y={n.y - 12} width="24" height="24" viewBox="0 0 24 24"><path d={WEB_ICONS[n.key]} /></svg>
+              <text class="hw-label" x={n.x} y={n.y + 44} text-anchor="middle">{n.label}</text>
+            </g>
+          ))}
+          <circle class="hw-pulse" cx={HUB.x} cy={HUB.y} r="40" />
+          <circle class="hw-hub" cx={HUB.x} cy={HUB.y} r="40" fill="url(#hubg)" />
+          <svg class="hw-pin" x={HUB.x - 27} y={HUB.y - 27} width="54" height="54" viewBox="0 0 512 512">
+            <path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/>
+            <circle cx="256" cy="200" r="56" fill="#FF7A45"/>
+            <polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </svg>
       </div>
       <div class="float-card float-live">
         <span class="pulse-dot" aria-hidden="true"></span>
