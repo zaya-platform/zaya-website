@@ -5,8 +5,8 @@
     "headlineTeal": "connected",
     "headlineMid": "in one",
     "headlineCoral": "intelligent app",
-    "sub": "ZAYA links the shops, customers, riders, suppliers, and families of your neighbourhood — so you can find what's near you, sell smarter, and provide for the people you love.",
-    "audiences": ["customers", "merchants", "riders", "suppliers", "the diaspora"],
+    "sub": "ZAYA links the shops, customers and families of your neighbourhood — so you can find what's near you, sell smarter, and provide for the people you love.",
+    "audiences": ["customers", "merchants", "the diaspora"],
     "ctaPrimary": "Join the pilot",
     "ctaSecondary": "See how it works",
     "statusLive": "Sales, stock & the credit book for shops — plus the supermarket dashboard.",
@@ -23,14 +23,8 @@
     "heading": "One platform that removes the everyday friction of local commerce.",
     "sub": "Real tools for real problems — honestly labelled by what's live today and what's on the way."
   },
-  "cinematic": {
-    "eyebrow": "Everything near you",
-    "heading": "One platform behind every shop on the street.",
-    "sub": "From the corner mini-market to the supermarket — ZAYA connects the whole neighbourhood.",
-    "chips": ["Find nearby", "Fair prices", "The credit book", "Delivered locally"]
-  },
   "diaspora": {
-    "eyebrow": "Supporting families across Ethiopia",
+    "eyebrow": "Our vision — for the diaspora",
     "heading": "Provide for your family — real goods, not cash into the dark.",
     "sub": "A trusted neighbourhood shop, delivered locally, with proof it arrived. ZAYA is not a money-transfer service."
   },
