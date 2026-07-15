@@ -55,6 +55,24 @@
   });
 })();
 
+// Header feature dropdowns: reflect open state for a11y (aria-expanded), keyboard-open
+// via CSS :focus-within, and close on Escape. Each trigger is ALSO a real link to its
+// section, so the menu degrades to plain nav links with no JS.
+(function(){
+  var items = document.querySelectorAll('.menu > .item');
+  Array.prototype.forEach.call(items, function(item){
+    var trigger = item.querySelector('a[aria-haspopup]');
+    var drop = item.querySelector('.drop');
+    if(!trigger || !drop) return;
+    function set(open){ trigger.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    item.addEventListener('mouseenter', function(){ set(true); });
+    item.addEventListener('mouseleave', function(){ set(false); });
+    item.addEventListener('focusin', function(){ set(true); });
+    item.addEventListener('focusout', function(){ set(false); });
+    item.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ set(false); if(trigger.blur) trigger.blur(); } });
+  });
+})();
+
 // Keep the FAQ focused: opening one answer closes the previous answer.
 (function(){
   var items=Array.prototype.slice.call(document.querySelectorAll('.faq details'));

@@ -42,8 +42,24 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
     </a>
     <nav class="menu" id="primary-menu" aria-label="Primary">
       <div class="item"><a href="#top">Home</a></div>
-      <div class="item"><a href="#experience">Experience</a></div>
-      <div class="item"><a href="#solutions">Solutions</a></div>
+      <div class="item">
+        <a href="#solutions" aria-haspopup="true" aria-expanded="false">Features <svg class="ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="drop" aria-label="ZAYA features">
+          <a href="#solutions">Sales &amp; inventory <span class="st live">Live</span></a>
+          <a href="#solutions">The credit book <span class="st live">Live</span></a>
+          <a href="#solutions">Find &amp; compare shops <span class="st launch">Launching</span></a>
+          <a href="#solutions">Local delivery <span class="st road">Roadmap</span></a>
+          <a href="#diaspora">The diaspora basket <span class="st road">Our vision</span></a>
+        </div>
+      </div>
+      <div class="item">
+        <a href="#experience" aria-haspopup="true" aria-expanded="false">For you <svg class="ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="drop" aria-label="Choose your role">
+          <a href="#experience" data-role-jump="merchant">Merchants <span class="st live">Live</span></a>
+          <a href="#experience" data-role-jump="customer">Customers <span class="st launch">Launching</span></a>
+          <a href="#experience" data-role-jump="diaspora">Diaspora <span class="st road">Our vision</span></a>
+        </div>
+      </div>
       <div class="item"><a href="#pricing">Pricing</a></div>
       <div class="item"><a href="#faq">FAQ</a></div>
       <button class="menu-ai" type="button" data-open-assistant>Ask ZAYA AI</button>

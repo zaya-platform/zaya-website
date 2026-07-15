@@ -145,6 +145,16 @@ console.log('\nrobustness — no reveal content ever trapped hidden (even on a f
   check('the interaction bundle arms "zr-armed" as soon as it executes', /classList\.add\('zr-armed'\)/.test(siteJs));
 }
 
+console.log('\nheader feature dropdowns (help users select what they need):');
+{
+  check('two nav dropdown menus exist (Features + For you)', (index.match(/class="drop"/g) || []).length === 2);
+  check('triggers are keyboard-openable (aria-haspopup + CSS :focus-within)', /aria-haspopup="true"/.test(index) && /\.menu>\.item:focus-within \.drop/.test(css));
+  check('the "For you" menu SELECTS the toggle pane (data-role-jump merchant/customer/diaspora)', /class="drop"[\s\S]*?data-role-jump="merchant"[\s\S]*?data-role-jump="customer"[\s\S]*?data-role-jump="diaspora"/.test(index));
+  check('dropdown items carry honest status pills', /class="drop"[^>]*>[\s\S]*?class="st (live|launch|road)"/.test(index));
+  check('every dropdown trigger is also a real section link (degrades with no JS)', /href="#solutions" aria-haspopup/.test(index) && /href="#experience" aria-haspopup/.test(index));
+  check('JS reflects open state (aria-expanded) + closes on Escape', /a\[aria-haspopup\]/.test(siteJs) && /aria-expanded/.test(siteJs) && /Escape/.test(siteJs));
+}
+
 console.log('\nvisual polish (tokens + honest banding):');
 {
   check('status colors routed through the design tokens (one colour per status)', /\.st\.launch\{color:var\(--status-launching\)/.test(css) && /\.role-status\.launch\{[^}]*color:var\(--status-launching\)/.test(css));

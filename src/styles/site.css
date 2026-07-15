@@ -43,7 +43,7 @@
   .menu>.item:hover>a .ch{transform:rotate(180deg)}
   .drop{position:absolute;top:calc(100% + 8px);left:0;min-width:230px;background:#fff;border:1px solid var(--line);border-radius:var(--r-md);
     box-shadow:var(--sh-md);padding:8px;opacity:0;visibility:hidden;transform:translateY(6px);transition:.2s}
-  .menu>.item:hover .drop{opacity:1;visibility:visible;transform:none}
+  .menu>.item:hover .drop,.menu>.item:focus-within .drop{opacity:1;visibility:visible;transform:none}
   .drop a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:500;color:var(--ink)}
   .drop a:hover{background:var(--cloud)}
   .drop a .st{font-size:10px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:var(--pill);white-space:nowrap}
@@ -266,7 +266,7 @@ html.js .reveal-seq.in>*:nth-child(n+7){transition-delay:.30s}
 .lb .lbcap{position:absolute;bottom:5%;left:0;right:0;text-align:center;color:#fff;font-weight:600;font-size:16px;text-shadow:0 1px 8px rgba(0,0,0,.5)}
 .lb .lbx{position:absolute;top:20px;right:26px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:0;font-size:24px;line-height:1;cursor:pointer;transition:.2s}
 .lb .lbx:hover{background:rgba(255,255,255,.28)}
-@media(prefers-reduced-motion:reduce){.shot img,.shot:nth-child(2n) img{animation:none!important}html.js .reveal,html.js .reveal-seq>*{opacity:1!important;transform:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){.shot img,.shot:nth-child(2n) img{animation:none!important}html.js .reveal,html.js .reveal-seq>*{opacity:1!important;transform:none!important;transition:none!important}.drop{transition:none}}
 
 /* ---- Netlify Forms pilot form ---- */
 .pilot-form{max-width:620px;margin:26px auto 0;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh-sm);display:flex;flex-direction:column;gap:14px}
