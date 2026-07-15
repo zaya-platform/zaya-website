@@ -4,6 +4,10 @@
 //  taken out of the page in the V2 redesign, so it never ran — and its source
 //  still declared retired "Riders"/"Suppliers" nodes. Deleted for honesty + weight.)
 
+  // Signal that the interaction bundle actually executed. The html.js fallback in
+  // <head> drops 'js' (un-hiding all reveal content) if this never fires — so a
+  // bundle load/parse failure can never leave content trapped hidden.
+  document.documentElement.classList.add('zr-armed');
   // lightbox
   (function(){var lb=document.getElementById('lb');if(!lb)return;var im=lb.querySelector('img'),cp=lb.querySelector('.lbcap');
     document.querySelectorAll('.shot,.pframe').forEach(function(el){el.addEventListener('click',function(){var g=el.querySelector('img');if(!g)return;im.src=g.src;var c=el.querySelector('.cap');cp.textContent=c?c.textContent:'';lb.classList.add('open');});});

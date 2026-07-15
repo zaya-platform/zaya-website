@@ -120,14 +120,29 @@ console.log('\nfull-page honesty reconciliation (Rider/Supplier are not live ZAY
   check('the assistant KB answer no longer names riders/suppliers as a live audience', !/customers, riders, suppliers|riders, suppliers|dhiyeessitootaa fi/.test(kb));
   check('footer honest-labels legend dropped the orphan "Future" tier', !/Roadmap<\/b> · Future/.test(index));
   check('home.json residue reconciled (no orphaned cinematic block; diaspora eyebrow = vision)', !/"cinematic"/.test(home) && /Our vision — for the diaspora/.test(home));
+  check('meta/OG/Twitter description reworked to the real merchant-pilot model', /Merchant pilot live in Addis/.test(base) && !/riders|suppliers/.test(base));
+  check('FAQ diaspora answers are labelled roadmap, not present-tense', /diaspora basket is on our roadmap/.test(faq) && /Support for diaspora families is on our roadmap/.test(faq));
+  check('customer-app feature cards (Find shops / Compare prices) now carry a status pill', /Find shops nearby <span class="st launch"/.test(index) && /Compare fair prices <span class="st launch"/.test(index));
 }
 
-console.log('\na11y landmarks + reduced-motion completeness + pain-first narrative:');
+console.log('\na11y landmarks + reduced-motion completeness + one-story narrative:');
 {
   check('a <main id="main"> landmark wraps the page + a skip-to-content link exists', /<main id="main">/.test(base) && /skip-link/.test(base) && /\.skip-link\{/.test(css));
   check('reduced-motion also stops the even-photo Ken Burns (!important + nth-child)', /\.shot img,\.shot:nth-child\(2n\) img\{animation:none!important\}/.test(css));
-  check('the page LEADS with the pain (problem section before the audiences toggle)', index.indexOf('id="problems"') > 0 && index.indexOf('id="problems"') < index.indexOf('id="experience"'));
+  check('narrative order: pain -> how ZAYA solves it (solve) -> the honest audiences (toggle)',
+    index.indexOf('id="problems"') > 0
+    && index.indexOf('id="problems"') < index.indexOf('id="solutions"')
+    && index.indexOf('id="solutions"') < index.indexOf('id="experience"'));
+  check('each audience sold once — the "For merchants" grid is cut (toggle carries it)', !/id="merchants"/.test(index));
+  check('the two "at a glance" strips deduped — hero-proof removed, trust rail kept', !/hero-proof/.test(index) && /trust-rail/.test(index));
   check('stacked pale band sections get a hairline seam', /\.band\{background:#F4FBFB;border-top:1px solid/.test(css));
+}
+
+console.log('\nrobustness — no reveal content ever trapped hidden (even on a failed bundle):');
+{
+  check('the <head> guard drops "js" via a timeout if the bundle never arms zr-armed',
+    /setTimeout\(function\(\)\{var d=document\.documentElement;if\(!d\.classList\.contains\('zr-armed'\)\)d\.classList\.remove\('js'\)\}/.test(base));
+  check('the interaction bundle arms "zr-armed" as soon as it executes', /classList\.add\('zr-armed'\)/.test(siteJs));
 }
 
 console.log('\nvisual polish (tokens + honest banding):');

@@ -1,10 +1,10 @@
 {
   "items": [
-    { "q": "What is ZAYA?", "a": "ZAYA is Ethiopia's local-commerce platform connecting shops, customers and diaspora families — everything near you." },
+    { "q": "What is ZAYA?", "a": "ZAYA is Ethiopia's local-commerce platform connecting neighbourhood shops and their customers — everything near you. Support for diaspora families is on our roadmap." },
     { "q": "Is ZAYA live yet?", "a": "Yes, in the pilot: merchants run sales, stock and the credit book, plus the supermarket dashboard. The customer app is launching; delivery, smart tools and the diaspora basket are on the roadmap." },
     { "q": "What does it cost?", "a": "Customers use ZAYA free. Merchants start on a free plan with optional paid tiers — see the pricing section or contact us." },
     { "q": "What languages does it support?", "a": "The app supports Amharic, Afaan Oromoo, Tigrinya and English. This website is in English for now; the other languages are planned for a later phase." },
-    { "q": "Does ZAYA send money for the diaspora?", "a": "No — ZAYA is not a money-transfer service. You order real goods, delivered to your family with proof." },
+    { "q": "Does ZAYA send money for the diaspora?", "a": "No — ZAYA is not a money-transfer service. The plan is to let you order real goods, delivered to your family with proof — this diaspora basket is on our roadmap, not live yet." },
     { "q": "How do I join?", "a": "Shop owners in Nifas Silk Lafto can join the pilot — reach us through the contact section." }
   ]
 }

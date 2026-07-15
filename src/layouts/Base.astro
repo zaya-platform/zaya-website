@@ -8,7 +8,7 @@ import AssistantWidget from '../components/AssistantWidget.astro';
 interface Props { title?: string; description?: string; }
 const {
   title = `${site.brandName} — ${site.tagline}`,
-  description = "Ethiopia's local commerce, connected in one intelligent app — for customers, merchants and diaspora families.",
+  description = "Ethiopia's local commerce, connected — helping neighbourhood shops sell and customers find what's near them. Merchant pilot live in Addis Ababa.",
 } = Astro.props;
 
 // F4 BINDING honesty gate: until real Privacy/Terms exist and site.published is
@@ -41,10 +41,12 @@ const socialImage = new URL('/og.png', Astro.site).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    {/* Enable JS-gated entrance/scroll animations. If JS is off or the bundle
-        fails, this never runs and the full static page renders (no hidden copy).
-        Runs before first paint, so there is no flash of un-animated content. */}
-    <script is:inline>document.documentElement.classList.add('js')</script>
+    {/* Enable JS-gated entrance/scroll animations. If JS is off, this never runs
+        and the full static page renders. If the interaction bundle LOADS but then
+        errors/parse-fails, the reveal observer never arms 'zr-armed' — so after a
+        short timeout we drop 'js' and un-hide everything: no content is ever
+        trapped hidden. Runs before first paint (no flash of un-animated content). */}
+    <script is:inline>document.documentElement.classList.add('js');setTimeout(function(){var d=document.documentElement;if(!d.classList.contains('zr-armed'))d.classList.remove('js')},2500)</script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
