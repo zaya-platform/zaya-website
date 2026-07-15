@@ -46,7 +46,6 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <div class="item"><a href="#solutions">Solutions</a></div>
       <div class="item"><a href="#pricing">Pricing</a></div>
       <div class="item"><a href="#faq">FAQ</a></div>
-      <button class="menu-ai" type="button" data-open-assistant>Ask ZAYA AI</button>
     </nav>
     <a class="btn btn-primary cta" href="#contact">Join the pilot</a>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-menu">
@@ -68,11 +67,11 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       </div>
       <div class="hcta">
         <a class="btn btn-primary" href="#contact"><span>Join the pilot</span><svg class="ar" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <button class="btn btn-ghost" type="button" data-open-assistant>Ask ZAYA AI <span class="ai-spark" aria-hidden="true">&#10022;</span></button>
+        <a class="btn btn-ghost" href="#experience">See how it works</a>
       </div>
       <div class="hero-proof" aria-label="ZAYA product principles">
         <span><b>Birr-first</b> local pricing</span>
-        <span><b>4 languages</b> on the roadmap</span>
+        <span><b>4 languages</b> in the app</span>
         <span><b>Clear status</b> for every feature</span>
       </div>
     </div>
@@ -92,11 +91,6 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
         <div class="mini-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <div><small>TODAY'S VIEW</small><b>Your shop at a glance</b></div>
       </div>
-      <button class="float-card float-ai" type="button" data-open-assistant data-assistant-question="What can ZAYA help my shop do today?">
-        <span class="float-ai-icon" aria-hidden="true">&#10022;</span>
-        <div><small>ZAYA ASSISTANT</small><b>Ask what is live today</b></div>
-        <span aria-hidden="true">&rarr;</span>
-      </button>
     </div>
   </div>
 </div>
@@ -175,32 +169,6 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
 
 
 
-<section class=""><div class="wrap">
-  <div class="sec-head">
-    <span class="eyebrow" id="why">Why ZAYA</span>
-    <h2>Ethiopia's commerce, finally connected.</h2>
-    <p>One intelligent platform for the whole neighbourhood — the people who buy, the shops who sell, and everyone in between, working together in one place.</p>
-  </div>
-  <div class="cards">
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0 M12 3v6 M12 15v6 M3 12h6 M15 12h6"/></svg></div>
-      <h3>One platform, many front doors</h3>
-      <p>Customers, merchants, riders, suppliers and the diaspora all meet in one trusted system — no scattered apps, no middlemen, just your neighbourhood connected.</p>
-    </div>
-    <div class="card">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.686-6-10a6 6 0 1 1 12 0c0 4.314-6 10-6 10z M12 11m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/></svg></div>
-      <h3>Built for Ethiopia</h3>
-      <p>Your languages, your Birr, your neighbourhood. Made for how commerce really works in Addis, and delivered by locals who know the streets.</p>
-    </div>
-    <div class="card co">
-      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 5L19 9.6l-5 1.6L12 16l-1.6-5L5 9.6l5.4-1L12 3z M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8L18 15z"/></svg></div>
-      <h3>Honest and modern</h3>
-      <p>Real, working tools in shops today — sales, stock and credit that stand on their own. Smarter automation is on the roadmap, and we'll tell you plainly what's live and what's coming. No inflated claims.</p>
-    </div>
-  </div>
-</div></section>
-
-
 <section class="band"><div class="wrap">
   <div class="sec-head">
     <span class="eyebrow" id="problems">The problem today</span>
@@ -223,15 +191,6 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
         <li>Credit tracked on paper that gets lost.</li>
         <li>Little visibility into what actually sells.</li>
         <li>No presence online for new customers to find.</li>
-      </ul>
-    </div>
-    <div class="pain">
-      <h3><span class="d"></span>Riders</h3>
-      <ul>
-        <li>No steady stream of delivery jobs.</li>
-        <li>Routes decided by luck, not by plan.</li>
-        <li>No record of the work they complete.</li>
-        <li>Earnings that are hard to predict or prove.</li>
       </ul>
     </div>
     <div class="pain">
@@ -294,7 +253,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
         <div class="bi"><svg viewBox="0 0 24 24"><path d="M3 13h11v4H3z"/><path d="M14 9h4l3 4v4h-7z"/><path d="M7 20a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/><path d="M17 20a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg></div>
         <div>
           <h3>Local delivery <span class="st road">Roadmap</span></h3>
-          <p>Send orders across the neighborhood with a rider at your door.</p>
+          <p>Fulfil orders from your shop and hand them to someone local for the last mile.</p>
         </div>
       </div>
     </div>
@@ -302,127 +261,9 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
 </div></section>
 
 
-<section class="band"><div class="wrap">
-  <div class="love-grid">
-    <div class="love-intro">
-      <span class="eyebrow" id="customers">For customers</span>
-      <h2>Why customers love ZAYA.</h2>
-      <p>Find what you need from real shops near you in Nifas Silk Lafto — at a fair price, no guesswork.</p><div class="pframe reveal"><img loading="lazy" src={customerApp.src} alt="A shopper checking the ZAYA app in a supermarket aisle"><div class="cap">Compare, then choose</div></div>
-    </div>
-    <div class="ben-grid reveal-seq">
-      <div class="ben">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
-        <div>
-          <h3>Nearby shops <span class="st launch">Launching</span></h3>
-          <p>See what the shops around you actually stock, right now.</p>
-        </div>
-      </div>
-      <div class="ben co">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h9"/><circle cx="17" cy="18" r="2.5"/></svg></div>
-        <div>
-          <h3>Price comparison <span class="st launch">Launching</span></h3>
-          <p>Compare prices across shops in Birr before you walk out the door.</p>
-        </div>
-      </div>
-      <div class="ben">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M3 13h11V6H3zM14 9h4l3 3v4h-7zM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
-        <div>
-          <h3>Fast local delivery <span class="st road">Roadmap</span></h3>
-          <p>Get your order brought to your door by a local rider.</p>
-        </div>
-      </div>
-      <div class="ben co">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM6 11a6 6 0 0 0 12 0M12 17v4"/></svg></div>
-        <div>
-          <h3>Voice &amp; smart search <span class="st road">Roadmap</span></h3>
-          <p>Just ask in your own words and let ZAYA find it for you.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div></section>
-
-
-<section><div class="wrap">
-  <div class="love-grid">
-    <div class="love-intro">
-      <span class="eyebrow" id="riders">For riders</span>
-      <h2>Why riders love ZAYA.</h2>
-      <p>Steady work close to home — earning from the shops and streets you already know. This is on our roadmap, not live yet.</p>
-    </div>
-    <div class="ben-grid">
-      <div class="ben">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 3v18M8 7h6a3 3 0 0 1 0 6H8m0 0h7"/></svg></div>
-        <div>
-          <h3>Flexible income <span class="st road">Roadmap</span></h3>
-          <p>Pick up deliveries when it suits you and earn in Birr for every drop you complete.</p>
-        </div>
-      </div>
-      <div class="ben co">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.5 7-11a7 7 0 0 0-14 0c0 4.5 7 11 7 11zM12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg></div>
-        <div>
-          <h3>Jobs near you <span class="st road">Roadmap</span></h3>
-          <p>Get matched to orders in your own kebele, with clear navigation to each shop and door.</p>
-        </div>
-      </div>
-      <div class="ben">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M5 3h14a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM9 8h6M9 12h6M9 16h4"/></svg></div>
-        <div>
-          <h3>A simple app <span class="st road">Roadmap</span></h3>
-          <p>One clean screen for your jobs, your route and your earnings — with clear performance tracking.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div></section>
-
-
-<section class=""><div class="wrap">
-  <div class="love-grid">
-    <div class="love-intro">
-      <span class="eyebrow" id="diaspora">For the diaspora</span>
-      <h2>Why diaspora families love ZAYA.</h2>
-      <p>Provide real goods — not cash into the dark.</p><div class="pframe reveal"><img loading="lazy" src={diasporaFamily.src} alt="A family at home with a box of essential goods"><div class="cap">Delivered, with proof</div></div>
-    </div>
-    <div class="ben-grid reveal-seq">
-      <div class="ben co">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 8h-12L6 6z"/><path d="M6 6L5 3H3"/><circle cx="9" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg></div>
-        <div>
-          <h3>Order for family <span class="st road">Roadmap</span></h3>
-          <p>Pick the goods your family needs from a trusted neighbourhood shop.</p>
-        </div>
-      </div>
-      <div class="ben co">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 10h16"/><path d="M8 15h3"/></svg></div>
-        <div>
-          <h3>Pay for goods, not remittance <span class="st road">Roadmap</span></h3>
-          <p>Shelf prices plus one clear fee — ZAYA is not money transfer.</p>
-        </div>
-      </div>
-      <div class="ben co">
-        <div class="bi"><svg viewBox="0 0 24 24"><path d="M4 7h4l1.5-2h5L16 7h4v11H4z"/><circle cx="12" cy="12.5" r="3.2"/></svg></div>
-        <div>
-          <h3>Delivered with proof <span class="st road">Roadmap</span></h3>
-          <p>A photo when it arrives — with an optional monthly basket.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div></section>
-
-
-<section class="cine">
-  <div class="cbg" style={`background-image:url(${storefrontWide.src})`}></div>
-  <div class="wrap cin-c reveal">
-    <span class="eyebrow">Everything near you</span>
-    <h2>One platform behind every shop on the street.</h2>
-    <p>From the corner mini-market to the supermarket — ZAYA connects the whole neighbourhood.</p>
-    <div class="cchips"><span class="cchip">Find nearby</span><span class="cchip">Fair prices</span><span class="cchip">The credit book</span><span class="cchip">Delivered locally</span></div>
-  </div>
-</section>
-<section class="band" id="families">
+<section class="band" id="diaspora">
   <div class="wrap">
-    <div class="sec-head"><span class="eyebrow">Supporting families across Ethiopia</span>
+    <div class="sec-head"><span class="eyebrow">Our vision — for the diaspora</span>
       <h2>Provide for your family — real goods, not cash into the dark.</h2>
       <p>A trusted neighbourhood shop, delivered locally, with proof it arrived. <b style="color:#5648B0">On the roadmap.</b> ZAYA is not a money-transfer service.</p></div>
     <div class="flow reveal-seq">
@@ -432,7 +273,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       <div class="fstep"><div class="fn"><span class="num">3</span><svg viewBox="0 0 24 24"><path d="M4 9l1-4h14l1 4M4 9v10h16V9M4 9h16M9 19v-5h6v5"/></svg></div><h3>The shop prepares it</h3><p>The neighbourhood merchant fulfils the order.</p></div>
       <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-      <div class="fstep"><div class="fn"><span class="num">4</span><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 18h6M6 18l4-9h4l2 4"/></svg></div><h3>Delivered locally</h3><p>A local rider completes the delivery.</p></div>
+      <div class="fstep"><div class="fn"><span class="num">4</span><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 18h6M6 18l4-9h4l2 4"/></svg></div><h3>Delivered locally</h3><p>The neighbourhood shop arranges local delivery.</p></div>
       <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       <div class="fstep"><div class="fn"><span class="num">5</span><svg viewBox="0 0 24 24"><path d="M4 5h16v12H4z"/><path d="M8 21h8M9 11l2 2 4-4"/></svg></div><h3>Family receives — with proof</h3><p>You get a delivery photo. Optional monthly basket.</p></div>
     </div>
@@ -511,9 +352,9 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
           <svg class="mk" viewBox="0 0 512 512" aria-hidden="true" style="animation:none"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient><clipPath id="fc"><rect width="512" height="512" rx="115"/></clipPath></defs><g clip-path="url(#fc)"><rect width="512" height="512" fill="url(#fg)"/></g><path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/><circle cx="256" cy="200" r="56" fill="#FF7A45"/><polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="txt"><span class="wm">ZAYA <b>App</b></span><span class="tl">Everything near you.</span></span>
         </span>
-        <p>The trusted digital front door to Ethiopia's commerce — connecting customers, merchants, riders, suppliers, and families.</p>
+        <p>The trusted digital front door to Ethiopia's commerce — connecting customers, merchants and the diaspora.</p>
       </div>
-      <div class="fcol"><h4>Solutions</h4><a href="#">Customers</a><a href="#">Merchants</a><a href="#">Riders</a><a href="#">Suppliers</a><a href="#diaspora">Diaspora</a></div>
+      <div class="fcol"><h4>Solutions</h4><a href="#experience">Merchants</a><a href="#experience">Customers</a><a href="#diaspora">Diaspora</a><a href="#pricing">Pricing</a></div>
       <div class="fcol"><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#contact">Contact</a></div>
       <div class="fcol"><h4>Legal</h4><a href="/terms">Terms &amp; Conditions</a><a href="/privacy">Privacy Policy</a><a href="/terms">User Agreement</a></div>
     </div>

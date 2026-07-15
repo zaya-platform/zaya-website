@@ -10,6 +10,8 @@ const index = read('src/pages/index.astro');
 const css = read('src/styles/site.css');
 const siteJs = read('src/scripts/site.js');
 const base = read('src/layouts/Base.astro');
+const faq = read('src/content/data/faq.json');
+const home = read('src/content/data/home.json');
 const pkg = JSON.parse(read('package.json'));
 
 let failures = 0;
@@ -88,6 +90,37 @@ console.log('\nhonesty & no-invented-metrics:');
 {
   check('no count-up on an invented metric (no data-countup attribute added)', !/data-count(-)?up/i.test(index));
   check('hero copy no longer name-drops unbuilt verticals as live', !/customers, riders, suppliers/.test(index));
+}
+
+console.log('\nassistant-CTA declutter (founder: "in too many places"):');
+{
+  const inPageTriggers = (index.match(/data-open-assistant/g) || []).length;
+  check('nav AI button removed (.menu-ai gone)', !/class="menu-ai"/.test(index));
+  check('hero no longer has a competing AI button — secondary is "See how it works"', !/btn-ghost[^>]*data-open-assistant/.test(index) && /btn btn-ghost" href="#experience">See how it works/.test(index));
+  check('hero float-ai card removed', !/float-ai/.test(index));
+  check('at most one deliberate in-page invite + the 3 role deep-links (<=4 triggers)', inPageTriggers <= 4, `found ${inPageTriggers}`);
+  check('the persistent widget launcher is untouched', /id="zassist-invite"[\s\S]*?data-open-assistant/.test(read('src/components/AssistantWidget.astro')));
+}
+
+console.log('\nfull-page honesty reconciliation (Rider/Supplier are not live ZAYA products):');
+{
+  check('no "For riders" / "Why riders love" section', !/Why riders love/.test(index) && !/id="riders"/.test(index));
+  check('no rider gig-work benefit copy (Flexible income / Jobs near you)', !/Flexible income|Jobs near you/.test(index));
+  check('problem grid dropped the Riders column', !/>Riders<\/h3>/.test(index));
+  check('no in-page copy names riders/suppliers as a live audience', !/riders, suppliers|customers, merchants, riders/.test(index));
+  check('meta description reconciled (Base.astro)', !/riders, suppliers/.test(base));
+  check('FAQ + CMS home content reconciled', !/riders|suppliers/i.test(faq) && !/"riders"|"suppliers"/.test(home));
+  check('the diaspora is one clearly-labelled vision section (#diaspora → Our vision)', /id="diaspora"[\s\S]*?Our vision/.test(index));
+  check('dead #eco canvas IIFE (declared retired Riders/Suppliers nodes) removed', !/getElementById\('eco'\)/.test(siteJs));
+  // The only legitimate "supplier" left is the merchant's own supplier invoice (OCR feature).
+  check('remaining "supplier" mention is the OCR merchant-invoice feature only', ((index.match(/supplier/gi) || []).length === 1) && /supplier invoice/i.test(index));
+}
+
+console.log('\nvisual polish (tokens + honest banding):');
+{
+  check('status colors routed through the design tokens (one colour per status)', /\.st\.launch\{color:var\(--status-launching\)/.test(css) && /\.role-status\.launch\{[^}]*color:var\(--status-launching\)/.test(css));
+  check('section banding restored (band sections tinted, not one flat wash)', /\.band\{background:#F4FBFB\}/.test(css) && !/\.showcase,\.solve,\.band\{background:transparent\}/.test(css));
+  check('problem grid is 3 columns after the Riders cut', /\.pain-grid\{display:grid;grid-template-columns:repeat\(3,1fr\)/.test(css));
 }
 
 console.log(`\n${failures ? `✘ ${failures} check(s) failed` : '✔ all interaction contracts passed'}`);
