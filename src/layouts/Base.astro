@@ -47,7 +47,8 @@ const socialImage = new URL('/og.png', Astro.site).href;
     <script is:inline>document.documentElement.classList.add('js')</script>
   </head>
   <body>
-    <slot />
+    <a class="skip-link" href="#main">Skip to content</a>
+    <main id="main"><slot /></main>
     {/* Website AI Assistant — founder-access preview (CR-027/ADR-024, FDR-019 W-D4a).
         Ships while published:false; the public launch is the W-D4b gate. */}
     <AssistantWidget />

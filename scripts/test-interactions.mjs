@@ -12,6 +12,7 @@ const siteJs = read('src/scripts/site.js');
 const base = read('src/layouts/Base.astro');
 const faq = read('src/content/data/faq.json');
 const home = read('src/content/data/home.json');
+const kb = read('netlify/functions/assistant/kb.mjs');
 const pkg = JSON.parse(read('package.json'));
 
 let failures = 0;
@@ -92,13 +93,15 @@ console.log('\nhonesty & no-invented-metrics:');
   check('hero copy no longer name-drops unbuilt verticals as live', !/customers, riders, suppliers/.test(index));
 }
 
-console.log('\nassistant-CTA declutter (founder: "in too many places"):');
+console.log('\nassistant-CTA — the intentional minimal set (widget + 1 header + 1 mid-page):');
 {
   const inPageTriggers = (index.match(/data-open-assistant/g) || []).length;
-  check('nav AI button removed (.menu-ai gone)', !/class="menu-ai"/.test(index));
-  check('hero no longer has a competing AI button — secondary is "See how it works"', !/btn-ghost[^>]*data-open-assistant/.test(index) && /btn btn-ghost" href="#experience">See how it works/.test(index));
+  check('exactly ONE header entry (.menu-ai) restored', (index.match(/class="menu-ai"/g) || []).length === 1);
+  check('exactly ONE mid-page invitation (.ask-band)', (index.match(/class="ask-band"/g) || []).length === 1);
+  check('the 3 role-pane "Ask about X" triggers removed', !/text-btn[^>]*data-open-assistant/.test(index));
+  check('hero has NO competing AI button — secondary is "See how it works"', !/btn-ghost[^>]*data-open-assistant/.test(index) && /See how it works/.test(index));
   check('hero float-ai card removed', !/float-ai/.test(index));
-  check('at most one deliberate in-page invite + the 3 role deep-links (<=4 triggers)', inPageTriggers <= 4, `found ${inPageTriggers}`);
+  check('exactly 2 in-page triggers (header + mid-page); the widget is the AI home', inPageTriggers === 2, `found ${inPageTriggers}`);
   check('the persistent widget launcher is untouched', /id="zassist-invite"[\s\S]*?data-open-assistant/.test(read('src/components/AssistantWidget.astro')));
 }
 
@@ -114,12 +117,23 @@ console.log('\nfull-page honesty reconciliation (Rider/Supplier are not live ZAY
   check('dead #eco canvas IIFE (declared retired Riders/Suppliers nodes) removed', !/getElementById\('eco'\)/.test(siteJs));
   // The only legitimate "supplier" left is the merchant's own supplier invoice (OCR feature).
   check('remaining "supplier" mention is the OCR merchant-invoice feature only', ((index.match(/supplier/gi) || []).length === 1) && /supplier invoice/i.test(index));
+  check('the assistant KB answer no longer names riders/suppliers as a live audience', !/customers, riders, suppliers|riders, suppliers|dhiyeessitootaa fi/.test(kb));
+  check('footer honest-labels legend dropped the orphan "Future" tier', !/Roadmap<\/b> · Future/.test(index));
+  check('home.json residue reconciled (no orphaned cinematic block; diaspora eyebrow = vision)', !/"cinematic"/.test(home) && /Our vision — for the diaspora/.test(home));
+}
+
+console.log('\na11y landmarks + reduced-motion completeness + pain-first narrative:');
+{
+  check('a <main id="main"> landmark wraps the page + a skip-to-content link exists', /<main id="main">/.test(base) && /skip-link/.test(base) && /\.skip-link\{/.test(css));
+  check('reduced-motion also stops the even-photo Ken Burns (!important + nth-child)', /\.shot img,\.shot:nth-child\(2n\) img\{animation:none!important\}/.test(css));
+  check('the page LEADS with the pain (problem section before the audiences toggle)', index.indexOf('id="problems"') > 0 && index.indexOf('id="problems"') < index.indexOf('id="experience"'));
+  check('stacked pale band sections get a hairline seam', /\.band\{background:#F4FBFB;border-top:1px solid/.test(css));
 }
 
 console.log('\nvisual polish (tokens + honest banding):');
 {
   check('status colors routed through the design tokens (one colour per status)', /\.st\.launch\{color:var\(--status-launching\)/.test(css) && /\.role-status\.launch\{[^}]*color:var\(--status-launching\)/.test(css));
-  check('section banding restored (band sections tinted, not one flat wash)', /\.band\{background:#F4FBFB\}/.test(css) && !/\.showcase,\.solve,\.band\{background:transparent\}/.test(css));
+  check('section banding restored (band sections tinted, not one flat wash)', /\.band\{background:#F4FBFB;border-top/.test(css) && !/\.showcase,\.solve,\.band\{background:transparent\}/.test(css));
   check('problem grid is 3 columns after the Riders cut', /\.pain-grid\{display:grid;grid-template-columns:repeat\(3,1fr\)/.test(css));
 }
 

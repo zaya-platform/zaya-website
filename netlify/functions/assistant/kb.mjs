@@ -72,10 +72,10 @@ export const ENTRIES = [
     status: 'fact',
     keywords: ['what is zaya', 'about zaya', 'zaya', 'super app', 'platform', 'ዛያ', 'ምንድን', 'እንታይ', 'maali'],
     answers: {
-      en: "ZAYA is Ethiopia's local-commerce platform — connecting shops, customers, riders, suppliers and diaspora families in one intelligent app. Everything near you.",
-      am: 'ዛያ የኢትዮጵያ የአካባቢ ንግድ መድረክ ነው — ሱቆችን፣ ደንበኞችን፣ አቅራቢዎችንና የዲያስፖራ ቤተሰቦችን በአንድ አፕ የሚያገናኝ። ሁሉም ነገር በአቅራቢያዎ።',
-      om: "ZAYA waltajjii daldala naannoo Itoophiyaa ti — suuqota, maamiltoota, dhiyeessitootaa fi maatii diyaaspooraa appii tokko keessatti wal qunnamsiisa.",
-      ti: 'ዛያ ናይ ኢትዮጵያ መድረኽ ንግዲ ከባቢ እዩ — ድኳናት፣ ዓማዊል፣ ኣቕረብትን ስድራቤታት ዲያስፖራን ኣብ ሓደ ኣፕ ዘራኽብ።',
+      en: "ZAYA is Ethiopia's local-commerce platform — connecting shops, customers and diaspora families in one intelligent app. Everything near you.",
+      am: 'ዛያ የኢትዮጵያ የአካባቢ ንግድ መድረክ ነው — ሱቆችን፣ ደንበኞችንና የዲያስፖራ ቤተሰቦችን በአንድ አፕ የሚያገናኝ። ሁሉም ነገር በአቅራቢያዎ።',
+      om: "ZAYA waltajjii daldala naannoo Itoophiyaa ti — suuqota, maamiltoota fi maatii diyaaspooraa appii tokko keessatti wal qunnamsiisa.",
+      ti: 'ዛያ ናይ ኢትዮጵያ መድረኽ ንግዲ ከባቢ እዩ — ድኳናት፣ ዓማዊልን ስድራቤታት ዲያስፖራን ኣብ ሓደ ኣፕ ዘራኽብ።',
     },
   },
   {

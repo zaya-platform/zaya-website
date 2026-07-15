@@ -46,6 +46,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <div class="item"><a href="#solutions">Solutions</a></div>
       <div class="item"><a href="#pricing">Pricing</a></div>
       <div class="item"><a href="#faq">FAQ</a></div>
+      <button class="menu-ai" type="button" data-open-assistant>Ask ZAYA AI</button>
     </nav>
     <a class="btn btn-primary cta" href="#contact">Join the pilot</a>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-menu">
@@ -104,6 +105,42 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
   </div>
 </div>
 
+<section class="band"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow" id="problems">The problem today</span>
+    <h2>Everyday commerce runs on memory, paper, and guesswork.</h2>
+  </div>
+  <div class="pain-grid">
+    <div class="pain">
+      <h3><span class="d"></span>Customers</h3>
+      <ul>
+        <li>Hard to find the right shops nearby.</li>
+        <li>No way to know prices before you go.</li>
+        <li>Long trips across Addis for small errands.</li>
+        <li>Delivery is slow, informal, or unavailable.</li>
+      </ul>
+    </div>
+    <div class="pain">
+      <h3><span class="d"></span>Merchants</h3>
+      <ul>
+        <li>Stock counted by hand and by memory.</li>
+        <li>Credit tracked on paper that gets lost.</li>
+        <li>Little visibility into what actually sells.</li>
+        <li>No presence online for new customers to find.</li>
+      </ul>
+    </div>
+    <div class="pain">
+      <h3><span class="d"></span>Diaspora</h3>
+      <ul>
+        <li>Hard to support family from far away.</li>
+        <li>Money sent home, hoping it becomes what's needed.</li>
+        <li>No visibility into whether goods arrived.</li>
+        <li>No simple way to buy the exact items back home.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
 <section class="role-section" id="experience">
   <div class="wrap">
     <div class="role-heading">
@@ -119,17 +156,17 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
 
       <article class="role-pane is-active" role="tabpanel" id="role-pane-merchant" aria-labelledby="role-tab-merchant" data-role-pane="merchant">
         <div class="role-media"><img loading="lazy" src={creditBook.src} alt="A shop owner managing the digital credit book with ZAYA" /><span class="role-status live">Live &middot; pilot</span></div>
-        <div class="role-copy"><span class="role-kicker">Run the whole shop from one phone</span><h3>Sell faster. Know your stock. Keep every credit clear.</h3><p>ZAYA gives neighbourhood merchants the everyday tools that matter first&mdash;sales, inventory, credit and a clear view of the day.</p><ul><li>Fast point-of-sale flow</li><li>Live stock tracking</li><li>Digital customer credit book</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Join as a merchant</a><button type="button" class="text-btn" data-open-assistant data-assistant-question="Which ZAYA merchant tools are live in the pilot?">Ask about merchant tools &rarr;</button></div></div>
+        <div class="role-copy"><span class="role-kicker">Run the whole shop from one phone</span><h3>Sell faster. Know your stock. Keep every credit clear.</h3><p>ZAYA gives neighbourhood merchants the everyday tools that matter first&mdash;sales, inventory, credit and a clear view of the day.</p><ul><li>Fast point-of-sale flow</li><li>Live stock tracking</li><li>Digital customer credit book</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Join as a merchant</a></div></div>
       </article>
 
       <article class="role-pane" role="tabpanel" id="role-pane-customer" aria-labelledby="role-tab-customer" data-role-pane="customer" hidden>
         <div class="role-media"><img loading="lazy" src={customerApp.src} alt="A customer comparing local choices with ZAYA" /><span class="role-status launch">Launching</span></div>
-        <div class="role-copy"><span class="role-kicker">Find what you need closer to home</span><h3>Nearby shops, clearer choices and fewer wasted trips.</h3><p>The customer experience is being prepared to help people discover real local stock and compare prices before leaving home.</p><ul><li>Nearby shop discovery</li><li>Price comparison in Birr</li><li>Simple local ordering</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Get launch updates</a><button type="button" class="text-btn" data-open-assistant data-assistant-question="When will the ZAYA customer app launch?">Ask about the launch &rarr;</button></div></div>
+        <div class="role-copy"><span class="role-kicker">Find what you need closer to home</span><h3>Nearby shops, clearer choices and fewer wasted trips.</h3><p>The customer experience is being prepared to help people discover real local stock and compare prices before leaving home.</p><ul><li>Nearby shop discovery</li><li>Price comparison in Birr</li><li>Simple local ordering</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Get launch updates</a></div></div>
       </article>
 
       <article class="role-pane" role="tabpanel" id="role-pane-diaspora" aria-labelledby="role-tab-diaspora" data-role-pane="diaspora" hidden>
         <div class="role-media"><img loading="lazy" src={diasporaFamily.src} alt="A family receiving essential goods at home" /><span class="role-status road">Our vision</span></div>
-        <div class="role-copy"><span class="role-kicker">Our vision for the diaspora</span><h3>Choose the basket. Trust the local shop. See proof it arrived.</h3><p>Where we want to take ZAYA next: choose real goods&mdash;not send money&mdash;through a trusted neighbourhood shop, delivered with proof. On the roadmap, not live yet.</p><ul><li>Choose essential goods</li><li>One clear shelf-price flow</li><li>Local delivery with proof</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Follow the roadmap</a><button type="button" class="text-btn" data-open-assistant data-assistant-question="How will the ZAYA diaspora basket work?">Ask about family support &rarr;</button></div></div>
+        <div class="role-copy"><span class="role-kicker">Our vision for the diaspora</span><h3>Choose the basket. Trust the local shop. See proof it arrived.</h3><p>Where we want to take ZAYA next: choose real goods&mdash;not send money&mdash;through a trusted neighbourhood shop, delivered with proof. On the roadmap, not live yet.</p><ul><li>Choose essential goods</li><li>One clear shelf-price flow</li><li>Local delivery with proof</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Follow the roadmap</a></div></div>
       </article>
     </div>
   </div>
@@ -167,43 +204,6 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
   </div>
 </section>
 
-
-
-<section class="band"><div class="wrap">
-  <div class="sec-head">
-    <span class="eyebrow" id="problems">The problem today</span>
-    <h2>Everyday commerce runs on memory, paper, and guesswork.</h2>
-  </div>
-  <div class="pain-grid">
-    <div class="pain">
-      <h3><span class="d"></span>Customers</h3>
-      <ul>
-        <li>Hard to find the right shops nearby.</li>
-        <li>No way to know prices before you go.</li>
-        <li>Long trips across Addis for small errands.</li>
-        <li>Delivery is slow, informal, or unavailable.</li>
-      </ul>
-    </div>
-    <div class="pain">
-      <h3><span class="d"></span>Merchants</h3>
-      <ul>
-        <li>Stock counted by hand and by memory.</li>
-        <li>Credit tracked on paper that gets lost.</li>
-        <li>Little visibility into what actually sells.</li>
-        <li>No presence online for new customers to find.</li>
-      </ul>
-    </div>
-    <div class="pain">
-      <h3><span class="d"></span>Diaspora</h3>
-      <ul>
-        <li>Hard to support family from far away.</li>
-        <li>Money sent home, hoping it becomes what's needed.</li>
-        <li>No visibility into whether goods arrived.</li>
-        <li>No simple way to buy the exact items back home.</li>
-      </ul>
-    </div>
-  </div>
-</div></section>
 
 
 <section><div class="wrap">
@@ -358,7 +358,7 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
       <div class="fcol"><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#contact">Contact</a></div>
       <div class="fcol"><h4>Legal</h4><a href="/terms">Terms &amp; Conditions</a><a href="/privacy">Privacy Policy</a><a href="/terms">User Agreement</a></div>
     </div>
-    <div class="foot-base"><span>© 2026 ZAYA App PLC · Addis Ababa, Ethiopia</span><span>Honestly labelled: <b style="color:var(--mint)">Live</b> · <b style="color:#F4A261">Launching</b> · <b style="color:#9c8ff0">Roadmap</b> · Future</span></div>
+    <div class="foot-base"><span>© 2026 ZAYA App PLC · Addis Ababa, Ethiopia</span><span>Honestly labelled: <b style="color:var(--mint)">Live</b> · <b style="color:#F4A261">Launching</b> · <b style="color:#9c8ff0">Roadmap</b></span></div>
   </div>
 </footer>
 </Base>
