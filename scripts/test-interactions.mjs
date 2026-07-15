@@ -80,6 +80,14 @@ console.log('\nhero "near-you web" network + professional wave logo (founder rew
   check('the logo is enlarged ~25% (58px desktop, up from 46px)', /\.lock \.mk\{width:58px/.test(css));
   check('the network tilts toward the cursor (desktop + motion-OK only)', /querySelector\('\.hero-web'\)/.test(siteJs) && /hover:hover/.test(siteJs));
   check('reduced-motion gives a calm STATIC constellation (no flow/pulse/tilt)', /\.hw-flow\{stroke-dasharray:none/.test(css) && /\.hero-web\{transform:none!important\}/.test(css));
+  // review fixes (web-dev adversarial pass):
+  check('R5: the network container is a labelled role="img" (name actually exposed)', /class="hero-web" role="img" aria-label=/.test(index));
+  check('R7: the hero visual is NOT reveal-gated (above the fold, shows immediately)', !/hero-visual reveal/.test(index) && /class="hero-visual">/.test(index));
+  check('R9: roadmap/vision nodes read as not-live (dashed, static, dimmed)', /\.hw-flow\.s-road\{animation:none/.test(css) && /s-\$\{n\.status\}/.test(index));
+  check('R3: logo cascade fixed — 58 base + 48 small-phone AFTER it (no dead 55)', /\.lock \.mk\{width:58px;height:58px\}/.test(css) && /@media\(max-width:520px\)\{\.lock \.mk\{width:48px/.test(css));
+  check('R2/R4: bob + hover use independent transform longhands (hover not clobbered)', /@keyframes floaty\{[\s\S]*?translate:0 -4px/.test(css) && /\.lock:hover \.mk\{scale:1\.06;rotate:-3deg/.test(css));
+  check('R1: logo rings hidden (not frozen huge) under reduced-motion', /\.lock \.mk \.rr\{animation:none!important;opacity:0\}/.test(css));
+  check('R8: parallax is rAF-coalesced + rect-cached (no per-event layout thrash)', /requestAnimationFrame\(apply\)/.test(siteJs));
 }
 
 console.log('\nJS-gated fallback (no-JS / failed bundle shows the full static page):');

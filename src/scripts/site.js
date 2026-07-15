@@ -21,12 +21,18 @@
     if(!radar || !hero) return;
     if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
     if(!window.matchMedia('(hover:hover)').matches) return;
+    var rect = null, px = 0, py = 0, ticking = false;
+    function apply(){ ticking = false; if(rect) radar.style.transform = 'rotateY(' + px + 'deg) rotateX(' + py + 'deg)'; }
+    hero.addEventListener('mouseenter', function(){ rect = hero.getBoundingClientRect(); });
     hero.addEventListener('mousemove', function(e){
-      var r = hero.getBoundingClientRect();
-      var dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
-      radar.style.transform = 'rotateY(' + (dx * 7).toFixed(2) + 'deg) rotateX(' + (-dy * 7).toFixed(2) + 'deg)';
+      if(!rect) rect = hero.getBoundingClientRect();
+      px = ((e.clientX - rect.left) / rect.width - 0.5) * 7;
+      py = -((e.clientY - rect.top) / rect.height - 0.5) * 7;
+      if(!ticking){ ticking = true; requestAnimationFrame(apply); }
     });
     hero.addEventListener('mouseleave', function(){ radar.style.transform = ''; });
+    window.addEventListener('resize', function(){ rect = null; });
+    window.addEventListener('scroll', function(){ rect = null; }, { passive: true });
   })();
   // scroll reveal
   (function(){var els=document.querySelectorAll('.reveal,.reveal-seq');if(!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')});return;}
