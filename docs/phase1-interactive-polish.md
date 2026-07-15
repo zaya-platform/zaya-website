@@ -200,3 +200,24 @@ contracts).
    Align it on your next legal pass.
 4. **am/om/ti KB strings** were edited to drop "suppliers"; per the standing rule they
    want a **native-speaker check** before public launch (site is `published:false`).
+
+---
+
+## Pass 3 — full advisor audit folded (10 confirmed honesty + 22 advisory)
+
+**Honesty (every confirmed leak cleared):** meta/OG/Twitter description reworked to the
+real merchant-pilot model (dropped riders/suppliers/diaspora from the snippet); FAQ
+"What is ZAYA?" + the diaspora answer moved to a labelled "on our roadmap" clause (the
+FAQ also feeds the assistant KB); footer about-text reworded; hero sub no longer implies
+live delivery; the two customer-app cards ("Find shops nearby", "Compare fair prices")
+gained the missing Launching pill.
+**Home page — one story, in the founder's order (~18 → 10 sections):** hero → the pain →
+how ZAYA helps → the honest audiences (toggle) → proof → diaspora vision → pricing → FAQ →
+ask → contact. Cut the "For merchants" grid (the toggle carries audiences once) and the
+duplicate hero-proof strip (the trust rail carries the at-a-glance row).
+**Robustness (the unmet claim, now met):** the interaction bundle arms `zr-armed` when it
+runs; the `<head>` guard drops `js` after a 2.5 s timeout if that never happens — so a
+bundle load/parse failure un-hides all content. No content is ever trapped hidden
+(no-JS, disabled-JS, **or** errored-bundle).
+**Measured (vs pre-Phase-1):** NET −4,138 B gzipped (JS −1,080, CSS −409, html −2,649).
+0 new deps / bundles / assets. `npm test` green.
