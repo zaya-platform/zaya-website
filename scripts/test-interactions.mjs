@@ -68,16 +68,26 @@ console.log('\nreduced-motion is honoured (same content, no motion):');
     /\.role-pane[^{]*html\.js \.hero \.copy>\*\{animation:none!important\}/.test(css));
 }
 
-console.log('\nhero ecosystem canvas (#eco, restored + reconciled) + wave logo + less-dark:');
+console.log('\nhero hub-and-spoke (unclipped, interactive, HONEST, ZAYA-brand only):');
 {
-  check('the restored <canvas id="eco"> replaces the SVG web (a labelled hero + ZAYA badge)', /<canvas id="eco"/.test(index) && !/hero-web/.test(index) && !/hw-flow/.test(index) && /class="hero-visual" role="img"/.test(index) && /class="badge"[\s\S]*?>ZAYA</.test(index));
-  check('the canvas draws HONEST nodes only — no riders/suppliers', /getContext\('2d'\)/.test(siteJs) && /'Customers'[\s\S]*'Merchants'/.test(siteJs) && !/'Riders'|'Suppliers'/.test(siteJs));
-  check('the one roadmap capability is DIMMED "coming", not a full-colour live node', /dim:\s*true/.test(siteJs) && /· soon/.test(siteJs));
+  // Hub + node cards are REAL server-rendered HTML — the hero reads even if JS/canvas fails.
+  check('central ZAYA hub is SSR HTML (reads without JS)', /class="hub-core"/.test(index) && /class="hub-mark"/.test(index) && /hub-word">ZAYA</.test(index));
+  check('six node cards rendered from the honest HUB set', /HUB\.map\(/.test(index) && (index.match(/key: '/g) || []).length === 6);
+  check('old canvas chrome removed (no .badge / .stage / hero-web)', !/class="badge"/.test(index) && !/class="stage"/.test(index) && !/hero-web/.test(index));
+  check('the hero is a labelled figure with a decorative canvas layer', /class="hero-visual" role="img"/.test(index) && /<canvas id="eco" aria-hidden/.test(index));
+  // HONEST set: six nodes only — three participants + three live/launching capabilities.
+  check('exactly the six honest node labels', ['Customers', 'Merchants', 'Shops', 'Browse nearby', 'Compare prices', 'Credit book'].every((l) => index.includes(`label: '${l}'`)));
+  check('no unbuilt vertical shown as a live node (no rider/supplier/delivery/diaspora label)', !/label: '[^']*(Rider|Suppl|Deliver|Diaspora)/i.test(index));
+  // ZAYA brand only — never the reference graphic's purple, never a Claude/Fable/Anthropic mark.
+  check('brand only: no purple hex, no Claude/Fable/Anthropic mark', !/#7c3aed|#8b5cf6|#a855f7|#9333ea|#6d28d9|rebeccapurple/i.test(css + index) && !/\b(Claude|Fable|Anthropic)\b/.test(index));
+  check('the hub carries the ZAYA mark (white droplet + coral node + wave)', /hub-mark[\s\S]*?#FF7A45[\s\S]*?polyline/.test(index));
+  // Canvas draws only the spokes/pulses, measuring the cards' live layout so they always meet.
+  check('spokes measure live card positions (offsetLeft/Top — transform-independent)', /core\.offsetLeft/.test(siteJs) && /card\.offsetLeft/.test(siteJs) && /function boxEdge/.test(siteJs) && !/'Riders'|'Suppliers'/.test(siteJs));
   check('PERF: loop pauses offscreen (IntersectionObserver) + hidden tab (visibilitychange) via cancelAnimationFrame', /IntersectionObserver/.test(siteJs) && /visibilitychange/.test(siteJs) && /cancelAnimationFrame/.test(siteJs));
   check('A11Y: reduced-motion draws ONE static frame (never nothing)', /if\(reduce\)\{ draw\(0\)/.test(siteJs));
   check('degrades gracefully: no 2d ctx -> no-op; decorative aria-hidden canvas', /getContext\('2d'\); if\(!ctx\) return/.test(siteJs) && /id="eco" aria-hidden/.test(index));
   check('no new dep (vanilla canvas)', Object.keys(pkg.dependencies || {}).sort().join(',') === '@astrojs/sitemap,astro');
-  check('less-dark: hero on the LIGHT background (no dark #0c1830 panel); badge text is navy', !/#0c1830/.test(css) && /\.badge \.t\{[^}]*color:var\(--navy\)/.test(css));
+  check('less-dark: hero on the LIGHT background (no dark #0c1830 panel); node labels navy', !/#0c1830/.test(css) && /\.hub-name\{[^}]*color:var\(--navy\)/.test(css));
   check('less-dark: the ask-band is a LIGHT band now (dark text), not near-black navy', /\.ask-band\{[^}]*#f4fbfb[\s\S]*?color:var\(--navy\)/.test(css) && !/\.ask-band\{[^}]*#14213d/.test(css));
   check('less-dark: the role-explorer is softened off near-black (no #15223e)', !/role-explorer\{background:linear-gradient\(145deg,#15223e/.test(css));
   // logo (unchanged from the review-fixed state):
@@ -85,12 +95,18 @@ console.log('\nhero ecosystem canvas (#eco, restored + reconciled) + wave logo +
   check('the logo is +25% (58 base + 48 small-phone AFTER it, no dead 55)', /\.lock \.mk\{width:58px;height:58px\}/.test(css) && /@media\(max-width:520px\)\{\.lock \.mk\{width:48px/.test(css));
   check('bob + hover use independent transform longhands', /@keyframes floaty\{[\s\S]*?translate:0 -4px/.test(css) && /\.lock:hover \.mk\{scale:1\.06;rotate:-3deg/.test(css));
   check('logo rings hidden (not frozen huge) under reduced-motion', /\.lock \.mk \.rr\{animation:none!important;opacity:0\}/.test(css));
-  // eco-canvas review fixes:
-  check('resize repaints a static frame when the loop is not running (no blank canvas)', /addEventListener\('resize', function\(\)\{ size\(\); if\(!running\) draw\(0\)/.test(siteJs));
-  check('the invariant hub gradient is cached in size() (not allocated per frame)', /hubGrad = ctx\.createRadialGradient/.test(siteJs) && /ctx\.fillStyle = hubGrad;/.test(siteJs));
+  // hub-and-spoke behaviour:
+  check('FIT: the ring scales to its square via container units + never-clip mobile sizing', /\.hubwrap\{[^}]*container-type:inline-size[^}]*aspect-ratio:1/.test(css) && /\.hubwrap\{width:min\(92vw,42vh\)\}/.test(css));
+  check('FIT: mobile copy compacted so the whole ring clears the fold (chips hidden, sub clamped)', /\.hero \.who\{display:none\}/.test(css) && /-webkit-line-clamp:2/.test(css));
+  check('review fix: cqw geometry has an @supports fallback (old browsers do not collapse the ring)', /@supports not \(container-type:inline-size\)\{[\s\S]*?\.hub-node\{width:20%/.test(css));
+  check('review fix: hub word carries a legibility shadow (AA over the gradient in landscape)', /\.hub-word\{[^}]*text-shadow:0 1px 3px rgba\(16,35,63,\.55\)/.test(css));
+  check('review fix: DPR is refreshed inside measure() (sharp after zoom/monitor move)', /function measure\(\)\{\s*DPR = Math\.min\(window\.devicePixelRatio/.test(siteJs));
+  check('review fix: parallax handler no-ops under reduced-motion but stays wired (works if toggled off)', /pointermove', function\(ev\)\{\s*if\(reduce\) return;/.test(siteJs) && !/pointer:fine'\)\.matches && !reduce/.test(siteJs));
+  check('resize re-measures + repaints a static frame when the loop is not running', /addEventListener\('resize', function\(\)\{ measure\(\); if\(!running\) draw\(0\)/.test(siteJs));
+  check('INTERACTIVE: nodes highlight on hover AND tap (mouseenter + click toggle is-on)', /mouseenter[\s\S]{0,80}classList\.add\('is-on'\)/.test(siteJs) && /click[\s\S]{0,80}classList\.toggle\('is-on'\)/.test(siteJs) && /\.hub-node:hover,\.hub-node\.is-on/.test(css));
+  check('INTERACTIVE: cursor-tilt parallax, fine-pointer only (touch uses tap)', /hover:hover\) and \(pointer:fine/.test(siteJs) && /pointermove/.test(siteJs));
   check('reduced-motion is re-evaluated if the user toggles it while the page is open', /mq\.addEventListener\('change'/.test(siteJs));
-  check('honesty: Orders (ordering gated) + Smart search (roadmap) are BOTH dimmed', (siteJs.match(/dim:\s*true/g) || []).length === 2);
-  check('dimmed node LABELS stay legible (0.9 alpha), only the dot/line dim', /globalAlpha = m\.dim \? 0\.9/.test(siteJs));
+  check('reduced-motion also stills the parallax tilt (no transform)', /\.hubwrap\{transition:none!important;transform:none!important\}/.test(css));
   check('less-dark: role-explorer tabs are AA-legible (white .85 + mint-pale spans)', /\.role-tabs button\{[^}]*rgba\(255,255,255,\.85\)/.test(css) && /\.role-tabs button span\{[^}]*var\(--mint-pale\)/.test(css));
 }
 

@@ -1,8 +1,6 @@
-// ZAYA site interactions — ecosystem canvas, lightbox, scroll-reveal.
-// Ported from approved V2. Runs client-side (Astro <script>).
-// (Removed: the dormant #eco ecosystem-canvas IIFE. Its <canvas id="eco"> was
-//  taken out of the page in the V2 redesign, so it never ran — and its source
-//  still declared retired "Riders"/"Suppliers" nodes. Deleted for honesty + weight.)
+// ZAYA site interactions — hero hub-and-spoke canvas, lightbox, scroll-reveal,
+// dropdown menus, role tabs, FAQ, forms. Astro-native, vanilla, no deps. Runs
+// client-side (Astro <script>), JS-gated so the static page always renders.
 
   // Signal that the interaction bundle actually executed. The html.js fallback in
   // <head> drops 'js' (un-hiding all reveal content) if this never fires — so a
@@ -13,68 +11,59 @@
     document.querySelectorAll('.shot,.pframe').forEach(function(el){el.addEventListener('click',function(){var g=el.querySelector('img');if(!g)return;im.src=g.src;var c=el.querySelector('.cap');cp.textContent=c?c.textContent:'';lb.classList.add('open');});});
     lb.addEventListener('click',function(){lb.classList.remove('open');});
   })();
-  // Ecosystem canvas (#eco): the ZAYA hub with pulses flowing out to the HONEST audience +
-  // capability nodes (no riders/suppliers; roadmap items are DIMMED "coming"). Vanilla
-  // canvas, no deps. Pauses when offscreen or the tab is hidden (cancelAnimationFrame);
-  // reduced-motion draws ONE static frame. Decorative (aria-hidden) — the hero reads
-  // fully without it, and it no-ops if canvas/2d is unavailable.
+  // Hero hub-and-spoke (#eco): the central ZAYA hub linked to six honest nodes. The
+  // hub + node cards are real DOM; this canvas draws ONLY the dashed teal spokes and
+  // the travelling pulses (the "wave") between them — measuring each card's live
+  // layout position (offsetLeft/Top, which ignore CSS transforms) so the spokes always
+  // meet the cards, at any size and while the diagram parallax-tilts. Vanilla canvas,
+  // no deps. Pauses offscreen / on a hidden tab (cancelAnimationFrame); reduced-motion
+  // draws ONE static frame. Decorative (aria-hidden) — the hero reads fully without it
+  // (hub + labelled cards are HTML), and it no-ops if canvas/2d is unavailable.
   (function(){
     var c = document.getElementById('eco'); if(!c) return;
     var ctx = c.getContext && c.getContext('2d'); if(!ctx) return;
-    var DPR = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0, hubGrad = null;
+    var wrap = c.parentNode, core = wrap.querySelector('.hub-core');
+    var cards = [].slice.call(wrap.querySelectorAll('.hub-node'));
+    if(!core || !cards.length) return;
+    var DPR = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0;
     var mq = window.matchMedia('(prefers-reduced-motion:reduce)'), reduce = mq.matches;
-    var TEAL = '#0EA5A4', CORAL = '#FF7A45', NAVY = '#1E2A4A', DIM = '#93A0AD';
-    // Honest set only. Live: Customers/Merchants/Shops + Sales/Credit book/Inventory/
-    // Find nearby/Price comparison. DIMMED "· soon" (not full-colour live): Orders (customer
-    // ordering is gated off at pilot) + Smart search (roadmap). No riders/suppliers.
-    var nodes = [
-      { l:'Customers', t:'p', a:-90, r:.86, c:TEAL },
-      { l:'Merchants', t:'p', a:30,  r:.86, c:TEAL },
-      { l:'Shops',     t:'p', a:150, r:.86, c:CORAL },
-      { l:'Find nearby',      t:'f', a:-64, r:.54, c:NAVY },
-      { l:'Price comparison', t:'f', a:-13, r:.54, c:NAVY },
-      { l:'Sales',            t:'f', a:38,  r:.54, c:NAVY },
-      { l:'Credit book',      t:'f', a:90,  r:.54, c:NAVY },
-      { l:'Inventory',        t:'f', a:141, r:.54, c:NAVY },
-      { l:'Orders',           t:'f', a:192, r:.54, c:DIM, dim:true },
-      { l:'Smart search',     t:'f', a:243, r:.54, c:DIM, dim:true }
-    ];
-    function size(){ var r = c.getBoundingClientRect(); W = r.width; H = r.height; c.width = W * DPR; c.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      hubGrad = ctx.createRadialGradient(W / 2, H / 2, 4, W / 2, H / 2, 54); hubGrad.addColorStop(0, 'rgba(19,183,180,.28)'); hubGrad.addColorStop(1, 'rgba(19,183,180,0)'); }
-    window.addEventListener('resize', function(){ size(); if(!running) draw(0); }); size();
-    function pos(n, tt){ var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.44;
-      var bob = reduce ? 0 : Math.sin(tt / 1000 + n.a) * (n.t === 'p' ? 7 : 5);
-      var ar = n.a * Math.PI / 180;
-      return { x: cx + Math.cos(ar) * R * n.r, y: cy + Math.sin(ar) * R * n.r + bob }; }
+    var TEAL = 'rgba(14,165,164,', CORAL = '#FF7A45';
+    var hub = { x:0, y:0, r:0 }, pts = [];
+    function measure(){
+      DPR = Math.min(window.devicePixelRatio || 1, 2);   // refresh: DPR changes on zoom / monitor move
+      var r = c.getBoundingClientRect(); W = r.width; H = r.height;
+      c.width = W * DPR; c.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      hub.x = core.offsetLeft; hub.y = core.offsetTop; hub.r = core.offsetWidth / 2;
+      pts = cards.map(function(card){
+        return { card: card, x: card.offsetLeft, y: card.offsetTop,
+          hw: card.offsetWidth / 2, hh: card.offsetHeight / 2,
+          coral: card.classList.contains('hub-coral') };
+      });
+    }
+    // point on a half-(hw,hh) box centred at (bx,by), along the ray toward (tx,ty)
+    function boxEdge(bx, by, hw, hh, tx, ty){
+      var dx = tx - bx, dy = ty - by, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d;
+      var t = Math.min(hw / Math.max(Math.abs(ux), 1e-4), hh / Math.max(Math.abs(uy), 1e-4));
+      return { x: bx + ux * t, y: by + uy * t };
+    }
     function draw(tt){
       ctx.clearRect(0, 0, W, H);
-      var cx = W / 2, cy = H / 2, i, n, p;
-      for(i = 0; i < nodes.length; i++){ n = nodes[i]; p = pos(n, tt);
-        var a0 = n.dim ? 0.12 : 0.28, a1 = n.dim ? 0.03 : 0.05;
-        var g = ctx.createLinearGradient(cx, cy, p.x, p.y);
-        g.addColorStop(0, 'rgba(19,183,180,' + a0 + ')'); g.addColorStop(1, 'rgba(19,183,180,' + a1 + ')');
-        ctx.strokeStyle = g; ctx.lineWidth = n.t === 'p' ? 1.4 : 1;
-        ctx.setLineDash(n.dim ? [3, 4] : []);
-        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(p.x, p.y); ctx.stroke();
+      for(var i = 0; i < pts.length; i++){
+        var p = pts[i];
+        var dx = p.x - hub.x, dy = p.y - hub.y, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d;
+        var sx = hub.x + ux * (hub.r + 2), sy = hub.y + uy * (hub.r + 2);          // start at hub edge
+        var e = boxEdge(p.x, p.y, p.hw + 2, p.hh + 2, hub.x, hub.y);               // end at card near-edge
+        var ex = e.x, ey = e.y, on = p.card.classList.contains('is-on');
+        ctx.setLineDash([5, 5]); ctx.lineDashOffset = reduce ? 0 : -(tt / 26) % 10;
+        ctx.strokeStyle = TEAL + (on ? '.85)' : '.4)'); ctx.lineWidth = on ? 2 : 1.4;
+        ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
         ctx.setLineDash([]);
-        if(!reduce && !n.dim){ var ph = ((tt / 1600) + i * 0.12) % 1, px = cx + (p.x - cx) * ph, py = cy + (p.y - cy) * ph;
-          ctx.beginPath(); ctx.arc(px, py, 2.4, 0, 7); ctx.fillStyle = n.t === 'p' ? 'rgba(255,122,69,.85)' : 'rgba(19,183,180,.7)'; ctx.fill(); }
-      }
-      ctx.fillStyle = hubGrad; ctx.beginPath(); ctx.arc(cx, cy, 54, 0, 7); ctx.fill();
-      ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 7); ctx.fillStyle = '#fff'; ctx.fill();
-      ctx.lineWidth = 2.5; ctx.strokeStyle = TEAL; ctx.stroke();
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      for(i = 0; i < nodes.length; i++){ var m = nodes[i], q = pos(m, tt), rad = m.t === 'p' ? 7 : 4.5;
-        ctx.globalAlpha = m.dim ? 0.55 : 1;
-        ctx.beginPath(); ctx.arc(q.x, q.y, rad + 4, 0, 7); ctx.fillStyle = '#fff'; ctx.fill();
-        ctx.beginPath(); ctx.arc(q.x, q.y, rad, 0, 7); ctx.fillStyle = m.c; ctx.fill();
-        ctx.globalAlpha = m.dim ? 0.9 : 1; // label stays legible even when the node is dimmed
-        ctx.font = (m.t === 'p' ? '700 ' : '600 ') + (m.t === 'p' ? 13 : 11) + "px 'Poppins','Segoe UI',system-ui,sans-serif";
-        ctx.fillStyle = m.t === 'p' ? NAVY : '#54617A';
-        var ly = q.y + (q.y < cy ? -rad - 11 : rad + 13), lab = m.l + (m.dim ? ' · soon' : '');
-        ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.strokeText(lab, q.x, ly);
-        ctx.fillText(lab, q.x, ly);
-        ctx.globalAlpha = 1;
+        ctx.fillStyle = TEAL + '.55)';                                            // connection dots
+        ctx.beginPath(); ctx.arc(sx, sy, 2, 0, 7); ctx.fill();
+        ctx.beginPath(); ctx.arc(ex, ey, 2, 0, 7); ctx.fill();
+        if(!reduce){ var ph = ((tt / 1500) + i * 0.18) % 1, mx = sx + (ex - sx) * ph, my = sy + (ey - sy) * ph;
+          ctx.beginPath(); ctx.arc(mx, my, on ? 3.4 : 2.6, 0, 7);
+          ctx.fillStyle = on ? (p.coral ? CORAL : 'rgba(14,165,164,.95)') : TEAL + '.8)'; ctx.fill(); }
       }
     }
     var raf = null, running = false, visible = true, near = true;
@@ -82,10 +71,33 @@
     function start(){ if(running || reduce) return; running = true; raf = requestAnimationFrame(frame); }
     function stop(){ running = false; if(raf) cancelAnimationFrame(raf); raf = null; }
     function update(){ if(near && visible && !reduce){ start(); } else { stop(); if(near) draw(0); } }
+    measure();
+    window.addEventListener('resize', function(){ measure(); if(!running) draw(0); });
+    if(window.document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ measure(); if(!running) draw(0); }); }
+    // hover / tap emphasis — brightens the node's spoke + pulse (labels are always visible)
+    cards.forEach(function(card){
+      card.addEventListener('mouseenter', function(){ card.classList.add('is-on'); if(!running) draw(0); });
+      card.addEventListener('mouseleave', function(){ card.classList.remove('is-on'); if(!running) draw(0); });
+      card.addEventListener('click', function(){ card.classList.toggle('is-on'); if(!running) draw(0); });
+    });
+    // cursor-tilt parallax — fine pointer only (touch uses tap). Listeners are wired
+    // unconditionally but the handler no-ops while reduced-motion is active, so if the
+    // user turns reduced-motion OFF mid-session the tilt starts working (and CSS also
+    // pins transform:none under reduced-motion, so it can never move meanwhile).
+    if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+      wrap.addEventListener('pointermove', function(ev){
+        if(reduce) return;
+        var b = wrap.getBoundingClientRect();
+        var rx = (ev.clientX - b.left) / b.width - .5, ry = (ev.clientY - b.top) / b.height - .5;
+        wrap.style.setProperty('--ty', (rx * 7).toFixed(2) + 'deg');
+        wrap.style.setProperty('--tx', (ry * -7).toFixed(2) + 'deg');
+      });
+      wrap.addEventListener('pointerleave', function(){ wrap.style.setProperty('--tx', '0deg'); wrap.style.setProperty('--ty', '0deg'); });
+    }
     if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ near = es[0].isIntersecting; update(); }, { rootMargin: '150px' }).observe(c); }
     document.addEventListener('visibilitychange', function(){ visible = !document.hidden; update(); });
     // Re-evaluate the OS reduced-motion setting if the user toggles it while the page is open.
-    if(mq.addEventListener){ mq.addEventListener('change', function(e){ reduce = e.matches; if(reduce){ stop(); draw(0); } else { update(); } }); }
+    if(mq.addEventListener){ mq.addEventListener('change', function(e){ reduce = e.matches; if(reduce){ stop(); measure(); draw(0); } else { update(); } }); }
     if(reduce){ draw(0); } else { update(); }
   })();
   // scroll reveal
