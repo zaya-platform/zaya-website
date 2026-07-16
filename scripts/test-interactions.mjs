@@ -68,26 +68,30 @@ console.log('\nreduced-motion is honoured (same content, no motion):');
     /\.role-pane[^{]*html\.js \.hero \.copy>\*\{animation:none!important\}/.test(css));
 }
 
-console.log('\nhero "near-you web" network + professional wave logo (founder rework):');
+console.log('\nhero ecosystem canvas (#eco, restored + reconciled) + wave logo + less-dark:');
 {
-  check('the static hero photo is replaced by the interconnected network', !/hero-photo/.test(index) && /hero-web/.test(index));
-  check('six honest icon nodes wired to a central ZAYA hub', /hw-node/.test(index) && (index.match(/\{ key: '/g) || []).length === 6 && /hw-hub/.test(index) && /hw-pin/.test(index));
-  check('pulses flow OUTWARD along the links (the brand wave)', /hw-flow/.test(index) && /@keyframes hwFlow/.test(css) && /stroke-dashoffset:-155/.test(css));
-  check('nodes carry icons + labels, coloured by the brand tokens', /hw-ic/.test(index) && /hw-label/.test(index) && /\.hw-node\.t-teal \.hw-dot\{stroke:#13B7B4\}/.test(css));
-  check('the network names only honest nodes (no rider/supplier)', /Merchants[\s\S]*Customers[\s\S]*Diaspora/.test(index) && !/WEB_NODES[\s\S]*rider/i.test(index));
-  check('the removed photo import is gone (no unused import / stale asset)', !/storefront-wide/.test(index) && !/storefrontWide/.test(index));
-  check('the logo radar rings are now styled + animated (the "wave" — was unstyled)', /\.lock \.mk \.rr\{[^}]*stroke:#fff[^}]*animation:mkRadar/.test(css));
-  check('the logo is enlarged ~25% (58px desktop, up from 46px)', /\.lock \.mk\{width:58px/.test(css));
-  check('the network tilts toward the cursor (desktop + motion-OK only)', /querySelector\('\.hero-web'\)/.test(siteJs) && /hover:hover/.test(siteJs));
-  check('reduced-motion gives a calm STATIC constellation (no flow/pulse/tilt)', /\.hw-flow\{stroke-dasharray:none/.test(css) && /\.hero-web\{transform:none!important\}/.test(css));
-  // review fixes (web-dev adversarial pass):
-  check('R5: the network container is a labelled role="img" (name actually exposed)', /class="hero-web" role="img" aria-label=/.test(index));
-  check('R7: the hero visual is NOT reveal-gated (above the fold, shows immediately)', !/hero-visual reveal/.test(index) && /class="hero-visual">/.test(index));
-  check('R9: roadmap/vision nodes read as not-live (dashed, static, dimmed)', /\.hw-flow\.s-road\{animation:none/.test(css) && /s-\$\{n\.status\}/.test(index));
-  check('R3: logo cascade fixed — 58 base + 48 small-phone AFTER it (no dead 55)', /\.lock \.mk\{width:58px;height:58px\}/.test(css) && /@media\(max-width:520px\)\{\.lock \.mk\{width:48px/.test(css));
-  check('R2/R4: bob + hover use independent transform longhands (hover not clobbered)', /@keyframes floaty\{[\s\S]*?translate:0 -4px/.test(css) && /\.lock:hover \.mk\{scale:1\.06;rotate:-3deg/.test(css));
-  check('R1: logo rings hidden (not frozen huge) under reduced-motion', /\.lock \.mk \.rr\{animation:none!important;opacity:0\}/.test(css));
-  check('R8: parallax is rAF-coalesced + rect-cached (no per-event layout thrash)', /requestAnimationFrame\(apply\)/.test(siteJs));
+  check('the restored <canvas id="eco"> replaces the SVG web (a labelled hero + ZAYA badge)', /<canvas id="eco"/.test(index) && !/hero-web/.test(index) && !/hw-flow/.test(index) && /class="hero-visual" role="img"/.test(index) && /class="badge"[\s\S]*?>ZAYA</.test(index));
+  check('the canvas draws HONEST nodes only — no riders/suppliers', /getContext\('2d'\)/.test(siteJs) && /'Customers'[\s\S]*'Merchants'/.test(siteJs) && !/'Riders'|'Suppliers'/.test(siteJs));
+  check('the one roadmap capability is DIMMED "coming", not a full-colour live node', /dim:\s*true/.test(siteJs) && /· soon/.test(siteJs));
+  check('PERF: loop pauses offscreen (IntersectionObserver) + hidden tab (visibilitychange) via cancelAnimationFrame', /IntersectionObserver/.test(siteJs) && /visibilitychange/.test(siteJs) && /cancelAnimationFrame/.test(siteJs));
+  check('A11Y: reduced-motion draws ONE static frame (never nothing)', /if\(reduce\)\{ draw\(0\)/.test(siteJs));
+  check('degrades gracefully: no 2d ctx -> no-op; decorative aria-hidden canvas', /getContext\('2d'\); if\(!ctx\) return/.test(siteJs) && /id="eco" aria-hidden/.test(index));
+  check('no new dep (vanilla canvas)', Object.keys(pkg.dependencies || {}).sort().join(',') === '@astrojs/sitemap,astro');
+  check('less-dark: hero on the LIGHT background (no dark #0c1830 panel); badge text is navy', !/#0c1830/.test(css) && /\.badge \.t\{[^}]*color:var\(--navy\)/.test(css));
+  check('less-dark: the ask-band is a LIGHT band now (dark text), not near-black navy', /\.ask-band\{[^}]*#f4fbfb[\s\S]*?color:var\(--navy\)/.test(css) && !/\.ask-band\{[^}]*#14213d/.test(css));
+  check('less-dark: the role-explorer is softened off near-black (no #15223e)', !/role-explorer\{background:linear-gradient\(145deg,#15223e/.test(css));
+  // logo (unchanged from the review-fixed state):
+  check('the logo radar rings animate (the "wave" — was unstyled)', /\.lock \.mk \.rr\{[^}]*stroke:#fff[^}]*animation:mkRadar/.test(css));
+  check('the logo is +25% (58 base + 48 small-phone AFTER it, no dead 55)', /\.lock \.mk\{width:58px;height:58px\}/.test(css) && /@media\(max-width:520px\)\{\.lock \.mk\{width:48px/.test(css));
+  check('bob + hover use independent transform longhands', /@keyframes floaty\{[\s\S]*?translate:0 -4px/.test(css) && /\.lock:hover \.mk\{scale:1\.06;rotate:-3deg/.test(css));
+  check('logo rings hidden (not frozen huge) under reduced-motion', /\.lock \.mk \.rr\{animation:none!important;opacity:0\}/.test(css));
+  // eco-canvas review fixes:
+  check('resize repaints a static frame when the loop is not running (no blank canvas)', /addEventListener\('resize', function\(\)\{ size\(\); if\(!running\) draw\(0\)/.test(siteJs));
+  check('the invariant hub gradient is cached in size() (not allocated per frame)', /hubGrad = ctx\.createRadialGradient/.test(siteJs) && /ctx\.fillStyle = hubGrad;/.test(siteJs));
+  check('reduced-motion is re-evaluated if the user toggles it while the page is open', /mq\.addEventListener\('change'/.test(siteJs));
+  check('honesty: Orders (ordering gated) + Smart search (roadmap) are BOTH dimmed', (siteJs.match(/dim:\s*true/g) || []).length === 2);
+  check('dimmed node LABELS stay legible (0.9 alpha), only the dot/line dim', /globalAlpha = m\.dim \? 0\.9/.test(siteJs));
+  check('less-dark: role-explorer tabs are AA-legible (white .85 + mint-pale spans)', /\.role-tabs button\{[^}]*rgba\(255,255,255,\.85\)/.test(css) && /\.role-tabs button span\{[^}]*var\(--mint-pale\)/.test(css));
 }
 
 console.log('\nJS-gated fallback (no-JS / failed bundle shows the full static page):');
@@ -136,7 +140,7 @@ console.log('\nfull-page honesty reconciliation (Rider/Supplier are not live ZAY
   check('meta description reconciled (Base.astro)', !/riders, suppliers/.test(base));
   check('FAQ + CMS home content reconciled', !/riders|suppliers/i.test(faq) && !/"riders"|"suppliers"/.test(home));
   check('the diaspora is one clearly-labelled vision section (#diaspora → Our vision)', /id="diaspora"[\s\S]*?Our vision/.test(index));
-  check('dead #eco canvas IIFE (declared retired Riders/Suppliers nodes) removed', !/getElementById\('eco'\)/.test(siteJs));
+  check('the restored #eco canvas is honest (present, but no rider/supplier nodes)', /getElementById\('eco'\)/.test(siteJs) && !/'Riders'|'Suppliers'/.test(siteJs));
   // The only legitimate "supplier" left is the merchant's own supplier invoice (OCR feature).
   check('remaining "supplier" mention is the OCR merchant-invoice feature only', ((index.match(/supplier/gi) || []).length === 1) && /supplier invoice/i.test(index));
   check('the assistant KB answer no longer names riders/suppliers as a live audience', !/customers, riders, suppliers|riders, suppliers|dhiyeessitootaa fi/.test(kb));
