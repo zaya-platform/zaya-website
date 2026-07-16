@@ -21,9 +21,12 @@
   (function(){
     var c = document.getElementById('eco'); if(!c) return;
     var ctx = c.getContext && c.getContext('2d'); if(!ctx) return;
-    var DPR = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0;
-    var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var DPR = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0, hubGrad = null;
+    var mq = window.matchMedia('(prefers-reduced-motion:reduce)'), reduce = mq.matches;
     var TEAL = '#0EA5A4', CORAL = '#FF7A45', NAVY = '#1E2A4A', DIM = '#93A0AD';
+    // Honest set only. Live: Customers/Merchants/Shops + Sales/Credit book/Inventory/
+    // Find nearby/Price comparison. DIMMED "· soon" (not full-colour live): Orders (customer
+    // ordering is gated off at pilot) + Smart search (roadmap). No riders/suppliers.
     var nodes = [
       { l:'Customers', t:'p', a:-90, r:.86, c:TEAL },
       { l:'Merchants', t:'p', a:30,  r:.86, c:TEAL },
@@ -33,11 +36,12 @@
       { l:'Sales',            t:'f', a:38,  r:.54, c:NAVY },
       { l:'Credit book',      t:'f', a:90,  r:.54, c:NAVY },
       { l:'Inventory',        t:'f', a:141, r:.54, c:NAVY },
-      { l:'Orders',           t:'f', a:192, r:.54, c:NAVY },
+      { l:'Orders',           t:'f', a:192, r:.54, c:DIM, dim:true },
       { l:'Smart search',     t:'f', a:243, r:.54, c:DIM, dim:true }
     ];
-    function size(){ var r = c.getBoundingClientRect(); W = r.width; H = r.height; c.width = W * DPR; c.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
-    window.addEventListener('resize', size); size();
+    function size(){ var r = c.getBoundingClientRect(); W = r.width; H = r.height; c.width = W * DPR; c.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      hubGrad = ctx.createRadialGradient(W / 2, H / 2, 4, W / 2, H / 2, 54); hubGrad.addColorStop(0, 'rgba(19,183,180,.28)'); hubGrad.addColorStop(1, 'rgba(19,183,180,0)'); }
+    window.addEventListener('resize', function(){ size(); if(!running) draw(0); }); size();
     function pos(n, tt){ var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.44;
       var bob = reduce ? 0 : Math.sin(tt / 1000 + n.a) * (n.t === 'p' ? 7 : 5);
       var ar = n.a * Math.PI / 180;
@@ -56,8 +60,7 @@
         if(!reduce && !n.dim){ var ph = ((tt / 1600) + i * 0.12) % 1, px = cx + (p.x - cx) * ph, py = cy + (p.y - cy) * ph;
           ctx.beginPath(); ctx.arc(px, py, 2.4, 0, 7); ctx.fillStyle = n.t === 'p' ? 'rgba(255,122,69,.85)' : 'rgba(19,183,180,.7)'; ctx.fill(); }
       }
-      var hg = ctx.createRadialGradient(cx, cy, 4, cx, cy, 54); hg.addColorStop(0, 'rgba(19,183,180,.28)'); hg.addColorStop(1, 'rgba(19,183,180,0)');
-      ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(cx, cy, 54, 0, 7); ctx.fill();
+      ctx.fillStyle = hubGrad; ctx.beginPath(); ctx.arc(cx, cy, 54, 0, 7); ctx.fill();
       ctx.beginPath(); ctx.arc(cx, cy, 30, 0, 7); ctx.fillStyle = '#fff'; ctx.fill();
       ctx.lineWidth = 2.5; ctx.strokeStyle = TEAL; ctx.stroke();
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -65,6 +68,7 @@
         ctx.globalAlpha = m.dim ? 0.55 : 1;
         ctx.beginPath(); ctx.arc(q.x, q.y, rad + 4, 0, 7); ctx.fillStyle = '#fff'; ctx.fill();
         ctx.beginPath(); ctx.arc(q.x, q.y, rad, 0, 7); ctx.fillStyle = m.c; ctx.fill();
+        ctx.globalAlpha = m.dim ? 0.9 : 1; // label stays legible even when the node is dimmed
         ctx.font = (m.t === 'p' ? '700 ' : '600 ') + (m.t === 'p' ? 13 : 11) + "px 'Poppins','Segoe UI',system-ui,sans-serif";
         ctx.fillStyle = m.t === 'p' ? NAVY : '#54617A';
         var ly = q.y + (q.y < cy ? -rad - 11 : rad + 13), lab = m.l + (m.dim ? ' · soon' : '');
@@ -80,6 +84,8 @@
     function update(){ if(near && visible && !reduce){ start(); } else { stop(); if(near) draw(0); } }
     if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ near = es[0].isIntersecting; update(); }, { rootMargin: '150px' }).observe(c); }
     document.addEventListener('visibilitychange', function(){ visible = !document.hidden; update(); });
+    // Re-evaluate the OS reduced-motion setting if the user toggles it while the page is open.
+    if(mq.addEventListener){ mq.addEventListener('change', function(e){ reduce = e.matches; if(reduce){ stop(); draw(0); } else { update(); } }); }
     if(reduce){ draw(0); } else { update(); }
   })();
   // scroll reveal

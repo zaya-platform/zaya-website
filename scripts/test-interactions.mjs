@@ -85,6 +85,13 @@ console.log('\nhero ecosystem canvas (#eco, restored + reconciled) + wave logo +
   check('the logo is +25% (58 base + 48 small-phone AFTER it, no dead 55)', /\.lock \.mk\{width:58px;height:58px\}/.test(css) && /@media\(max-width:520px\)\{\.lock \.mk\{width:48px/.test(css));
   check('bob + hover use independent transform longhands', /@keyframes floaty\{[\s\S]*?translate:0 -4px/.test(css) && /\.lock:hover \.mk\{scale:1\.06;rotate:-3deg/.test(css));
   check('logo rings hidden (not frozen huge) under reduced-motion', /\.lock \.mk \.rr\{animation:none!important;opacity:0\}/.test(css));
+  // eco-canvas review fixes:
+  check('resize repaints a static frame when the loop is not running (no blank canvas)', /addEventListener\('resize', function\(\)\{ size\(\); if\(!running\) draw\(0\)/.test(siteJs));
+  check('the invariant hub gradient is cached in size() (not allocated per frame)', /hubGrad = ctx\.createRadialGradient/.test(siteJs) && /ctx\.fillStyle = hubGrad;/.test(siteJs));
+  check('reduced-motion is re-evaluated if the user toggles it while the page is open', /mq\.addEventListener\('change'/.test(siteJs));
+  check('honesty: Orders (ordering gated) + Smart search (roadmap) are BOTH dimmed', (siteJs.match(/dim:\s*true/g) || []).length === 2);
+  check('dimmed node LABELS stay legible (0.9 alpha), only the dot/line dim', /globalAlpha = m\.dim \? 0\.9/.test(siteJs));
+  check('less-dark: role-explorer tabs are AA-legible (white .85 + mint-pale spans)', /\.role-tabs button\{[^}]*rgba\(255,255,255,\.85\)/.test(css) && /\.role-tabs button span\{[^}]*var\(--mint-pale\)/.test(css));
 }
 
 console.log('\nJS-gated fallback (no-JS / failed bundle shows the full static page):');

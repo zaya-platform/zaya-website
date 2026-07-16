@@ -396,10 +396,10 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .role-heading{display:grid;grid-template-columns:1.2fr .8fr;gap:70px;align-items:end;margin-bottom:38px}
 .role-heading h2{font-size:clamp(32px,4.2vw,50px);margin-top:13px;max-width:16ch}
 .role-heading>p{font-size:16px;color:var(--ink-soft);max-width:48ch;padding-bottom:5px}
-.role-explorer{background:linear-gradient(145deg,#1c5560,#227a86 55%,#175a63);border-radius:34px;padding:10px;box-shadow:0 30px 70px -40px rgba(16,35,63,.4);overflow:hidden}
+.role-explorer{background:linear-gradient(145deg,#184c56,#1e6371 55%,#164e57);border-radius:34px;padding:10px;box-shadow:0 30px 70px -40px rgba(16,35,63,.4);overflow:hidden}
 .role-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px 4px 10px}
-.role-tabs button{border:0;background:transparent;color:rgba(255,255,255,.6);padding:13px 16px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:13px;font-weight:650;cursor:pointer;transition:.2s}
-.role-tabs button span{font-size:9px;letter-spacing:.1em;color:var(--mint)}
+.role-tabs button{border:0;background:transparent;color:rgba(255,255,255,.85);padding:13px 16px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:13px;font-weight:650;cursor:pointer;transition:.2s}
+.role-tabs button span{font-size:9px;letter-spacing:.1em;color:var(--mint-pale)}
 .role-tabs button:hover{color:#fff;background:rgba(255,255,255,.06)}
 .role-tabs button[aria-selected="true"]{background:#fff;color:var(--navy);box-shadow:0 12px 26px rgba(3,12,30,.18)}
 .role-tabs button[aria-selected="true"] span{color:var(--coral)}
