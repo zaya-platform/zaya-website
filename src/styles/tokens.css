@@ -10,18 +10,26 @@
  * claim above was false in practice: changing a colour here changed nothing.
  * That shadow block is now gone; site.css aliases onto this file.
  *
- * DRIFT RECONCILIATION (founder ruling pending — flagged, not silently picked):
- * where the two files disagreed, the LIVE value (what site.css rendered, and
- * what the founder reviewed and approved) is kept operative so this pass makes
- * ZERO unintended visual change. The brand-book value is recorded beside it.
- *   ink       #16233F live   (brand-book said #1E2A4A = navy)
- *   ink-faint #8A93A3 live   (brand-book #8A929C)
- *   line      #E2E8EC live   (brand-book #E4E8EC)
- *   cloud     #F1F7F8 live   (brand-book #F4F7F8)
- *   radii     12/18/26 live  (brand-book 10/16/22)
- *   maxw      1200px live    (brand-book 1180px)
- * A one-line founder ruling collapses each pair; until then the site renders
- * exactly as it did, and the file is honest about which number is which.
+ * DRIFT RULED — founder, 2026-08-19. The two files had disagreed on six
+ * values; each pair is now collapsed, split on whether the difference is
+ * PERCEPTIBLE, with the deciding evidence recorded:
+ *   COLOURS take the brand book, because the book values are what the APPS
+ *   actually ship (verified on the platform's origin/main: navy #1E2A4A,
+ *   cloud #F4F7F8) — so the site and the apps are now literally the same
+ *   ZAYA, which is what "harmonise with the app branding" has to mean. All
+ *   four deltas were imperceptible (2-7 points on one channel).
+ *     ink       #16233F -> #1E2A4A   (= navy; collapses two near-identical
+ *                                     darks into one. 15.4:1 -> 14.0:1 on
+ *                                     white, both far above the 7:1 AAA bar)
+ *     ink-faint #8A93A3 -> #8A929C
+ *     line      #E2E8EC -> #E4E8EC
+ *     cloud     #F1F7F8 -> #F4F7F8   (identical to the apps' cloud)
+ *   RADII KEEP the live 12/18/26 — the one difference that is visible, it is
+ *   founder-approved, and it sits closest to the 24px of the chosen reference.
+ *   Deliberately NOT matched to the apps' 4/8/10/12/16/24: radii do not carry
+ *   across media — 26px on a 1200px web card reads like 16px on a 390px
+ *   phone, so matching the numbers would make them look LESS alike.
+ *   MAX-WIDTH keeps 1200px (imperceptible, no app equivalent).
  * ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -38,12 +46,15 @@
   --mint-pale:   #EAFBF7;  /* tagline/accent on teal grounds */
 
   /* ---- Neutrals (hue-biased toward the brand, not pure grey) ---- */
-  --cloud:     #F1F7F8;  /* light section background   (book: #F4F7F8) */
-  --line:      #E2E8EC;  /* borders / dividers          (book: #E4E8EC) */
-  --ink:       #16233F;  /* body text                   (book: #1E2A4A) */
-  --ink-soft:  #54617A;  /* secondary text */
+  --cloud:     #F4F7F8;  /* light section background — identical to the apps' cloud */
+  --line:      #E4E8EC;  /* borders / dividers */
+  --ink:       #1E2A4A;  /* body text = navy — identical to the apps' navy */
+  --ink-soft:  #54617A;  /* secondary text · 6.0:1 on white — the floor for readable copy */
   --ink-muted: var(--ink-soft);   /* brand-book alias — same role */
-  --ink-faint: #8A93A3;  /* captions / hints            (book: #8A929C) */
+  --ink-faint: #8A929C;  /* ~3.1:1 on white — DECORATIVE ONLY, never readable text.
+                          * Below the 4.5:1 AA bar, and every ZAYA label is small
+                          * text, so none of it qualifies for the 3:1 large-text
+                          * exemption. Readable copy uses --ink-soft. */
   --white:     #FFFFFF;
 
   /* ---- Semantic status (the honest live/roadmap vocabulary) ---- */
@@ -90,7 +101,7 @@
   --element-gap: clamp(6px,  1vw,  18px);   /* between adjacent elements */
 
   /* ---- Radii · elevation · motion ---- */
-  --r-sm: 12px; --r-md: 18px; --r-lg: 26px; --r-pill: 999px;  /* book: 10/16/22 */
+  --r-sm: 12px; --r-md: 18px; --r-lg: 26px; --r-pill: 999px;  /* RULED live 2026-08-19 — see header */
   --pill: var(--r-pill);   /* component alias */
   --sh-sm: 0 1px 2px rgba(16,35,63,.05), 0 6px 18px rgba(16,35,63,.06);
   --sh-md: 0 12px 40px -12px rgba(11,139,138,.28), 0 6px 18px rgba(16,35,63,.06);
@@ -98,7 +109,7 @@
   --shadow-md: var(--sh-md);
   --ease: cubic-bezier(.2,.7,.2,1);
   --dur-fast: 120ms; --dur: 250ms; --dur-slow: 400ms;
-  --maxw: 1200px;   /* book: 1180px */
+  --maxw: 1200px;   /* RULED live 2026-08-19 */
 
   /* radar / near-you motion (the signature motif, from the brand file's zradar) */
   --radar-cycle: 3.4s;
