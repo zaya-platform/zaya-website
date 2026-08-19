@@ -61,7 +61,7 @@
   --status-live:        var(--teal-deep);
   --status-launching:   #B4611F;
   --status-roadmap:     #5648B0;
-  --status-future:      var(--ink-faint);
+  --status-future:      var(--ink-soft);   /* chip LABEL — readable text, not decoration */
 
   /* ---- Typography families ---- */
   --font-sans: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
