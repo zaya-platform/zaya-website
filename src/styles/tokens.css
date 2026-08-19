@@ -51,10 +51,33 @@
  * DISCLOSED, not silent: legal body copy does grow 15.5 -> 18px. That is the
  * reference set's body ceiling and it is kept deliberately as a readability
  * gain — the defect was the collapsed hierarchy, not the body size.
- * STILL OPEN, honestly: 6 of the 14 type steps (incl. --fs-display) and most of
- * the spacing scale have few or no consumers yet; they are the vocabulary the
- * component-level pass will draw on. 82 raw font-size declarations remain in
- * site.css (counting rule: /font-size:s*[0-9]/) — the earlier "86" was wrong.
+ *
+ * ── SECOND REVIEW, 2026-08-20 — what it found and what changed ─────────────
+ * The three returned defects were confirmed CLOSED (hero delta zero at every
+ * width; ink-muted restored; the scale genuinely 14 distinct steps). But the
+ * corrections commit's own "ALSO FIXED" claims did not survive:
+ *   - A rewritten hero comment had been measured against the OLD token and was
+ *     inverted by the very commit that restored the token. Both override
+ *     comments are now stated as INVARIANTS with no numbers — three successive
+ *     numeric comments went stale here; prose beside a token cannot be trusted
+ *     to stay true, so it no longer tries.
+ *   - The spacing "wiring" was 4/5 DEAD: later unconditional rules at equal
+ *     specificity won. Those four are reverted. The real finding is recorded
+ *     instead: this site's live spacing (22/2/64/88px) is NOT on a 6px rhythm,
+ *     so the --sp-* vocabulary cannot be sprinkled in — reconciling the rhythm
+ *     is component-pass work, not a one-line adoption.
+ *   - The .eyebrow had silently lost block height, because the scale added a
+ *     line-height where main inherited one. Reverted.
+ * KNOWN AND ACCEPTED, not silent: the legal pages move — H1 and H2 grow at
+ * desktop and shrink slightly at mid widths, body grows at >=1333px and shrinks
+ * a little below. Direction differs by width because fixed px became fluid
+ * clamps. That is the intended trade (fluid type) and the hierarchy ratio is
+ * preserved (~1.22x vs main's 1.23x). If the founder prefers the old fixed
+ * legal sizes, that is a one-line revert.
+ * STILL OPEN: 6 of 14 type steps (incl. --fs-display) and the spacing scale
+ * have few or no consumers — vocabulary for the component pass, not a claim of
+ * completion. 82 raw font-size declarations remain in site.css (counting rule
+ * /font-size: followed by a digit); the earlier "86" was wrong.
  * ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -74,8 +97,11 @@
   --cloud:     #F4F7F8;  /* light section background — identical to the apps' cloud */
   --line:      #E4E8EC;  /* borders / dividers */
   --ink:       #1E2A4A;  /* body text = navy — identical to the apps' navy */
-  --ink-soft:  #54617A;  /* secondary text · 6.0:1 on white — the floor for readable copy */
-  --ink-muted: #5B6470;  /* 6.2:1 on white. NOT an alias of ink-soft — its own
+  --ink-soft:  #54617A;  /* secondary text — the floor for readable copy. Clears the
+                          * 4.5:1 AA bar on white AND on --cloud (independently
+                          * verified). Exact ratios deliberately not written here:
+                          * an earlier version of this comment had them transposed. */
+  --ink-muted: #5B6470;  /* Clears 4.5:1 on white and on cloud. NOT an alias of ink-soft — its own
                           * value, and it was LIVE on main: tokens.css defined it
                           * and site.css never did, which is exactly why the first
                           * pass mis-read it as safe to repoint. Independent review
