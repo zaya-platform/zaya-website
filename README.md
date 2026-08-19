@@ -29,6 +29,15 @@ updates; drop real Poppins + Noto Sans Ethiopic `woff2` into `src/assets/fonts/`
 `site.published = true` **and** real Privacy + Terms exist (see `scripts/check-publish.mjs`).
 Use `npm run build:draft` for internal, `noindex` preview builds. This makes it
 impossible to accidentally publish/index the site before real legal + content exist.
+`/robots.txt` is generated from the same flag (`src/pages/robots.txt.ts`), so there is
+one switch, not two.
+
+**The AI assistant is gated separately (2026-08-20 founder ruling):** its own
+`src/config/assistant.json` + `ZAYA_ASSISTANT` / `ZAYA_ASSISTANT_TOKEN` env pair —
+publishing the site does not expose it and previewing it does not publish the site.
+It ships OFF (no markup at all), and `/api/assistant` refuses every call that does not
+carry the shared secret. Design, limits and the founder's preview recipe:
+**`docs/ASSISTANT-GATE.md`**.
 
 Deployment (domain `zaya.app` + `app.zaya.app`, static host, form-service wiring) is
 documented in `docs/` and finalized at deploy (deliverable #9).

@@ -1,10 +1,21 @@
 # ZAYA Website Assistant — founder setup (5 minutes)
 
 **Status:** FOUNDER-ACCESS PREVIEW (CR-027/ADR-024 accepted, FDR-019 W-D4a).
-The site stays `published:false` — the assistant lives on the parked preview at
-**https://zayaethiopia.netlify.app** (the teal chat button, bottom-right, on
-every page). The public launch is a separate gate (W-D4b: real domain +
-your explicit go).
+
+> ⚠ **CHANGED 2026-08-20 (founder ruling).** The assistant no longer ships on
+> the parked site. It used to appear on every page of
+> **https://zayaethiopia.netlify.app**, and the service answering it accepted
+> requests from anyone on the internet. Both are now closed. The assistant has
+> its OWN switch, separate from the site's publish flag, and it is **off**.
+>
+> **Your preview still exists but must be turned on once** — the 4 steps are in
+> **`docs/ASSISTANT-GATE.md` §3 "For the founder"**, written for a phone. Until
+> then there is no chat button anywhere, and everything below about *using* the
+> assistant applies to the `preview/assistant` deploy only.
+
+The public launch is a separate gate (W-D4b: real domain + your explicit go) and
+is now enforced in code: the publish gate refuses to build a published site with
+the assistant on unless `src/config/assistant.json` records your approval.
 
 ## It already works — before any key
 
@@ -23,7 +34,8 @@ the curated layers don't cover (those currently answer with an honest
 1. Go to **https://aistudio.google.com** and sign in with a Google account.
 2. Click **"Get API key"** → **"Create API key"**. Copy the key (starts `AIza…`).
 3. Open **Netlify → the zaya-website site → Site configuration → Environment
-   variables → Add a variable**:
+   variables → Add a variable** (this is the same screen where
+   `ZAYA_ASSISTANT_TOKEN` goes — see `docs/ASSISTANT-GATE.md` §3):
    - Key: `GEMINI_API_KEY`
    - Value: *(paste the key)*
    - Scope: All (or Functions).
@@ -49,9 +61,14 @@ a request header only — it never reaches the browser.
   (public-launch) precondition, and it covers **both**
   `netlify/functions/assistant/kb.mjs` (the answers) **and** the four greeting
   strings in `src/components/AssistantWidget.astro`.
-- Emails/phone numbers a visitor types are scrubbed **before** any AI call;
-  the widget tells people not to include personal details; the Privacy Policy
-  now discloses the AI data flow (Section 5a).
+- **E-mail addresses and phone-shaped digit runs** a visitor types are stripped
+  **before** any AI call. Be precise about the scope: that scrub
+  (`netlify/functions/assistant/guard.mjs → scrubPII`) removes e-mails and
+  digit runs of 7–15 digits, **and nothing else** — names, addresses, ID
+  numbers and other free text are NOT stripped and DO reach Google on the
+  English model path. The widget's "don't include personal details" microcopy
+  is the other half of the control and it is advisory, not enforcement. The
+  Privacy Policy discloses the AI data flow (Section 5a).
 - Off-topic questions are deflected; unknown questions hand off to the
   existing contact section — the assistant never invents an answer and never
   captures leads itself.

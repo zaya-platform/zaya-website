@@ -3,7 +3,16 @@
 // from ever being published/indexed without real legal copy (Ethiopian data-
 // protection law) or with fake testimonials/partners. Use `build:draft` for
 // internal preview builds (which stay noindex).
+//
+// EXTENDED 2026-08-20 (founder ruling): the gate also asserts the AI ASSISTANT's
+// state. The gate that exists must cover the risk that exists — publishing the
+// site while an unreviewed AI relay answers the public is a bigger exposure than
+// a missing Terms page, and until today nothing checked it. Publish and assistant
+// remain INDEPENDENT switches; this gate does not couple them, it only refuses to
+// PUBLISH while the assistant would be exposed without the founder's own W-D4b
+// approval recorded in src/config/assistant.json.
 import { readFileSync, existsSync } from 'node:fs';
+import { assistantState } from '../src/config/assistant-state.mjs';
 
 const fail = (m) => { console.error(`\n✖ publish gate: ${m}\n  (use "npm run build:draft" for a noindex preview build)\n`); process.exit(1); };
 
@@ -43,5 +52,89 @@ if (existsSync(rightsFile)) {
   if (rights.cleared !== true) fail(`photo rights not cleared — ${rights.note || 'set src/assets/photos/_rights.json cleared:true once confirmed.'}`);
 }
 
+// ── ONE SWITCH PER DECISION ─────────────────────────────────────────────────
+// A second copy of the publish flag is how a "published" site ends up shipping a
+// Disallow-everything robots.txt. Refuse a publish build if either retired
+// duplicate has come back.
+if (existsSync(new URL('../public/robots.txt', import.meta.url))) {
+  fail('public/robots.txt is back — a file in public/ shadows the generated /robots.txt route (src/pages/robots.txt.ts) and would ship a stale rule. Delete it.');
+}
+{
+  const legacy = new URL('../src/config/site.ts', import.meta.url);
+  if (existsSync(legacy) && /published\s*:/.test(readFileSync(legacy, 'utf8'))) {
+    fail('src/config/site.ts declares its own `published` again — src/content/data/site.json is the single source of truth. Remove the duplicate.');
+  }
+}
+
+// ── THE ASSISTANT'S OWN STATE (founder ruling 2026-08-20) ───────────────────
+// Resolve exactly what THIS build would ship, from the same code the layout uses.
+const assistant = assistantState(process.env);
+
+// A publish build must not run on an unreadable gate. Off-by-crash is not a
+// decision, and an operator cannot see it in the deploy log.
+if (!assistant.configOk) {
+  fail(`the assistant gate config is unreadable — ${assistant.configReason}. A publish build must not guess; fix src/config/assistant.json.`);
+}
+
+// The structural guard: the layout must still consult the gate. A future edit
+// that re-mounts <AssistantWidget /> bare would otherwise sail past every flag
+// check here, because the flags would be right and the markup would ship anyway.
+{
+  const base = readFileSync(new URL('../src/layouts/Base.astro', import.meta.url), 'utf8');
+  const mounts = base.split('\n').filter((line) => line.includes('<AssistantWidget'));
+  if (mounts.length === 0) fail('src/layouts/Base.astro no longer mounts <AssistantWidget> at all — if that is intended, update this gate.');
+  for (const line of mounts) {
+    if (!line.includes('assistant.enabled &&')) {
+      fail(`src/layouts/Base.astro mounts <AssistantWidget> WITHOUT the gate: "${line.trim()}". The widget must render only behind \`assistant.enabled &&\`.`);
+    }
+  }
+}
+
+// Same guard for the OTHER assistant entry points. `data-open-assistant` is
+// handled by a listener that ships inside the widget, so any such control on a
+// page where the widget is gated off is a dead button. LIMITATION, stated: this
+// is a per-FILE tripwire (does the file gate the assistant at all?), not a proof
+// that each individual control sits inside the conditional — it catches a new
+// ungated page, not a new ungated button on an already-gated page.
+{
+  const pageDir = new URL('../src/pages/', import.meta.url);
+  for (const file of readdirSync(pageDir)) {
+    if (!/\.(astro|md|mdx|html)$/.test(file)) continue;
+    const body = readFileSync(new URL(file, pageDir), 'utf8');
+    if (body.includes('data-open-assistant') && !body.includes('assistant.enabled')) {
+      fail(`src/pages/${file} carries a data-open-assistant control but never consults the assistant gate — it would ship a button that does nothing.`);
+    }
+  }
+}
+
+// The relay's access gate must still be the first thing the handler does.
+{
+  const relay = readFileSync(new URL('../netlify/functions/assistant/assistant.mjs', import.meta.url), 'utf8');
+  for (const needle of ['assistantGateState(', 'tokenMatches(']) {
+    if (!relay.includes(needle)) {
+      fail(`netlify/functions/assistant/assistant.mjs no longer calls ${needle} — the endpoint would be open to the internet again.`);
+    }
+  }
+}
+
+// The flag assertion itself. NOTE what is and is not coupled: a publish build
+// with the assistant OFF passes (the assistant is simply not there); a publish
+// build with the assistant ON passes ONLY with the founder's recorded approval.
+if (assistant.enabled) {
+  if (!assistant.detail.publicLaunchApproved) {
+    fail(
+      'the ASSISTANT would be EXPOSED on a published site without the founder\'s gate.\n' +
+        `    resolved: enabled=true (${assistant.reason})\n` +
+        '    but src/config/assistant.json publicLaunchApproved is not true (W-D4b, the public-launch\n' +
+        '    ruling, is the founder\'s and has not been recorded). Either set publicLaunchApproved:true\n' +
+        '    in that file (founder\'s decision, in a commit), or turn the assistant off for this build\n' +
+        '    (assistant.json enabled:false, or ZAYA_ASSISTANT=off).',
+    );
+  }
+  console.log('⚠ publish gate: assistant is ON for this build and W-D4b approval IS recorded (publicLaunchApproved:true). The AI relay will answer the public.');
+} else {
+  console.log(`✓ publish gate: assistant OFF for this build — ${assistant.reason}`);
+}
+
 // (Also refuse any testimonial/partner still flagged placeholder in a publish build.)
-console.log('✓ publish gate passed: published=true, real Privacy + Terms present, all photo rights confirmed.');
+console.log('✓ publish gate passed: published=true, real Privacy + Terms present, all photo rights confirmed, assistant state asserted.');

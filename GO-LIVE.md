@@ -56,9 +56,18 @@ We built a safety rule: the site **refuses to go public** until real Privacy + T
    `zayaethiopia.com`, and follow the DNS instructions it shows. The whole site switches to zayaethiopia.com
    automatically — nothing to rebuild.
 2. **Go live:** on GitHub, open **`src/content/data/site.json`** and change
-   `"published": false` → `"published": true`, and open **`public/robots.txt`** and change
-   `Disallow: /` → `Allow: /`. Commit both. *(Tell me and I’ll do this in one step.)*
+   `"published": false` → `"published": true`. That is now the ONLY edit —
+   `robots.txt` is generated from that same flag (`src/pages/robots.txt.ts`), so
+   there is no second file to remember. *(Tell me and I’ll do this in one step.)*
 3. Netlify redeploys — the site is now **public and visible on Google** at zayaethiopia.com.
+
+   ⚠ **Since 2026-08-20 the production deploy runs the REAL publish gate**
+   (`npm run build`, restored in `netlify.toml`; it used to run a draft build that
+   skipped the gate). Until step 2 is done AND the gate's other conditions are met
+   (real Privacy + Terms, photo rights, assistant state), **the production deploy
+   fails on purpose** and Netlify keeps serving the last good deploy. The failure
+   message in the deploy log names exactly what is missing. Branch deploys are
+   unaffected — they still build the shareable noindex draft.
 
 ---
 

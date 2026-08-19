@@ -10,19 +10,42 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# ⚑ TEMPORARY (pre-domain phase, 2026-07-08): main deploys the NOINDEX DRAFT build so
-# the site can go live on the free *.netlify.app address — accessible/shareable but
-# HIDDEN from Google — without needing published=true and without the gate failing.
-# The site cannot be indexed while published=false (noindex meta + robots Disallow).
+# ⚑ RESTORED 2026-08-20 (founder ruling). Production runs the REAL GATED BUILD.
 #
-# ⚑ RESTORE AT GO-LIVE (once zayaethiopia.com is registered + connected in Netlify):
-# switch this back to `npm run build` (the gated F4 build) AND set site.json
-# published=true, robots.txt Allow, add the sitemap. See GO-LIVE.md Step 4.
-# The gate itself (scripts/check-publish.mjs) is UNCHANGED — this only chooses which
-# build command the production context runs during the pre-domain phase.
+# What was wrong: from 2026-07-08 this context ran `npm run build:draft`, which skips
+# scripts/check-publish.mjs entirely. The gate is the only thing standing between a
+# flipped flag and a live, indexed, AI-answering site — and production was the ONE
+# context configured to walk around it. A draft build at published=true would have
+# emitted ZERO noindex tags with no check having run at all.
+#
+# ⚠ THE CONSEQUENCE, STATED PLAINLY: `npm run build` FAILS (exit 1) while
+# site.json published=false. So the PRODUCTION deploy of this site will now fail
+# until publish is genuinely cleared. That is the gate doing its job, not a bug.
+# Netlify keeps serving the LAST SUCCESSFUL production deploy, so the parked site
+# stays up and frozen rather than going dark. For the pre-domain "shareable but
+# hidden" phase, use a BRANCH DEPLOY instead: the [build] command above is still
+# `npm run build:draft`, so every branch/preview deploy builds noindex without the
+# gate, exactly as before. See GO-LIVE.md Step 4 and docs/ASSISTANT-GATE.md.
 [context.production]
-  command = "npm run build:draft"
-  # command = "npm run build"   # ← RESTORE at go-live (re-enables the F4 publish gate)
+  command = "npm run build"
+
+# ── The founder's assistant preview (W-D4a) ─────────────────────────────────
+# The AI assistant ships OFF everywhere by default (src/config/assistant.json
+# enabled:false). This ONE branch context asks for it. It still needs a usable
+# ZAYA_ASSISTANT_TOKEN in the Netlify environment — without one the build emits
+# no widget at all (fail-closed) and the relay answers 503 to everybody.
+# The token is a SECRET and therefore is NOT in this file: set it in
+# Netlify → Site configuration → Environment variables, scoped to branch deploys.
+# Full phone-followable instructions: docs/ASSISTANT-GATE.md §"For the founder".
+[context."preview/assistant".environment]
+  ZAYA_ASSISTANT = "on"
+
+# Belt and braces: production NEVER gets the assistant from an env slip. Even if
+# someone sets ZAYA_ASSISTANT=on in the Netlify UI for all contexts, this pins the
+# production build to off (the kill switch beats everything — see
+# src/config/assistant.mjs precedence rules).
+[context.production.environment]
+  ZAYA_ASSISTANT = "off"
 
 # The CMS admin UI must never be indexed.
 [[headers]]

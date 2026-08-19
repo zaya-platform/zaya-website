@@ -137,9 +137,15 @@ console.log('\nhonesty & no-invented-metrics:');
 
 console.log('\nassistant-CTA — the intentional minimal set (widget + 1 header + 1 mid-page):');
 {
-  const inPageTriggers = (index.match(/data-open-assistant/g) || []).length;
-  check('exactly ONE header entry (.menu-ai) restored', (index.match(/class="menu-ai"/g) || []).length === 1);
-  check('exactly ONE mid-page invitation (.ask-band)', (index.match(/class="ask-band"/g) || []).length === 1);
+  // Count TRIGGERS, not mentions: strip the --- frontmatter --- first, or a code
+  // comment that merely names the attribute inflates the count (it did, once the
+  // assistant gate landed and the frontmatter explained why these are gated).
+  // (\r?\n — this repo checks out CRLF on Windows, LF in the index.)
+  const fmEnd = index.search(/\r?\n---\r?\n/);
+  const indexTemplate = fmEnd === -1 ? index : index.slice(index.indexOf('---', fmEnd + 1) + 3);
+  const inPageTriggers = (indexTemplate.match(/data-open-assistant/g) || []).length;
+  check('exactly ONE header entry (.menu-ai) restored', (indexTemplate.match(/class="menu-ai"/g) || []).length === 1);
+  check('exactly ONE mid-page invitation (.ask-band)', (indexTemplate.match(/class="ask-band"/g) || []).length === 1);
   check('the 3 role-pane "Ask about X" triggers removed', !/text-btn[^>]*data-open-assistant/.test(index));
   check('hero has NO competing AI button — secondary is "See how it works"', !/btn-ghost[^>]*data-open-assistant/.test(index) && /See how it works/.test(index));
   check('hero float-ai card removed', !/float-ai/.test(index));
