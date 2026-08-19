@@ -62,6 +62,15 @@ turned off independently of publishing, and it launches on its own decision late
 public-launch items (shared rate limit, counsel sign-off on the data path below) are
 completed first. **Doing nothing is the same as choosing (b) by accident.**
 
+> **Status note, 2026-08-20 (added when the PII wording below was corrected).** Route (a)
+> has since been **built** on branch `feat/assistant-gate` (commit `9e120ab`, off `main`):
+> the assistant gets its own switch, ships **off**, emits no markup at all when off, and
+> the `/api/assistant` endpoint now refuses every call that does not carry a shared
+> secret — which also closes the fact, recorded above, that the endpoint was reachable by
+> anyone. **That branch is not merged**, so everything this section says remains true of
+> `main` and of this branch. The shared rate limiter is still **not** done. The
+> public-launch decision (W-D4b) remains the founder's and is not taken.
+
 ---
 
 # A · FOUNDER ACTS — only you can do these
@@ -116,11 +125,42 @@ The moment you publish, those texts become a public promise to every visitor.
      did not already answer it, the question is on-topic, **and** a Google API key is
      configured on the host.
    - Amharic, Afaan Oromoo and Tigrinya questions are **never** sent to Google.
-   - Before sending, the code **strips e-mail addresses and things shaped like phone
-     numbers**. It does **not** strip names, addresses, or anything else. A code comment
-     claims "PII never travels further than this line" — that claim is stronger than what
-     the code actually does, and counsel should be told the accurate version, not the
-     comment.
+   - **What the filter actually does — give counsel this, not a summary.** One function
+     (`scrubPII` in `netlify/functions/assistant/guard.mjs`) runs before the text is sent.
+     It removes **exactly two things**: (a) e-mail addresses, and (b) runs of digits and
+     separators containing **between 7 and 15 digits** (a phone number's worth). That is
+     the whole of it. It is an **e-mail and phone-number filter — it is not "PII
+     protection"**, and describing it as PII protection to counsel would misdescribe the
+     transfer being reviewed.
+   - **What therefore reaches Google unchanged.** I ran the function on real examples to
+     confirm rather than reading it:
+
+     | Typed by the visitor | What is sent to Google |
+     |---|---|
+     | `my name is Almaz Tesfaye` | unchanged — **names are not removed** |
+     | `I live at Bole Road, Addis Ababa, house 42` | unchanged — **addresses are not removed** |
+     | `my shop is Selam Suq near Meskel Square` | unchanged — **business names are not removed** |
+     | `born 12/04/1987` | unchanged — **dates are not removed** |
+     | `card 4111 1111 1111 1111` | **unchanged** — 16 digits is *above* the 15-digit ceiling, so a card number is **not** removed |
+     | `call 0912 345 678` | `call [removed]` |
+     | `a@b.com` | `[removed]` |
+     | `TIN 0012345678` | `TIN [removed]` — a 10-digit tax number is removed *by accident*, because it is phone-shaped |
+     | `my ID is ETH-2019-88213-A` | `my ID is ETH-[removed]-A` — partially mangled, again by accident |
+
+     So the filter both **misses** things counsel would call personal data (names,
+     addresses, a card number) and **removes** things that are not phone numbers. Counsel
+     should be told this plainly.
+   - **Where the overstatement came from, on the record.** Until 2026-08-20 a comment in
+     `netlify/functions/assistant/assistant.mjs` read *"W-D3: PII never travels further
+     than this line."* That was stronger than the code and should never be relied on. It
+     has been corrected on branch `feat/assistant-gate` (commit `9e120ab`), together with
+     the comment block above `scrubPII` itself; if you are reading an older checkout you
+     may still see the original wording. The **code behaviour is unchanged** by that
+     correction — only the description was wrong, which is precisely why it mattered.
+   - The visitor-facing microcopy ("don't include phone numbers, email addresses or other
+     personal details") and the Privacy Policy's Section 5a are **accurate** — the policy
+     already says the filtering is "a safeguard, **not a guarantee**". The overstatement
+     was internal, in the code comments, not in what visitors were told.
    - No name, account or identity is attached to the message.
    - **Whether that Google key is actually configured on the host cannot be determined
      from this repository.** It lives in the hosting account's settings. Someone with
