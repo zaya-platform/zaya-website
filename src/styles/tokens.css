@@ -78,6 +78,45 @@
  * have few or no consumers — vocabulary for the component pass, not a claim of
  * completion. 82 raw font-size declarations remain in site.css (counting rule
  * /font-size: followed by a digit); the earlier "86" was wrong.
+ *
+ * ── COMPONENT PASS, 2026-08-20 — what it closed and what it refused ────────
+ * The 82 raw font-sizes were measured, not assumed (count re-verified: 82
+ * occurrences on 79 lines; three lines carry two each).
+ *   ADOPTED: 60 now read a token, 1 was deleted as dead, 21 stay raw — 82.
+ *     (Cross-check: font-size:var( in site.css went 15 -> 75, i.e. +60.)
+ *     They did NOT go onto the fluid steps — see the UI/CHROME RAMP note below
+ *     for the measurement that ruled that out. Four of the fluid steps
+ *     (--fs-micro/-caption/-nav/-body-sm) had ZERO consumers site-wide and
+ *     were the wrong shape for what they were meant to carry, so they are
+ *     REMOVED and replaced by that ramp. Nothing referenced them, so the
+ *     removal is provably inert. --fs-h-xs and --fs-display remain
+ *     unconsumed, and are still owed a consumer.
+ *   REFUSED: the fluid steps for chrome (they collapse the small-text
+ *     hierarchy below ~1130px), and the 6px spacing migration (see the
+ *     SPACING LADDER note). Both refusals are recorded with their arithmetic
+ *     rather than left as silent no-ops.
+ *   KEPT BESPOKE, each with a reason at its site (9): the logo wordmark at two
+ *     widths, the price figure, two icon glyphs, the two container-query
+ *     hero-graphic labels, one responsive headline override, and the diaspora
+ *     flow caption — that last one BECAUSE THE MOVE WAS TRIED AND LOOKED
+ *     WRONG. On the ramp it tipped the first caption onto a third line while
+ *     its neighbours stayed at two, going ragged across a row that reads as a
+ *     balanced sequence. It is holding a wrapping boundary, so it stays put.
+ *     That is the one place a step was measured, rendered, looked at, and
+ *     rejected rather than argued away.
+ *   FOUND, NOT INVENTED: 12 raw font-sizes sit on 8 component blocks whose
+ *     markup no longer exists (.ben .pframe .prev .text-btn .float-card
+ *     .hero-proof .hero-photo .love-intro — 0 occurrences in the rendered
+ *     HTML). They are left exactly as they are: tokenising CSS that renders
+ *     nothing would hide the fact that it is dead. Deleting it or restoring
+ *     the markup is a founder call, not a type-pass call.
+ *   ONE LIVE DEFECT FIXED: the mobile menu link. Two declarations set its size
+ *     and BOTH were dead — a later unconditional rule at equal specificity
+ *     beat them, so the panel designed at 16px/700 was rendering at 14px. The
+ *     same cascade fault as the dead spacing wiring, in a different file
+ *     region. The size now lives in a block that comes after the rule that was
+ *     beating it. This one IS a deliberate visual change; see the review
+ *     folder's before/after at 768 and 390.
  * ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -134,11 +173,7 @@
    * on small uppercase labels — the discipline the ad-hoc sizes never had.
    * Ceilings follow the founder's reference set: body 18 · subheading 36 ·
    * heading 48 · heading-lg 78 · display 113. */
-  --fs-micro:    clamp(8.5px, .70vw,   9.5px);  --lh-micro:   1.25; --ls-micro:   .08em;
-  --fs-caption:  clamp(11px,  .95vw,  12px);    --lh-caption: 1.5;  --ls-caption: 0;
   --fs-label:    clamp(11px, 1.05vw,  13px);    --lh-label:   1.2;  --ls-label:   .09em;
-  --fs-nav:      clamp(13px, 1.15vw,  14px);    --lh-nav:     1.2;  --ls-nav:     .025em;
-  --fs-body-sm:  clamp(13px, 1.15vw,  14.5px);  --lh-body-sm: 1.55; --ls-body-sm: 0;
   --fs-body:     clamp(15px, 1.35vw,  18px);    --lh-body:    1.5;  --ls-body:    0;
   --fs-lead:     clamp(16px, 1.50vw,  19px);    --lh-lead:    1.6;  --ls-lead:    0;
   --fs-h-2xs:    clamp(18px, 1.80vw,  22px);    --lh-h-2xs:   1.3;  --ls-h-2xs:  -.013em;
@@ -149,12 +184,79 @@
   --fs-h-lg:     clamp(46px, 6.10vw,  76px);    --lh-h-lg:     .98; --ls-h-lg:   -.055em;
   --fs-display:  clamp(46px, 8.00vw, 113px);    --lh-display: 1.02; --ls-display:-.040em;
 
-  /* ---- SPACING RHYTHM (6px base — every gap is a multiple, no strays) ---- */
-  --sp-1:   6px;   --sp-2:  12px;  --sp-3:  18px;  --sp-4:  24px;  --sp-5:  30px;
-  --sp-6:  36px;   --sp-10: 60px;  --sp-12: 72px;  --sp-16: 96px;  --sp-20: 120px;
+  /* ---- UI / CHROME RAMP (fixed px, deliberately NOT fluid) ────────────────
+   * Added by the component pass, 2026-08-20, after measuring what the fluid
+   * steps above would actually do to this site's small text.
+   *
+   * WHY A SECOND, FIXED RAMP — the measurement, not a preference:
+   * every fluid step is pinned at its FLOOR for all viewports below roughly
+   * 1130px, because the vw term only overtakes the floor near that width. The
+   * floors of the four small steps this ramp replaces were 13/13/11/11px. So
+   * mapping the site's small text onto them collapsed four distinct sizes
+   * (13 / 13.5 / 14 / 14.5px) into a single 13px on every phone, tablet and
+   * small laptop — erasing the hierarchy between a nav link and a card
+   * paragraph — while growing them on wide desktop. That is the "moves ~33
+   * elements by 1-1.5px in BOTH directions" trap, and it is a property of the
+   * scale's shape, not of the elements.
+   * The rule this ramp encodes: FLUID type is for CONTENT (headings and prose,
+   * which should scale with the page); FIXED type is for CHROME (nav, buttons,
+   * chips, badges, form controls, captions), which must stay legible and
+   * constant — a nav link has no reason to grow 20% on a wide monitor, and no
+   * reason to shrink on the cheap phones this site is built for.
+   * Reproduce the floor/ceiling behaviour with tokens-resolved.json in the
+   * review folder, or by reading the clamp()s above — no numbers are restated
+   * beside the tokens, per the standing lesson in this file's header.
+   *
+   * SIZE ONLY, ON PURPOSE: this ramp deliberately carries no --lh- / --ls-
+   * partners. Chrome components set their own line-height and tracking for
+   * their own reasons, and introducing a second source of truth for those is
+   * exactly what silently changed .eyebrow's block height in the previous
+   * pass. A step here changes the size and nothing else. */
+  --fs-ui-2xs: 9.5px;   /* status pips + the smallest uppercase micro-labels */
+  --fs-ui-xs:  11.5px;  /* kickers, captions, tags, strip copy */
+  --fs-ui-sm:  13px;    /* dense UI: form labels, tab labels, column headings */
+  --fs-ui:     14px;    /* the default UI size: nav, buttons, small body copy */
+  --fs-ui-lg:  15.5px;  /* card sub-headings, accordion summaries, lead-ins */
+  --fs-ui-xl:  17.5px;  /* card titles, form headings */
+
+  /* ---- SPACING LADDER (4px base) ─────────────────────────────────────────
+   * THE 6px BASE WAS WRONG AND THE OLD CLAIM HERE WAS FALSE. This block used
+   * to read "6px base — every gap is a multiple, no strays". It had never been
+   * measured against the stylesheet. Measured over every literal px value in
+   * site.css's margin/padding/gap declarations, the 6px base describes FEWER
+   * THAN A QUARTER of them; the great majority were strays under the very
+   * claim that said there were none. 4px is the closest meaningful fit, at
+   * roughly double that coverage, and it is where this ladder now sits.
+   *
+   * NO FIGURES ARE QUOTED HERE ON PURPOSE. Numbers written beside tokens in
+   * this file have gone stale three times, and these particular ones move
+   * whenever any spacing declaration is edited or tokenised. The audit is a
+   * script instead, run against the live stylesheet, so it cannot rot:
+   *     node docs/reviews/component-pass-2026-08-20/spacing-audit.mjs
+   * If its output ever disagrees with the sentence above, believe the script.
+   *
+   * THE HONEST FINDING is that this site has no rhythm to discover: its
+   * spacing values spread near-continuously from 1px upward, authored by eye
+   * rather than off a grid. 4px is adopted because it fits best among bases
+   * that mean anything, it is the industry default, and every rung below is a
+   * value the site already uses often.
+   * SCOPE, stated plainly: this ladder is the vocabulary for NEW work and for
+   * deliberate migrations. The legacy declarations are NOT migrated by this
+   * pass. Snapping them — to 4px or to anything else — is a founder-visible
+   * layout change across a founder-approved page, and it is not something to
+   * smuggle into a type pass. The script prints exactly what each base would
+   * cost, so that decision can be taken with the real number in hand.
+   * Rungs are N x 4px, so the number in the name is the multiplier. */
+  --sp-1:   4px;   --sp-2:   8px;  --sp-3:  12px;  --sp-4:  16px;  --sp-5:  20px;
+  --sp-6:  24px;   --sp-8:  32px;  --sp-10: 40px;  --sp-12: 48px;  --sp-16: 64px;
+  --sp-20: 80px;   --sp-24: 96px;  --sp-30: 120px;
+  /* UNWIRED VOCABULARY — no consumer as of this pass. Kept because they record
+   * design intent, labelled because a token that nothing reads must not be
+   * mistaken for a description of the live layout (the mistake the dead
+   * spacing wiring made). Endpoints sit on the 4px base. */
   --section-gap: clamp(60px, 8vw, 120px);   /* between page sections */
-  --card-pad:    clamp(24px, 3vw,  38px);   /* inside cards */
-  --element-gap: clamp(6px,  1vw,  18px);   /* between adjacent elements */
+  --card-pad:    clamp(24px, 3vw,  36px);   /* inside cards */
+  --element-gap: clamp(8px,  1vw,  16px);   /* between adjacent elements */
 
   /* ---- Radii · elevation · motion ---- */
   --r-sm: 12px; --r-md: 18px; --r-lg: 26px; --r-pill: 999px;  /* RULED live 2026-08-19 — see header */
