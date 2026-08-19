@@ -72,7 +72,12 @@
   .hero h1{font-size:var(--fs-h-lg);line-height:var(--lh-h-lg);letter-spacing:var(--ls-h-lg);margin:18px 0 0}
   .hero h1 .g{background:linear-gradient(100deg,var(--teal-deep),var(--teal-bright));-webkit-background-clip:text;background-clip:text;color:transparent}
   .hero h1 .c{color:var(--coral)}
-  .hero .sub{font-size:var(--fs-lead);line-height:var(--lh-lead);color:var(--ink-soft);max-width:52ch;margin:20px 0 0}
+  /* bespoke, NOT --fs-lead: the hero sub is restored to main's exact rendering.
+   * See the unconditional .hero .sub override further down — that rule is what
+   * actually paints the homepage; this one only survives as the base. Both were
+   * tokenised in the design pass and both are reverted, because --fs-lead's
+   * curve (a lower vw slope on the same 16/19 rail) re-wraps the paragraph. */
+  .hero .sub{font-size:clamp(16px,1.7vw,19px);color:var(--ink-soft);max-width:52ch;margin:20px 0 0}
   .who{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0}
   .who .chip{font-size:12.5px;font-weight:600;color:var(--navy);background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:6px 13px;box-shadow:var(--sh-sm)}
   .who .chip b{color:var(--teal-deep)}
@@ -336,7 +341,12 @@ button{font:inherit}
 .hero .eyebrow{font-size:11.5px;letter-spacing:.11em}
 .hero h1{font-size:var(--fs-h-lg);line-height:var(--lh-h-lg);letter-spacing:var(--ls-h-lg);margin-top:22px;max-width:10ch}
 .hero h1 .g{display:block;background:linear-gradient(90deg,var(--teal-deep),var(--teal-bright) 55%,var(--coral));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero .sub{max-width:58ch;font-size:var(--fs-lead);line-height:1.72;margin-top:24px}
+/* bespoke, NOT --fs-lead. This is the rule that paints the homepage sub-headline.
+ * INVARIANT: the hero's own type is pinned to main's rendering, not to the scale.
+ * Tokenising it moved the paragraph's wrap points, which changes the height of
+ * the whole .hero .copy column — the H1 alone is not the hero. Do not "adopt"
+ * this into --fs-lead without re-measuring the copy block at every width. */
+.hero .sub{max-width:58ch;font-size:17px;line-height:1.72;margin-top:24px}
 .who{margin-top:22px}
 .who .chip{padding:7px 13px;background:rgba(255,255,255,.72);backdrop-filter:blur(8px);transition:.2s}
 .who .chip:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 10px 24px rgba(16,35,63,.1)}
