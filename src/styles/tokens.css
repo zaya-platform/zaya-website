@@ -30,6 +30,31 @@
  *   across media — 26px on a 1200px web card reads like 16px on a 390px
  *   phone, so matching the numbers would make them look LESS alike.
  *   MAX-WIDTH keeps 1200px (imperceptible, no app equivalent).
+ *
+ * ── POST-REVIEW CORRECTIONS, 2026-08-20 ────────────────────────────────────
+ * Two independent reviewers examined the first pass and RETURNED IT. They were
+ * right on three counts; each is fixed here, and the wrong claims are named
+ * rather than quietly edited away:
+ *   1. --ink-muted had been silently repointed (#5B6470 -> #54617A). It was the
+ *      one property site.css never defined, so its live value came from THIS
+ *      file — and the drift table, built by reading site.css, therefore missed
+ *      it. Restored. This was the exact "silently picked" outcome the pass
+ *      claimed to avoid.
+ *   2. The hero H1 had grown 20px in block height (76->78px with looser leading
+ *      and tracking) while the commit claimed zero visual change. --fs-h-lg is
+ *      restored to the hero's exact previous rendering: 46/6.10vw/76, lh .98,
+ *      ls -.055em.
+ *   3. --fs-h-2xs was BYTE-IDENTICAL to --fs-lead, so the "14 steps" were 13,
+ *      and applying it to the legal H2 collapsed that page's heading/body ratio
+ *      to 1.06x. It is now clamp(18px,1.8vw,22px) — distinct, and the legal
+ *      ratio is restored to ~1.22x (was 1.23x before the pass).
+ * DISCLOSED, not silent: legal body copy does grow 15.5 -> 18px. That is the
+ * reference set's body ceiling and it is kept deliberately as a readability
+ * gain — the defect was the collapsed hierarchy, not the body size.
+ * STILL OPEN, honestly: 6 of the 14 type steps (incl. --fs-display) and most of
+ * the spacing scale have few or no consumers yet; they are the vocabulary the
+ * component-level pass will draw on. 82 raw font-size declarations remain in
+ * site.css (counting rule: /font-size:s*[0-9]/) — the earlier "86" was wrong.
  * ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -50,7 +75,12 @@
   --line:      #E4E8EC;  /* borders / dividers */
   --ink:       #1E2A4A;  /* body text = navy — identical to the apps' navy */
   --ink-soft:  #54617A;  /* secondary text · 6.0:1 on white — the floor for readable copy */
-  --ink-muted: var(--ink-soft);   /* brand-book alias — same role */
+  --ink-muted: #5B6470;  /* 6.2:1 on white. NOT an alias of ink-soft — its own
+                          * value, and it was LIVE on main: tokens.css defined it
+                          * and site.css never did, which is exactly why the first
+                          * pass mis-read it as safe to repoint. Independent review
+                          * caught the undisclosed change; restored 2026-08-20.
+                          * Paints legal body copy, .ask-band p, .zassist-note. */
   --ink-faint: #8A929C;  /* ~3.1:1 on white — DECORATIVE ONLY, never readable text.
                           * Below the 4.5:1 AA bar, and every ZAYA label is small
                           * text, so none of it qualifies for the 3:1 large-text
@@ -85,17 +115,17 @@
   --fs-body-sm:  clamp(13px, 1.15vw,  14.5px);  --lh-body-sm: 1.55; --ls-body-sm: 0;
   --fs-body:     clamp(15px, 1.35vw,  18px);    --lh-body:    1.5;  --ls-body:    0;
   --fs-lead:     clamp(16px, 1.50vw,  19px);    --lh-lead:    1.6;  --ls-lead:    0;
-  --fs-h-2xs:    clamp(16px, 1.50vw,  19px);    --lh-h-2xs:   1.3;  --ls-h-2xs:  -.013em;
+  --fs-h-2xs:    clamp(18px, 1.80vw,  22px);    --lh-h-2xs:   1.3;  --ls-h-2xs:  -.013em;
   --fs-h-xs:     clamp(20px, 2.20vw,  27px);    --lh-h-xs:    1.15; --ls-h-xs:   -.018em;
   --fs-h-sub:    clamp(24px, 3.00vw,  36px);    --lh-h-sub:   1.2;  --ls-h-sub:  -.020em;
   --fs-h-sm:     clamp(28px, 3.60vw,  42px);    --lh-h-sm:    1.15; --ls-h-sm:   -.029em;
   --fs-h:        clamp(30px, 4.20vw,  48px);    --lh-h:       1.1;  --ls-h:      -.035em;
-  --fs-h-lg:     clamp(40px, 6.10vw,  78px);    --lh-h-lg:    1.04; --ls-h-lg:   -.040em;
+  --fs-h-lg:     clamp(46px, 6.10vw,  76px);    --lh-h-lg:     .98; --ls-h-lg:   -.055em;
   --fs-display:  clamp(46px, 8.00vw, 113px);    --lh-display: 1.02; --ls-display:-.040em;
 
   /* ---- SPACING RHYTHM (6px base — every gap is a multiple, no strays) ---- */
   --sp-1:   6px;   --sp-2:  12px;  --sp-3:  18px;  --sp-4:  24px;  --sp-5:  30px;
-  --sp-6:  36px;   --sp-10: 60px;  --sp-16: 96px;  --sp-20: 120px;
+  --sp-6:  36px;   --sp-10: 60px;  --sp-12: 72px;  --sp-16: 96px;  --sp-20: 120px;
   --section-gap: clamp(60px, 8vw, 120px);   /* between page sections */
   --card-pad:    clamp(24px, 3vw,  38px);   /* inside cards */
   --element-gap: clamp(6px,  1vw,  18px);   /* between adjacent elements */
@@ -105,7 +135,11 @@
   --pill: var(--r-pill);   /* component alias */
   --sh-sm: 0 1px 2px rgba(16,35,63,.05), 0 6px 18px rgba(16,35,63,.06);
   --sh-md: 0 12px 40px -12px rgba(11,139,138,.28), 0 6px 18px rgba(16,35,63,.06);
-  --shadow-sm: var(--sh-sm);   /* brand-book aliases */
+  /* Book-named aliases. DISCLOSED: these now resolve to the LIVE sh-* shadows,
+   * not the (unused) shadow-* values the book carried. Zero visual effect —
+   * nothing referenced the book names — but it is a repoint, so it is written
+   * down rather than left for the next reader to discover. */
+  --shadow-sm: var(--sh-sm);
   --shadow-md: var(--sh-md);
   --ease: cubic-bezier(.2,.7,.2,1);
   --dur-fast: 120ms; --dur: 250ms; --dur-slow: 400ms;
