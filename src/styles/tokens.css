@@ -1,7 +1,28 @@
 /* ZAYA Digital Front Door — design tokens.
  * Extracted DIRECTLY from the official brand assets (brand/ + the interactive
  * brand reference), ruled the single source of truth (FDR flag F1, 2026-07-08).
- * One file swaps the whole look. Do not hardcode brand values in components. */
+ * One file swaps the whole look. Do not hardcode brand values in components.
+ *
+ * ── DESIGN-SYSTEM PASS, 2026-08-19 (advisor-implemented) ────────────────────
+ * This file previously did NOT govern the site. `site.css` loads after it
+ * (Base.astro: typography -> tokens -> site) and carried its own `:root` block
+ * that shadowed most of these values with slightly DIFFERENT ones, so the SSOT
+ * claim above was false in practice: changing a colour here changed nothing.
+ * That shadow block is now gone; site.css aliases onto this file.
+ *
+ * DRIFT RECONCILIATION (founder ruling pending — flagged, not silently picked):
+ * where the two files disagreed, the LIVE value (what site.css rendered, and
+ * what the founder reviewed and approved) is kept operative so this pass makes
+ * ZERO unintended visual change. The brand-book value is recorded beside it.
+ *   ink       #16233F live   (brand-book said #1E2A4A = navy)
+ *   ink-faint #8A93A3 live   (brand-book #8A929C)
+ *   line      #E2E8EC live   (brand-book #E4E8EC)
+ *   cloud     #F1F7F8 live   (brand-book #F4F7F8)
+ *   radii     12/18/26 live  (brand-book 10/16/22)
+ *   maxw      1200px live    (brand-book 1180px)
+ * A one-line founder ruling collapses each pair; until then the site renders
+ * exactly as it did, and the file is honest about which number is which.
+ * ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
   /* ---- Brand palette (official teal / coral / navy) ---- */
@@ -9,18 +30,20 @@
   --teal-bright: #13B7B4;  /* pin gradient start */
   --teal-deep:   #0B8B8A;  /* gradient end · primary hover */
   --coral:       #FF7A45;  /* accent — APP, key CTAs, the pin's Z dot */
-  --navy:        #1E2A4A;  /* ink / dark ground */
+  --coral-deep:  #F0632F;  /* coral pressed/hover */
+  --navy:        #1E2A4A;  /* dark ground */
   --amber:       #F4A261;  /* secondary accent (warm gold-orange) */
   --plum:        #6D5DD3;  /* tertiary accent (sparingly) */
   --mint:        #5DCAA5;  /* tagline/accent on dark grounds */
   --mint-pale:   #EAFBF7;  /* tagline/accent on teal grounds */
 
   /* ---- Neutrals (hue-biased toward the brand, not pure grey) ---- */
-  --cloud:     #F4F7F8;  /* light section background */
-  --line:      #E4E8EC;  /* borders / dividers */
-  --ink:       #1E2A4A;  /* body text = navy */
-  --ink-muted: #5B6470;  /* secondary text */
-  --ink-faint: #8A929C;  /* captions / hints */
+  --cloud:     #F1F7F8;  /* light section background   (book: #F4F7F8) */
+  --line:      #E2E8EC;  /* borders / dividers          (book: #E4E8EC) */
+  --ink:       #16233F;  /* body text                   (book: #1E2A4A) */
+  --ink-soft:  #54617A;  /* secondary text */
+  --ink-muted: var(--ink-soft);   /* brand-book alias — same role */
+  --ink-faint: #8A93A3;  /* captions / hints            (book: #8A929C) */
   --white:     #FFFFFF;
 
   /* ---- Semantic status (the honest live/roadmap vocabulary) ---- */
@@ -29,19 +52,53 @@
   --status-roadmap:     #5648B0;
   --status-future:      var(--ink-faint);
 
-  /* ---- Typography ---- */
+  /* ---- Typography families ---- */
   --font-sans: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --font-ethi: 'Noto Sans Ethiopic', 'Nyala', 'Abyssinica SIL', var(--font-sans);
+  --sans: var(--font-sans);   /* component alias */
   /* Poppins (Latin) + Noto Sans Ethiopic (am/ti) are self-hosted as woff2 in
    * src/assets/fonts + declared via @font-face in typography.css; om uses Poppins. */
 
-  /* ---- Scale ---- */
-  --r-sm: 10px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
-  --shadow-sm: 0 1px 2px rgba(30,42,74,.06), 0 4px 14px rgba(30,42,74,.05);
-  --shadow-md: 0 10px 34px rgba(30,42,74,.10);
+  /* ---- TYPE SCALE ────────────────────────────────────────────────────────
+   * Every step carries its own size, line-height and tracking, so a component
+   * sets ONE variable and inherits the craft. Sizes are clamp(floor → ceiling)
+   * rather than fixed px: the reference ceilings are the DESKTOP end, never the
+   * mobile size. Tracking tightens as size grows (optical correction) and opens
+   * on small uppercase labels — the discipline the ad-hoc sizes never had.
+   * Ceilings follow the founder's reference set: body 18 · subheading 36 ·
+   * heading 48 · heading-lg 78 · display 113. */
+  --fs-micro:    clamp(8.5px, .70vw,   9.5px);  --lh-micro:   1.25; --ls-micro:   .08em;
+  --fs-caption:  clamp(11px,  .95vw,  12px);    --lh-caption: 1.5;  --ls-caption: 0;
+  --fs-label:    clamp(11px, 1.05vw,  13px);    --lh-label:   1.2;  --ls-label:   .09em;
+  --fs-nav:      clamp(13px, 1.15vw,  14px);    --lh-nav:     1.2;  --ls-nav:     .025em;
+  --fs-body-sm:  clamp(13px, 1.15vw,  14.5px);  --lh-body-sm: 1.55; --ls-body-sm: 0;
+  --fs-body:     clamp(15px, 1.35vw,  18px);    --lh-body:    1.5;  --ls-body:    0;
+  --fs-lead:     clamp(16px, 1.50vw,  19px);    --lh-lead:    1.6;  --ls-lead:    0;
+  --fs-h-2xs:    clamp(16px, 1.50vw,  19px);    --lh-h-2xs:   1.3;  --ls-h-2xs:  -.013em;
+  --fs-h-xs:     clamp(20px, 2.20vw,  27px);    --lh-h-xs:    1.15; --ls-h-xs:   -.018em;
+  --fs-h-sub:    clamp(24px, 3.00vw,  36px);    --lh-h-sub:   1.2;  --ls-h-sub:  -.020em;
+  --fs-h-sm:     clamp(28px, 3.60vw,  42px);    --lh-h-sm:    1.15; --ls-h-sm:   -.029em;
+  --fs-h:        clamp(30px, 4.20vw,  48px);    --lh-h:       1.1;  --ls-h:      -.035em;
+  --fs-h-lg:     clamp(40px, 6.10vw,  78px);    --lh-h-lg:    1.04; --ls-h-lg:   -.040em;
+  --fs-display:  clamp(46px, 8.00vw, 113px);    --lh-display: 1.02; --ls-display:-.040em;
+
+  /* ---- SPACING RHYTHM (6px base — every gap is a multiple, no strays) ---- */
+  --sp-1:   6px;   --sp-2:  12px;  --sp-3:  18px;  --sp-4:  24px;  --sp-5:  30px;
+  --sp-6:  36px;   --sp-10: 60px;  --sp-16: 96px;  --sp-20: 120px;
+  --section-gap: clamp(60px, 8vw, 120px);   /* between page sections */
+  --card-pad:    clamp(24px, 3vw,  38px);   /* inside cards */
+  --element-gap: clamp(6px,  1vw,  18px);   /* between adjacent elements */
+
+  /* ---- Radii · elevation · motion ---- */
+  --r-sm: 12px; --r-md: 18px; --r-lg: 26px; --r-pill: 999px;  /* book: 10/16/22 */
+  --pill: var(--r-pill);   /* component alias */
+  --sh-sm: 0 1px 2px rgba(16,35,63,.05), 0 6px 18px rgba(16,35,63,.06);
+  --sh-md: 0 12px 40px -12px rgba(11,139,138,.28), 0 6px 18px rgba(16,35,63,.06);
+  --shadow-sm: var(--sh-sm);   /* brand-book aliases */
+  --shadow-md: var(--sh-md);
   --ease: cubic-bezier(.2,.7,.2,1);
   --dur-fast: 120ms; --dur: 250ms; --dur-slow: 400ms;
-  --maxw: 1180px;
+  --maxw: 1200px;   /* book: 1180px */
 
   /* radar / near-you motion (the signature motif, from the brand file's zradar) */
   --radar-cycle: 3.4s;
