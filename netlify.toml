@@ -10,24 +10,43 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# ⚑ RESTORED 2026-08-20 (founder ruling). Production runs the REAL GATED BUILD.
+# ⚑ TEMPORARY (pre-domain phase, 2026-07-08; re-affirmed 2026-08-20): main deploys
+# the NOINDEX DRAFT build so the site can go live on the free *.netlify.app address
+# — accessible/shareable but HIDDEN from Google — without needing published=true and
+# without the gate failing. The site cannot be indexed while published=false
+# (noindex meta + robots Disallow, both generated from that one flag).
+# THIS IS THE FOUNDER'S LIVE PREVIEW URL. It must keep deploying.
 #
-# What was wrong: from 2026-07-08 this context ran `npm run build:draft`, which skips
-# scripts/check-publish.mjs entirely. The gate is the only thing standing between a
-# flipped flag and a live, indexed, AI-answering site — and production was the ONE
-# context configured to walk around it. A draft build at published=true would have
-# emitted ZERO noindex tags with no check having run at all.
+# ⚑ 2026-08-20 — WHY THIS IS STILL build:draft, AND WHAT CHANGED UNDER IT.
+# feat/assistant-gate switched this line to `npm run build` to close a real hole:
+# a draft build at published=true would emit an INDEXABLE site with no gate having
+# run. The hole was real; that fix was the wrong end of it. `npm run build` exits 1
+# while published=false, so it would have failed EVERY production deploy — the
+# founder's preview would freeze on its last successful build and silently stop
+# reflecting main. Trading a live preview for a gate that only fires when the flag
+# is already wrong is a bad trade, and it breaks the one thing this URL is for.
 #
-# ⚠ THE CONSEQUENCE, STATED PLAINLY: `npm run build` FAILS (exit 1) while
-# site.json published=false. So the PRODUCTION deploy of this site will now fail
-# until publish is genuinely cleared. That is the gate doing its job, not a bug.
-# Netlify keeps serving the LAST SUCCESSFUL production deploy, so the parked site
-# stays up and frozen rather than going dark. For the pre-domain "shareable but
-# hidden" phase, use a BRANCH DEPLOY instead: the [build] command above is still
-# `npm run build:draft`, so every branch/preview deploy builds noindex without the
-# gate, exactly as before. See GO-LIVE.md Step 4 and docs/ASSISTANT-GATE.md.
+# The hole is now closed at the other end instead: `build:draft` runs
+# scripts/check-draft.mjs, which REFUSES to build when published=true. The pair is
+# exhaustive over the flag —
+#   published=false -> only build:draft succeeds -> output is noindex + Disallow
+#   published=true  -> only build succeeds       -> full publish gate has run
+# so NO BUILD PATH CAN PRODUCE AN INDEXABLE SITE WITHOUT THE FULL GATE PASSING,
+# and the parked site keeps deploying on every push to main.
+#
+# The assistant gate rides this build too, and needs no change here: the assistant
+# is OFF by default in src/config/assistant.json, the draft build emits no widget
+# markup at all, and [context.production.environment] below pins ZAYA_ASSISTANT=off
+# regardless. What check-publish.mjs adds — asserting the assistant's state — only
+# matters on a publish build, which is exactly where it still runs.
+#
+# ⚑ RESTORE AT GO-LIVE (once zayaethiopia.com is registered + connected in Netlify):
+# switch this to `npm run build` AND set site.json published=true, in the same
+# change. Doing either alone now fails the build by design — that is the pair
+# working. See GO-LIVE.md Step 4 and docs/ASSISTANT-GATE.md.
 [context.production]
-  command = "npm run build"
+  command = "npm run build:draft"
+  # command = "npm run build"   # ← RESTORE at go-live, together with published=true
 
 # ── The founder's assistant preview (W-D4a) ─────────────────────────────────
 # The AI assistant ships OFF everywhere by default (src/config/assistant.json

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/check-publish.mjs && astro build",
-    "build:draft": "astro build",
+    "build:draft": "node scripts/check-draft.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "test:assistant": "node scripts/test-assistant.mjs",

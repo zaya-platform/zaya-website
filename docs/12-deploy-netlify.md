@@ -15,7 +15,8 @@ Admin login: **Sveltia CMS + GitHub OAuth** — a maintained path that replaces 
 1. Netlify → **Add new site → Import from Git** → pick the repo.
 2. Build settings come from **`netlify.toml`** (no manual entry needed):
    - Branch/preview deploys run `npm run build:draft` → a **noindex draft** (safe to share for review + CMS testing).
-   - The **production** context runs `npm run build` → the **F4 gate**, which *fails the deploy* until Privacy/Terms exist, photo rights are cleared, and `published:true`. So the public site can't go live prematurely.
+   - The **production** context also runs `npm run build:draft` **while the site is parked** (`published:false`), so the free `*.netlify.app` preview keeps deploying. `build:draft` is itself guarded: `scripts/check-draft.mjs` *fails the build* if `published:true`, so a draft build can never emit an indexable site.
+   - At go-live, `[context.production]` switches to `npm run build` → the **F4 gate**, which *fails the deploy* until Privacy/Terms exist, photo rights are cleared, the assistant's state is asserted, and `published:true`. So the public site can't go live prematurely.
 3. Add the custom domain **zaya.app** (Netlify DNS or your registrar) once registered.
 
 ## C. Admin login — GitHub OAuth (no Netlify Identity)
@@ -46,10 +47,14 @@ in the browser):
 ---
 
 ## Go-live checklist (flip from draft → public)
-The production build **will not pass** until every item is done — by design (F4).
-Since 2026-08-20 `[context.production]` really does run `npm run build` (the gated
-build); it previously ran `npm run build:draft`, which skipped the gate entirely, so
-"will not pass" was not true of production. It is now.
+The gated build **will not pass** until every item is done — by design (F4).
+Note what is and is not true today: while the site is parked, `[context.production]`
+runs `npm run build:draft`, so the F4 gate does **not** run on production deploys —
+it has nothing to protect, because a draft build is noindex by construction and
+`scripts/check-draft.mjs` refuses to run at `published:true`. The gate starts
+running on production the moment the last item below is done, because that flip and
+the switch to `npm run build` must happen in the same change (either alone fails the
+build on purpose).
 - [ ] **Privacy + Terms**: add real `src/content/legal/privacy.md` and `terms.md` (≥ real content, no "placeholder").
 - [ ] **Photos**: confirm commercial rights → set `src/assets/photos/_rights.json → cleared:true`, **or** replace with commissioned pilot-shop photos (same filenames). Remove any `*_rights-pending*` files.
 - [ ] **Form**: set `contact.json`/`contact.formEndpoint` to your Formspree (or Netlify Forms) endpoint.

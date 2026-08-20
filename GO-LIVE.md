@@ -61,13 +61,16 @@ We built a safety rule: the site **refuses to go public** until real Privacy + T
    there is no second file to remember. *(Tell me and I’ll do this in one step.)*
 3. Netlify redeploys — the site is now **public and visible on Google** at zayaethiopia.com.
 
-   ⚠ **Since 2026-08-20 the production deploy runs the REAL publish gate**
-   (`npm run build`, restored in `netlify.toml`; it used to run a draft build that
-   skipped the gate). Until step 2 is done AND the gate's other conditions are met
-   (real Privacy + Terms, photo rights, assistant state), **the production deploy
-   fails on purpose** and Netlify keeps serving the last good deploy. The failure
-   message in the deploy log names exactly what is missing. Branch deploys are
-   unaffected — they still build the shareable noindex draft.
+   ⚠ **Step 2 is a two-line change, and both lines must move together.** While the
+   site is parked, `netlify.toml [context.production]` runs `npm run build:draft`
+   so this preview URL keeps deploying. Setting `published:true` on its own makes
+   the **draft build refuse** (`scripts/check-draft.mjs`: a draft build must not
+   emit an indexable site), so at go-live also switch that line to `npm run build`
+   — the commented-out line is right there in `netlify.toml`. From then on the
+   deploy runs the **real publish gate**, and until its other conditions are met
+   (real Privacy + Terms, photo rights, assistant state) **the deploy fails on
+   purpose**, naming exactly what is missing in the log. *(Tell me and I'll do both
+   in one commit.)*
 
 ---
 

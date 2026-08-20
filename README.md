@@ -25,10 +25,13 @@ files — never hardcoded. A non-technical ZAYA admin can update:
 (colors/type, extracted from `brand/`). Replace a token value there and every page
 updates; drop real Poppins + Noto Sans Ethiopic `woff2` into `src/assets/fonts/`.
 
-**Publishing is gated (F4):** `npm run build` refuses a production build until
-`site.published = true` **and** real Privacy + Terms exist (see `scripts/check-publish.mjs`).
-Use `npm run build:draft` for internal, `noindex` preview builds. This makes it
-impossible to accidentally publish/index the site before real legal + content exist.
+**Publishing is gated (F4), in both directions:** `npm run build` refuses a production
+build until `site.published = true` **and** real Privacy + Terms exist, photo rights are
+cleared, and the assistant's state checks out (see `scripts/check-publish.mjs`).
+`npm run build:draft` builds the internal, `noindex` preview — and refuses to run when
+`site.published = true` (see `scripts/check-draft.mjs`), so the draft path can never be
+used to emit an indexable site. The two are exhaustive over the flag, which is what makes
+it impossible to publish/index the site before real legal + content exist.
 `/robots.txt` is generated from the same flag (`src/pages/robots.txt.ts`), so there is
 one switch, not two.
 

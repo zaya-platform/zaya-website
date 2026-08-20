@@ -201,12 +201,20 @@ saying rather than pretending otherwise.
 
 ## 4. What else changed with it
 
-- **`netlify.toml [context.production]` now runs the real gated build**
-  (`npm run build`) instead of `build:draft`, which skipped the gate entirely.
-  ⚠ **Consequence:** the production deploy now **fails** while
-  `site.json published:false`. That is the gate working. Netlify keeps serving
-  the last successful deploy, so the parked site stays up (frozen) rather than
-  going dark; branch deploys still build `build:draft` for sharing.
+- **Finding 5 is closed from the draft side, not the production side.**
+  This branch originally switched `netlify.toml [context.production]` to
+  `npm run build`. That was reverted when the branch was merged to `main`
+  (2026-08-20), because `npm run build` exits 1 while `published:false`, so it
+  would have failed **every** production deploy — freezing the founder's live
+  preview at `zayaethiopia.netlify.app` on its last successful build and
+  silently detaching it from `main`. The hole was real; that was the wrong end
+  of it.
+  Instead, **`build:draft` now runs `scripts/check-draft.mjs`**, which refuses
+  to build when `published:true`. The two guards are exhaustive over the flag:
+  `published:false` → only `build:draft` succeeds (noindex + `Disallow` by
+  construction); `published:true` → only `build` succeeds (full publish gate
+  ran). **No build path can produce an indexable site without the full gate
+  passing**, and the parked preview keeps deploying on every push to `main`.
 - **`/robots.txt` is generated** by `src/pages/robots.txt.ts` from the same
   `site.json` flag as the `<head>` robots meta; the static `public/robots.txt`
   is deleted (a file in `public/` shadows a route of the same name). One
