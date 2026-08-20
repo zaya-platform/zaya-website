@@ -1,0 +1,7 @@
+{
+  "_readme": "The ZAYA website AI assistant's OWN switch. It is deliberately NOT in src/content/data/site.json and NOT in the CMS: publish (indexing) and assistant exposure are separate decisions with separate owners, and only the founder may move this one. See docs/ASSISTANT-GATE.md.",
+  "_enabled": "true only after the founder's W-D4b public-launch gate. false = no assistant markup is emitted on any page at all.",
+  "enabled": false,
+  "_publicLaunchApproved": "The founder's W-D4b record. scripts/check-publish.mjs FAILS a publish build if the assistant resolves ON while this is not true.",
+  "publicLaunchApproved": false
+}

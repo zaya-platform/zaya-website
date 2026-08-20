@@ -11,7 +11,16 @@ import diasporaFamily from '../assets/photos/diaspora-family.jpg';
 import pricing from '../content/data/pricing.json';
 import contact from '../content/data/contact.json';
 import faq from '../content/data/faq.json';
+import { assistantState } from '../config/assistant-state.mjs';
 const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
+
+// The assistant's OWN gate (founder ruling 2026-08-20) — the same resolver the
+// layout uses, not a second flag. This page carries TWO assistant entry points
+// besides the widget itself: the nav "Ask ZAYA AI" button and the whole
+// "ask-band" section. Both are driven by `data-open-assistant`, whose click
+// handler ships INSIDE the widget — so with the widget gated off they were dead
+// controls and a promise the page could not keep. They are gated with it.
+const assistant = assistantState();
 
 // Hero hub-and-spoke — the HONEST live ZAYA network. Six nodes only (fewer,
 // truer): the three participants + the three live/launching capabilities. No
@@ -86,7 +95,7 @@ const HUB = [
       </div>
       <div class="item"><a href="#pricing">Pricing</a></div>
       <div class="item"><a href="#faq">FAQ</a></div>
-      <button class="menu-ai" type="button" data-open-assistant>Ask ZAYA AI</button>
+      {assistant.enabled && <button class="menu-ai" type="button" data-open-assistant>Ask ZAYA AI</button>}
     </nav>
     <a class="btn btn-primary cta" href="#contact">Join the pilot</a>
     <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-menu">
@@ -275,6 +284,7 @@ const HUB = [
 </div></section>
 
 
+{assistant.enabled && (
 <section class="ask-band">
   <div class="wrap ask-band-in reveal-seq">
     <div class="ask-orb" aria-hidden="true">&#10022;</div>
@@ -282,6 +292,7 @@ const HUB = [
     <button class="btn btn-primary" type="button" data-open-assistant>Start a conversation <span aria-hidden="true">&rarr;</span></button>
   </div>
 </section>
+)}
 
 
 <section class="band">

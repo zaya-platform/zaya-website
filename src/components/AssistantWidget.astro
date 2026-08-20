@@ -1,13 +1,45 @@
 ---
 // ZAYA Website Assistant widget (CR-027/ADR-024, ACCEPTED — FDR-019).
-// FOUNDER-ACCESS PREVIEW (W-D4a): ships on the parked site (published:false).
+// FOUNDER-ACCESS PREVIEW (W-D4a). This component is mounted ONLY when the
+// assistant's own gate is open (src/config/assistant.mjs) — Base.astro never
+// mounts it bare, and site.published is not one of its inputs.
 // Honesty by construction: labelled an AI assistant answering from ZAYA's
 // PUBLISHED information (D-022); "don't include personal details" microcopy
 // (W-D3); unknowns hand off to the existing contact section — the assistant
 // never captures leads itself. All strings the SERVER answers with live in
 // the relay's curated layers; this component only carries UI chrome.
+//
+// `token` is the SHARED SECRET the relay requires (see the relay header for
+// exactly what that does and does not protect). It is a build-time value that
+// lands in this page's HTML, so ANYONE WHO CAN LOAD THIS PAGE CAN READ IT —
+// that is understood and accepted for an unadvertised preview deploy; it is
+// not, and is not claimed to be, per-user authentication.
+//
+// STYLE AND SCRIPT ARE `is:inline` ON PURPOSE. Astro hoists a component's
+// <style>/<script> into the PAGE bundles based on the import graph, not on
+// whether it actually rendered: with a plain <style>/<script> a build with the
+// assistant OFF still shipped 85 CSS + 13 JS occurrences of "zassist" in
+// dist/_astro/* (measured), and the hoisted script then ran on every page and
+// threw on `root.dataset` because #zassist did not exist. Inline assets are
+// emitted only where the component renders, so OFF means a dist/ with ZERO
+// assistant bytes. Cost: this CSS/JS is unbundled and unminified and repeats
+// per page — it only ever ships on a build that has the assistant ON.
+//
+// is:inline ALSO makes the style global by construction — an inline <style> is
+// emitted verbatim and never receives Astro's scoping attribute, so the message
+// bubbles this component creates at runtime (.m/.me/.bot) still get their rules.
+// The old `is:global` directive was REMOVED with the switch: Astro passes
+// unrecognised attributes straight through, so it was shipping a literal
+// `<style is:global>` into the HTML while doing nothing. Every rule is
+// namespaced under #zassist, so global scope is safe. The panel is shown/hidden
+// with the .zopen class, NOT the [hidden] attribute: a scoped `display:flex`
+// would override the UA `[hidden]{display:none}` and pin the panel permanently
+// open (the earlier review's HIGH). Frontmatter comments are stripped from the
+// output; HTML comments are not, which is why this note lives here.
+interface Props { token: string }
+const { token } = Astro.props;
 ---
-<div id="zassist" data-endpoint="/api/assistant">
+<div id="zassist" data-endpoint="/api/assistant" data-auth={token}>
   <button id="zassist-invite" type="button" data-open-assistant>
     <span aria-hidden="true">&#10022;</span>
     <span><b>Ask ZAYA AI</b><small>Pilot, plans &amp; product status</small></span>
@@ -63,14 +95,8 @@
   </section>
 </div>
 
-<!-- is:global so runtime-created message bubbles (.m/.me/.bot, added by the
-     script below) actually receive their styles — Astro's scoped selectors
-     carry a data-astro-cid attribute that runtime elements don't have. Every
-     rule is namespaced under #zassist, so global scope is safe. The panel is
-     shown/hidden with the .zopen class, NOT the [hidden] attribute: a scoped
-     `display:flex` would override the UA `[hidden]{display:none}` and pin the
-     panel permanently open (the review's HIGH). -->
-<style is:global>
+<!-- Styles: see the is:inline note in this component's frontmatter. -->
+<style is:inline>
   #zassist { position: fixed; right: 20px; bottom: 20px; z-index: 80; font-family: var(--font-sans); }
   #zassist-panel { display: none; }
   #zassist-panel.zopen { display: flex; }
@@ -158,9 +184,11 @@
   @media (prefers-reduced-motion: reduce) { #zassist *,#zassist *::before,#zassist *::after { animation: none!important; transition: none!important; } }
 </style>
 
-<script>
+<script is:inline type="module">
   const root = document.getElementById('zassist');
   const endpoint = root.dataset.endpoint;
+  // The relay's shared secret, embedded by the build (see the header note).
+  const auth = root.dataset.auth || '';
   const fab = document.getElementById('zassist-fab');
   const invite = document.getElementById('zassist-invite');
   const panel = document.getElementById('zassist-panel');
@@ -275,7 +303,7 @@
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json', 'x-zaya-assistant-token': auth },
         body: JSON.stringify({ message: q.slice(0, 500), locale: lang.value }),
       });
       const body = await res.json().catch(() => null);

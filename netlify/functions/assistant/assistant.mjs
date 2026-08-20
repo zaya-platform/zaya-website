@@ -1,8 +1,16 @@
 // ZAYA Website Assistant — the relay (CR-027/ADR-024, ACCEPTED via FDR-019).
 //
-// FOUNDER-ACCESS PREVIEW (W-D4a): the site stays published:false; this
-// endpoint exists for the founder's own testing. It is still internet-
-// reachable, so every abuse control is on from day one.
+// FOUNDER-ACCESS PREVIEW (W-D4a): this endpoint exists for the founder's own
+// testing. It is internet-reachable, so since 2026-08-20 it REFUSES every
+// request that does not carry the shared secret, and refuses ALL requests when
+// no secret is configured. Before that date it had no auth at all — an open
+// AI relay on a public URL. That is the exposure this gate closes.
+//
+// INDEPENDENT OF PUBLISH (founder ruling 2026-08-20): nothing in this file
+// reads site.json or the publish flag, and nothing ever should. The site being
+// published must not open the assistant, and previewing the assistant must not
+// publish the site. The website-side switch is src/config/assistant.json; the
+// relay-side switch is the ZAYA_ASSISTANT_TOKEN / ZAYA_ASSISTANT env pair.
 //
 // The COST CASCADE (binding order): RULES → FAQ/KB (curated, all four
 // languages) → Gemini ONLY LAST, English-only (W-D5), grounded ONLY in the
@@ -19,7 +27,17 @@
 // migration = repoint the widget's endpoint.
 
 import { ENTRIES, LOCALES, STRINGS, TOPIC_WORDS } from './kb.mjs';
-import { hasEthiopic, isEnglishReply, looksOromo, rateLimited, scrubPII, violatesHonesty } from './guard.mjs';
+import {
+  assistantGateState,
+  hasEthiopic,
+  isEnglishReply,
+  looksOromo,
+  presentedToken,
+  rateLimited,
+  scrubPII,
+  tokenMatches,
+  violatesHonesty,
+} from './guard.mjs';
 
 const MAX_MESSAGE_CHARS = 500;
 const MODEL_TIMEOUT_MS = 9000;
@@ -148,6 +166,26 @@ const DEFAULT_FOLLOW_UPS = [['Live merchant tools','Which merchant tools are liv
 const suggestionsFor = (entryId, locale) => locale === 'en' ? (FOLLOW_UPS[entryId] || DEFAULT_FOLLOW_UPS) : [];
 
 export const handler = async (event) => {
+  // ── THE ACCESS GATE — FIRST, before method, body, parsing or rate limiting,
+  // so an unauthorised caller costs us nothing and learns nothing. See the
+  // ACCESS GATE block in guard.mjs for exactly what this does and does not
+  // protect (short version: it is a shared secret for one unadvertised deploy,
+  // NOT authentication — the token is readable in the HTML of any page that
+  // ships the widget).
+  //
+  // NOTE THE INDEPENDENCE (founder ruling 2026-08-20): this gate reads the
+  // ENVIRONMENT ONLY. It does not read site.json, it does not know whether the
+  // site is published, and publishing the site can neither open nor close it.
+  const gate = assistantGateState(process.env);
+  if (!gate.open) {
+    // 503: the assistant is not configured in this environment. Deliberately
+    // the same answer for every caller — no probing signal.
+    return reply(503, { error: 'assistant disabled' });
+  }
+  if (!tokenMatches(presentedToken(event.headers ?? {}), process.env.ZAYA_ASSISTANT_TOKEN)) {
+    return reply(401, { error: 'unauthorised' });
+  }
+
   if (event.httpMethod !== 'POST') return reply(405, { error: 'POST only' });
 
   const ip = event.headers['x-nf-client-connection-ip'] || event.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
@@ -170,7 +208,12 @@ export const handler = async (event) => {
   const rawMessage = typeof parsed.message === 'string' ? parsed.message.slice(0, MAX_MESSAGE_CHARS) : '';
   if (!rawMessage.trim()) return reply(400, { error: 'message is required' });
 
-  // W-D3: PII never travels further than this line.
+  // W-D3 scrub. STATE IT ACCURATELY: scrubPII removes e-mail addresses and
+  // phone-shaped digit runs (7–15 digits) — nothing else. Names, addresses,
+  // ID numbers and any other free text pass through unchanged and, on the
+  // model path, are sent to Google. This is an e-mail/phone scrub, not a
+  // guarantee that PII stops here. (Corrected 2026-08-20; the previous comment
+  // read "PII never travels further than this line", which overstated it.)
   const message = scrubPII(rawMessage);
   const normalized = normalize(message);
 

@@ -43,7 +43,12 @@ the full static page renders — never blank space.
   `build:draft` for noindex preview builds. Don't touch the legal pages/forms without the
   founder.
 - The AI assistant already exists (`AssistantWidget.astro`, FDR-019). Reconcile with it;
-  don't re-plan it.
+  don't re-plan it. **It is gated SEPARATELY from `published`** (founder ruling
+  2026-08-20): `src/config/assistant.json` + `ZAYA_ASSISTANT` / `ZAYA_ASSISTANT_TOKEN`,
+  resolved by `src/config/assistant.mjs`, off by default, and the relay refuses every
+  call without the shared secret. Never mount `<AssistantWidget />` unconditionally and
+  never make either switch read the other — `npm run test:gate` and the publish gate both
+  fail if you do. Read `docs/ASSISTANT-GATE.md` first.
 
 ## Process
 - Focused feature branch → reviewable PR. **Founder preview gate** (Tailscale/Netlify

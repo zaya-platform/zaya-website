@@ -5,6 +5,15 @@
 
 import { handler } from '../netlify/functions/assistant/assistant.mjs';
 
+// The relay now REFUSES every unauthenticated call (founder ruling 2026-08-20 —
+// the endpoint used to be open to the internet). These tests exercise the
+// CASCADE, so they authenticate first; the gate itself is tested separately in
+// scripts/test-assistant-gate.mjs. This value is a shape-valid test string, not
+// a secret — the real one lives only in the Netlify environment.
+process.env.ZAYA_ASSISTANT_TOKEN = 'test-only-shared-secret-0123456789'; // gitleaks:allow (fixture, not a credential)
+delete process.env.ZAYA_ASSISTANT; // no kill switch during the cascade tests
+const AUTH = { 'x-zaya-assistant-token': process.env.ZAYA_ASSISTANT_TOKEN };
+
 let failures = 0;
 const check = (name, cond, detail = '') => {
   if (cond) console.log(`  ✔ ${name}`);
@@ -21,7 +30,7 @@ const freshIp = () => `203.0.113.${++ipCounter}`;
 const call = async (message, locale = 'en', ip = freshIp()) => {
   const res = await handler({
     httpMethod: 'POST',
-    headers: { 'x-nf-client-connection-ip': ip },
+    headers: { 'x-nf-client-connection-ip': ip, ...AUTH },
     body: JSON.stringify({ message, locale }),
   });
   return { status: res.statusCode, ...(JSON.parse(res.body || '{}')) };
@@ -64,11 +73,11 @@ console.log('guardrails:');
   check('injection attempt never leaks (deflect or handoff, no key text)', ['rule', 'handoff', 'kb'].includes(inj.source) && !/AIza|system prompt/i.test(inj.reply));
   const unknownEn = await call('Do you integrate with my ERP system for shops?');
   check('uncovered English question -> honest AI-dark handoff (no key)', unknownEn.source === 'handoff' && /contact/i.test(unknownEn.reply));
-  const big = await handler({ httpMethod: 'POST', headers: {}, body: 'x'.repeat(5000) });
+  const big = await handler({ httpMethod: 'POST', headers: { ...AUTH }, body: 'x'.repeat(5000) });
   check('oversized body -> 413', big.statusCode === 413);
-  const bad = await handler({ httpMethod: 'POST', headers: {}, body: '{not json' });
+  const bad = await handler({ httpMethod: 'POST', headers: { ...AUTH }, body: '{not json' });
   check('bad JSON -> 400', bad.statusCode === 400);
-  const get = await handler({ httpMethod: 'GET', headers: {} });
+  const get = await handler({ httpMethod: 'GET', headers: { ...AUTH } });
   check('GET -> 405', get.statusCode === 405);
 }
 

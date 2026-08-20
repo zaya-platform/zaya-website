@@ -1,6 +1,84 @@
 // ZAYA Website Assistant — the guardrails (CR-027 §6 / ADR-024 decision 3).
 // Everything here runs BEFORE any model call and on every reply.
 // Hardened after the M-preview adversarial review (2026-07-12).
+// Access gate added 2026-08-20 (founder ruling) — see ACCESS GATE below.
+
+import { createHash, timingSafeEqual } from 'node:crypto';
+
+// ── ACCESS GATE (the fix for the open endpoint) ──────────────────────────────
+// BEFORE THIS: /api/assistant had no auth, no token, no Origin check and no
+// allowlist, and it never read any flag. Anyone on the internet could POST to
+// it and spend ZAYA's Gemini quota. That was live.
+//
+// NOW: the relay answers ONLY a request carrying the shared secret in the
+// x-zaya-assistant-token header, and it answers NOTHING AT ALL unless that
+// secret is configured in the Netlify environment.
+//
+// WHAT THIS DEFENDS AGAINST — honestly, the full list:
+//   • the open internet: crawlers, scanners, scrapers and drive-by bots that
+//     find /api/assistant and POST to it. They have no token → 401.
+//   • cost abuse by anyone who has NOT loaded the one deploy that carries the
+//     widget (today: nobody but the founder's preview).
+//   • an accidentally-enabled production deploy: with no ZAYA_ASSISTANT_TOKEN
+//     in that context's environment the function is 503 to EVERYONE, including
+//     to a widget that somehow shipped. Fail-closed, not fail-open.
+//
+// WHAT THIS DOES **NOT** DEFEND AGAINST — say it plainly:
+//   • ANYONE WHO CAN LOAD A PAGE THAT SHIPS THE WIDGET CAN READ THE TOKEN. It
+//     is a build-time string in that page's HTML (`data-auth`). "View source"
+//     is the whole attack. This is a SHARED SECRET FOR ONE UNADVERTISED
+//     DEPLOY, not authentication — there is no user, no session, no identity,
+//     and no way to tell two holders of the token apart.
+//   • replay: a captured request can be replayed verbatim until the token is
+//     rotated. Nothing here is nonced, timestamped or bound to a client.
+//   • an Origin/Referer check would add nothing: both are attacker-controlled
+//     headers that curl sets freely. They are browser-protection, not access
+//     control, which is exactly why one is NOT used as the gate here.
+//   • rate limiting is still per warm lambda instance (see below) — the token
+//     narrows WHO can spend, it does not make the spend cap global.
+//
+// RESIDUAL, stated: the real protection for the preview deploy is that its URL
+// is unadvertised and it is the only build that carries the token. If that URL
+// spreads, the token spreads with it. Rotation = change ZAYA_ASSISTANT_TOKEN
+// in Netlify and redeploy; every old copy is dead the moment it changes.
+
+// Must match src/config/assistant.mjs (MIN_TOKEN_CHARS / TOKEN_RE). Restated
+// here rather than imported so this function never depends on a file outside
+// netlify/functions/ surviving the Netlify bundler. scripts/test-assistant-gate.mjs
+// asserts the two definitions agree on a table of inputs, so they cannot drift.
+const MIN_TOKEN_CHARS = 24;
+const TOKEN_RE = /^[A-Za-z0-9_-]+$/;
+export const ASSISTANT_TOKEN_HEADER = 'x-zaya-assistant-token';
+
+export function isUsableToken(value) {
+  return typeof value === 'string' && value.length >= MIN_TOKEN_CHARS && TOKEN_RE.test(value);
+}
+
+/** Is the relay configured to answer at all? Fail-closed on anything unclear. */
+export function assistantGateState(env = process.env) {
+  const kill = String(env?.ZAYA_ASSISTANT ?? '').trim().toLowerCase();
+  if (kill === 'off') return { open: false, reason: 'ZAYA_ASSISTANT=off (kill switch)' };
+  if (!isUsableToken(env?.ZAYA_ASSISTANT_TOKEN)) {
+    return { open: false, reason: 'ZAYA_ASSISTANT_TOKEN is not configured (or is too short/ill-formed)' };
+  }
+  return { open: true, reason: 'shared secret configured' };
+}
+
+/** Constant-time compare over SHA-256 digests, so neither length nor prefix leaks. */
+export function tokenMatches(presented, expected) {
+  if (typeof presented !== 'string' || typeof expected !== 'string' || presented === '') return false;
+  const a = createHash('sha256').update(presented, 'utf8').digest();
+  const b = createHash('sha256').update(expected, 'utf8').digest();
+  return timingSafeEqual(a, b);
+}
+
+/** Header lookup that survives any casing the platform hands us. */
+export function presentedToken(headers = {}) {
+  for (const [k, v] of Object.entries(headers)) {
+    if (k.toLowerCase() === ASSISTANT_TOKEN_HEADER) return typeof v === 'string' ? v.trim() : '';
+  }
+  return '';
+}
 
 // ── PII scrub (W-D3): emails + ANY phone-shaped digit run are removed BEFORE
 // the text can reach the provider. The earlier version only caught NANP-style
@@ -9,6 +87,15 @@
 // enumerating groupings we find every candidate run of digits+separators and
 // scrub any that carries 7–15 digits (a phone number's worth). ZAYA attaches
 // no identity and the widget collects none; this covers what a visitor types.
+//
+// HONEST SCOPE — this function strips TWO THINGS AND ONLY TWO THINGS:
+// e-mail addresses, and digit runs of phone-number length (7–15 digits).
+// It does NOT strip names, addresses, ID/licence numbers, dates of birth,
+// business names, or any other free text. A visitor who types "I'm Almaz
+// Tesfaye at Bole Road, shop 4" sends all of that onward unchanged. Do not
+// describe this as "PII never leaves" — describe it as an e-mail and phone
+// scrub, which is what it is. The microcopy in the widget ("don't include
+// personal details") is the other half of the control, and it is advisory.
 const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 // A candidate: a digit, then 5+ digit/separator chars, then a digit.
 const PHONE_CANDIDATE_RE = /\+?\d[\d\s().‐-―-]{5,}\d/g;
