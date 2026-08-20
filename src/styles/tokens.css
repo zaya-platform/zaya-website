@@ -1,7 +1,173 @@
 /* ZAYA Digital Front Door — design tokens.
  * Extracted DIRECTLY from the official brand assets (brand/ + the interactive
  * brand reference), ruled the single source of truth (FDR flag F1, 2026-07-08).
- * One file swaps the whole look. Do not hardcode brand values in components. */
+ * One file swaps the whole look. Do not hardcode brand values in components.
+ *
+ * ── DESIGN-SYSTEM PASS, 2026-08-19 (advisor-implemented) ────────────────────
+ * This file previously did NOT govern the site. `site.css` loads after it
+ * (Base.astro: typography -> tokens -> site) and carried its own `:root` block
+ * that shadowed most of these values with slightly DIFFERENT ones, so the SSOT
+ * claim above was false in practice: changing a colour here changed nothing.
+ * That shadow block is now gone; site.css aliases onto this file.
+ *
+ * DRIFT RULED — founder, 2026-08-19. The two files had disagreed on six
+ * values; each pair is now collapsed, split on whether the difference is
+ * PERCEPTIBLE, with the deciding evidence recorded:
+ *   COLOURS take the brand book, because the book values are what the APPS
+ *   actually ship (navy and cloud verified against the platform's origin/main
+ *   at the time of the ruling) — so the site and the apps are now the same
+ *   ZAYA, which is what "harmonise with the app branding" has to mean. All
+ *   four deltas were imperceptible (2-7 points on one channel).
+ *     ink       #16233F -> #1E2A4A   (= navy; collapses two near-identical
+ *                                     darks into one. Both clear the AAA bar
+ *                                     on white by a wide margin.)
+ *     ink-faint #8A93A3 -> #8A929C
+ *     line      #E2E8EC -> #E4E8EC
+ *     cloud     #F1F7F8 -> #F4F7F8   (identical to the apps' cloud)
+ *   RADII KEEP their live values — the one difference that is visible, it is
+ *   founder-approved, and it sits closest to the chosen reference.
+ *   Deliberately NOT matched to the apps' radii: radii do not carry across
+ *   media — the same corner on a desktop card reads far rounder than on a
+ *   phone, so matching the numbers would make them look LESS alike.
+ *   MAX-WIDTH keeps its live value (imperceptible, no app equivalent).
+ *
+ * ── POST-REVIEW CORRECTIONS, 2026-08-20 ────────────────────────────────────
+ * Two independent reviewers examined the first pass and RETURNED IT. They were
+ * right on three counts; each is fixed here, and the wrong claims are named
+ * rather than quietly edited away:
+ *   1. --ink-muted had been silently repointed (#5B6470 -> #54617A). It was the
+ *      one property site.css never defined, so its live value came from THIS
+ *      file — and the drift table, built by reading site.css, therefore missed
+ *      it. Restored. This was the exact "silently picked" outcome the pass
+ *      claimed to avoid.
+ *   2. The hero H1 had grown in block height (looser leading and tracking on a
+ *      larger ceiling) while the commit claimed zero visual change. --fs-h-lg
+ *      is restored to the hero's exact previous rendering — see the token.
+ *   3. --fs-h-2xs was BYTE-IDENTICAL to --fs-lead, so the "14 steps" were 13,
+ *      and applying it to the legal H2 collapsed that page's heading/body
+ *      ratio to roughly parity. It is now a distinct step, and the legal
+ *      heading/body ratio is restored to about what main had.
+ * DISCLOSED, not silent: legal body copy grows at wide widths. See the
+ * CROSSOVER note below for the width at which it actually changes direction —
+ * the figure first written here was wrong.
+ *
+ * ── SECOND REVIEW, 2026-08-20 — what it found and what changed ─────────────
+ * The three returned defects were reported CLOSED (hero delta zero at every
+ * width; ink-muted restored; every scale step distinct). The first of those
+ * three was NOT closed — see F1 below. The corrections commit's own "ALSO
+ * FIXED" claims did not survive either:
+ *   - A rewritten hero comment had been measured against the OLD token and was
+ *     inverted by the very commit that restored the token. Both override
+ *     comments are now stated as INVARIANTS with no numbers — three successive
+ *     numeric comments went stale here; prose beside a token cannot be trusted
+ *     to stay true, so it no longer tries.
+ *   - The spacing "wiring" was mostly DEAD: later unconditional rules at equal
+ *     specificity won, so those references never rendered. They are reverted.
+ *     The real finding is recorded instead: this site's live gaps are NOT
+ *     multiples of the --sp-1 base step, so the --sp-* vocabulary cannot be
+ *     sprinkled in — reconciling the rhythm is component-pass work, not a
+ *     one-line adoption.
+ *   - The .eyebrow had silently lost block height, because the scale added a
+ *     line-height where main inherited one. Reverted.
+ *
+ * ── THIRD REVIEW, 2026-08-20 — the advisor's own F-series, landed ──────────
+ * The advisor who wrote this pass reviewed it again and returned five defects
+ * against his own work. All five were reproduced before being fixed. Named,
+ * not softened:
+ *
+ * F1. THE HERO SUB WAS NEVER RESTORED. The second review fixed the H1 and the
+ *     .eyebrow and then declared "hero delta zero at every width" — but it had
+ *     only ever measured the H1. `.hero .sub` was still on --fs-lead. That
+ *     token rides a shallower vw slope than the rule main used on the same
+ *     floor and ceiling, so the paragraph is larger at wide widths, smaller
+ *     below its own crossover, and — the part that actually matters — it
+ *     RE-WRAPS at two of the eight widths checked. Both `.hero .sub` rules
+ *     are reverted to main's declarations; see site.css. THIRD occurrence of this
+ *     exact defect class on this branch (h1, then .eyebrow, now .sub): the
+ *     lesson is that "the hero" is the whole .copy column, and the check is
+ *     the column's block height at every width, never one element's font-size.
+ *     CONSEQUENCE, disclosed: --fs-lead now has NO consumer at all.
+ *
+ * F2. A FOURTH STALE NUMBER was sitting in the type-scale comment in this very
+ *     file — the file whose previous commit exists to ban them, immediately
+ *     above the tokens it misdescribed. Every such number in this file has now
+ *     been REMOVED, not corrected. RULE, stated once and applied throughout:
+ *     a comment here may carry an INVARIANT (what must stay true, and why) or
+ *     a BAR from an external standard. It may NOT restate the current value of
+ *     anything in this repository — not a size, not a count, not a ratio. A
+ *     dated record of a PAST change may still name the old and new values,
+ *     because it describes an event rather than a state and so cannot go
+ *     stale; that is why the drift table above keeps its hexes. Live
+ *     measurements go in commit messages, which are dated and immutable.
+ *     The one deliberate exception is the crossover width in F3: it is a
+ *     boundary derived from two declarations, not a copy of either.
+ *
+ * F3. THE CROSSOVER FIGURE WAS WRONG. The disclosure below said the legal body
+ *     grows from 1333px. It does not: 1333px is merely where --fs-body's clamp
+ *     reaches its ceiling and STOPS growing. The crossover — the width where
+ *     the fluid size equals main's fixed legal body size — is where the clamp's
+ *     vw term equals that fixed size, which is 1148px. Below it the body is
+ *     SMALLER than main, above it larger. Verified in a browser: the rendered
+ *     size at 1148px lands on main's value to three decimals.
+ *
+ * F4. THE "ONE-LINE REVERT" IS THREE LINES, AND HAS A TRAP. See the LEGAL
+ *     REVERT block below.
+ *
+ * F5. THE A11Y SWEEP WAS SCOPED TO A TOKEN NAME, NOT TO THE BAR IT CLAIMED.
+ *     The commit that moved every readable use of --ink-faint to --ink-soft
+ *     was titled for the 4.5:1 bar, but it only ever searched for one token
+ *     name. Re-measuring every rendered label against its ACTUAL painted
+ *     background found labels still under the bar — including two of the four
+ *     semantic status tokens defined in this file. See the A11Y STATUS block
+ *     below for what was fixed and what is knowingly still failing.
+ *
+ * ── LEGAL REVERT (F4) — the exact change, if the founder wants the old sizes ─
+ * Not one line. Three rules in site.css revert to main verbatim:
+ *
+ *   .legal-prose h1{font-size:clamp(28px,4vw,38px);color:var(--navy);letter-spacing:-.02em;margin:0 0 6px}
+ *   .legal-prose h2{font-size:19px;color:var(--navy);margin:28px 0 8px}
+ *   .legal-prose p,.legal-prose li{color:var(--ink-muted);font-size:15.5px;line-height:1.7;margin:0 0 12px}
+ *
+ * THE TRAP: swapping only the three font-size declarations is NOT the revert.
+ * The h1 and h2 rules on this branch also carry line-height and letter-spacing
+ * from the scale. Those overrides must be DELETED, not kept, so both headings
+ * fall back to the global `h1,h2,h3{line-height:1.08;letter-spacing:-.02em}`
+ * rule in site.css — which is what actually governed them on main. Keep them
+ * and the sizes match while the leading and tracking silently do not. Note
+ * that main's h1 restates letter-spacing explicitly (same value as the global
+ * rule) and its h2 states neither; the three lines above are literal, so
+ * pasting them wholesale is the safe way to do it.
+ *
+ * KNOWN AND ACCEPTED, not silent: the legal pages move — H1 and H2 grow at
+ * desktop and shrink slightly at mid widths; body grows above the crossover
+ * width named in F3 and shrinks a little below it. Direction differs by width
+ * because fixed px became fluid clamps. That is the intended trade (fluid
+ * type) and the heading/body hierarchy ratio is preserved.
+ *
+ * ── A11Y STATUS (F5) — what this file may and may not claim ────────────────
+ * FIXED here: --status-live and --status-launching. Both are chip labels at
+ * small sizes, and both were chosen against WHITE while being painted on their
+ * own TINTED chip grounds, where they fell under the AA bar. Each now has its
+ * own value that clears 4.5:1 on the ground it is actually painted on — the
+ * same treatment --status-roadmap and --status-future already had.
+ * KNOWINGLY STILL FAILING, and therefore NOT claimed anywhere in this file:
+ * --teal-deep used as small label ink (the eyebrow, the role kicker, the price
+ * plan name, the shot tag, the lockup tagline, the assistant menu button),
+ * white on --coral for button labels, white on --teal-deep for the price tag,
+ * and --coral as small bold text on white. All are BRAND colours, all were
+ * already this way on main, and none can be changed without a founder ruling
+ * on the palette. They are an open defect, not an exemption: none of them is
+ * decorative and none is large enough for the 3:1 large-text allowance.
+ * THEREFORE: no comment in this file says the site meets AA. Individual token
+ * comments state only what that token clears on the grounds it is used on.
+ *
+ * STILL OPEN: half the type steps and effectively the whole spacing scale have
+ * no consumer — vocabulary for the component pass, not a claim of completion.
+ * Raw numeric font-size declarations still dominate site.css. Both are
+ * countable from the source (`--fs-<step>)` for consumers, `font-size:` plus a
+ * digit for raw sizes); the counts are deliberately not written here, because
+ * every count previously written here went stale.
+ * ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
   /* ---- Brand palette (official teal / coral / navy) ---- */
@@ -9,39 +175,104 @@
   --teal-bright: #13B7B4;  /* pin gradient start */
   --teal-deep:   #0B8B8A;  /* gradient end · primary hover */
   --coral:       #FF7A45;  /* accent — APP, key CTAs, the pin's Z dot */
-  --navy:        #1E2A4A;  /* ink / dark ground */
+  --coral-deep:  #F0632F;  /* coral pressed/hover */
+  --navy:        #1E2A4A;  /* dark ground */
   --amber:       #F4A261;  /* secondary accent (warm gold-orange) */
   --plum:        #6D5DD3;  /* tertiary accent (sparingly) */
   --mint:        #5DCAA5;  /* tagline/accent on dark grounds */
   --mint-pale:   #EAFBF7;  /* tagline/accent on teal grounds */
 
   /* ---- Neutrals (hue-biased toward the brand, not pure grey) ---- */
-  --cloud:     #F4F7F8;  /* light section background */
+  --cloud:     #F4F7F8;  /* light section background — identical to the apps' cloud */
   --line:      #E4E8EC;  /* borders / dividers */
-  --ink:       #1E2A4A;  /* body text = navy */
-  --ink-muted: #5B6470;  /* secondary text */
-  --ink-faint: #8A929C;  /* captions / hints */
+  --ink:       #1E2A4A;  /* body text = navy — identical to the apps' navy */
+  --ink-soft:  #54617A;  /* secondary text — the floor for readable copy. Clears the
+                          * 4.5:1 AA bar on white AND on --cloud (independently
+                          * verified). Exact ratios deliberately not written here:
+                          * an earlier version of this comment had them transposed. */
+  --ink-muted: #5B6470;  /* Clears 4.5:1 on white and on cloud. NOT an alias of ink-soft — its own
+                          * value, and it was LIVE on main: tokens.css defined it
+                          * and site.css never did, which is exactly why the first
+                          * pass mis-read it as safe to repoint. Independent review
+                          * caught the undisclosed change; restored 2026-08-20.
+                          * Paints legal body copy, .ask-band p, .zassist-note. */
+  --ink-faint: #8A929C;  /* DECORATIVE ONLY, never readable text. Does NOT clear the
+                          * 4.5:1 AA bar on white, and every ZAYA label is small
+                          * text, so none of it qualifies for the 3:1 large-text
+                          * exemption. Readable copy uses --ink-soft. */
   --white:     #FFFFFF;
 
-  /* ---- Semantic status (the honest live/roadmap vocabulary) ---- */
-  --status-live:        var(--teal-deep);
-  --status-launching:   #B4611F;
+  /* ---- Semantic status (the honest live/roadmap vocabulary) ----
+   * INVARIANT for all four: these are chip LABELS — small readable text, never
+   * decoration — and they are painted on TINTED chip grounds, not on white.
+   * Each value must clear the 4.5:1 AA bar against the chip background it is
+   * actually used on (see .st.* and .role-status.* in site.css). Verifying
+   * against white is the mistake that let two of them ship under the bar.
+   * Change a chip background and these must be re-measured with it. */
+  --status-live:        #0A7877;   /* NOT var(--teal-deep): the brand teal fails on
+                                    * both of this chip's grounds. Its own value,
+                                    * darkened only as far as the bar requires. */
+  --status-launching:   #A8591C;   /* darkened from #B4611F, which was tuned against
+                                    * white and failed on its own chip ground */
   --status-roadmap:     #5648B0;
-  --status-future:      var(--ink-faint);
+  --status-future:      var(--ink-soft);
 
-  /* ---- Typography ---- */
+  /* ---- Typography families ---- */
   --font-sans: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --font-ethi: 'Noto Sans Ethiopic', 'Nyala', 'Abyssinica SIL', var(--font-sans);
+  --sans: var(--font-sans);   /* component alias */
   /* Poppins (Latin) + Noto Sans Ethiopic (am/ti) are self-hosted as woff2 in
    * src/assets/fonts + declared via @font-face in typography.css; om uses Poppins. */
 
-  /* ---- Scale ---- */
-  --r-sm: 10px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
-  --shadow-sm: 0 1px 2px rgba(30,42,74,.06), 0 4px 14px rgba(30,42,74,.05);
-  --shadow-md: 0 10px 34px rgba(30,42,74,.10);
+  /* ---- TYPE SCALE ────────────────────────────────────────────────────────
+   * Every step carries its own size, line-height and tracking, so a component
+   * sets ONE variable and inherits the craft. Sizes are clamp(floor → ceiling)
+   * rather than fixed px: the reference ceilings are the DESKTOP end, never the
+   * mobile size. Tracking tightens as size grows (optical correction) and opens
+   * on small uppercase labels — the discipline the ad-hoc sizes never had.
+   * Ceilings follow the founder's reference set. The ceilings are NOT restated
+   * in prose here: the previous version of this comment did restate them, got
+   * one of the five wrong, and sat three lines above the tokens it described.
+   * Read the clamps. */
+  --fs-micro:    clamp(8.5px, .70vw,   9.5px);  --lh-micro:   1.25; --ls-micro:   .08em;
+  --fs-caption:  clamp(11px,  .95vw,  12px);    --lh-caption: 1.5;  --ls-caption: 0;
+  --fs-label:    clamp(11px, 1.05vw,  13px);    --lh-label:   1.2;  --ls-label:   .09em;
+  --fs-nav:      clamp(13px, 1.15vw,  14px);    --lh-nav:     1.2;  --ls-nav:     .025em;
+  --fs-body-sm:  clamp(13px, 1.15vw,  14.5px);  --lh-body-sm: 1.55; --ls-body-sm: 0;
+  --fs-body:     clamp(15px, 1.35vw,  18px);    --lh-body:    1.5;  --ls-body:    0;
+  --fs-lead:     clamp(16px, 1.50vw,  19px);    --lh-lead:    1.6;  --ls-lead:    0;
+  --fs-h-2xs:    clamp(18px, 1.80vw,  22px);    --lh-h-2xs:   1.3;  --ls-h-2xs:  -.013em;
+  --fs-h-xs:     clamp(20px, 2.20vw,  27px);    --lh-h-xs:    1.15; --ls-h-xs:   -.018em;
+  --fs-h-sub:    clamp(24px, 3.00vw,  36px);    --lh-h-sub:   1.2;  --ls-h-sub:  -.020em;
+  --fs-h-sm:     clamp(28px, 3.60vw,  42px);    --lh-h-sm:    1.15; --ls-h-sm:   -.029em;
+  --fs-h:        clamp(30px, 4.20vw,  48px);    --lh-h:       1.1;  --ls-h:      -.035em;
+  --fs-h-lg:     clamp(46px, 6.10vw,  76px);    --lh-h-lg:     .98; --ls-h-lg:   -.055em;
+  --fs-display:  clamp(46px, 8.00vw, 113px);    --lh-display: 1.02; --ls-display:-.040em;
+
+  /* ---- SPACING RHYTHM — a proposed vocabulary, NOT a description of the site.
+   * Every step below is a multiple of --sp-1. The site's live gaps are not, and
+   * the second review proved that sprinkling these in gets overridden by later
+   * unconditional rules. Reconciling the two is component-pass work. ---- */
+  --sp-1:   6px;   --sp-2:  12px;  --sp-3:  18px;  --sp-4:  24px;  --sp-5:  30px;
+  --sp-6:  36px;   --sp-10: 60px;  --sp-12: 72px;  --sp-16: 96px;  --sp-20: 120px;
+  --section-gap: clamp(60px, 8vw, 120px);   /* between page sections */
+  --card-pad:    clamp(24px, 3vw,  38px);   /* inside cards */
+  --element-gap: clamp(6px,  1vw,  18px);   /* between adjacent elements */
+
+  /* ---- Radii · elevation · motion ---- */
+  --r-sm: 12px; --r-md: 18px; --r-lg: 26px; --r-pill: 999px;  /* RULED live 2026-08-19 — see header */
+  --pill: var(--r-pill);   /* component alias */
+  --sh-sm: 0 1px 2px rgba(16,35,63,.05), 0 6px 18px rgba(16,35,63,.06);
+  --sh-md: 0 12px 40px -12px rgba(11,139,138,.28), 0 6px 18px rgba(16,35,63,.06);
+  /* Book-named aliases. DISCLOSED: these now resolve to the LIVE sh-* shadows,
+   * not the (unused) shadow-* values the book carried. Zero visual effect —
+   * nothing referenced the book names — but it is a repoint, so it is written
+   * down rather than left for the next reader to discover. */
+  --shadow-sm: var(--sh-sm);
+  --shadow-md: var(--sh-md);
   --ease: cubic-bezier(.2,.7,.2,1);
   --dur-fast: 120ms; --dur: 250ms; --dur-slow: 400ms;
-  --maxw: 1180px;
+  --maxw: 1200px;   /* RULED live 2026-08-19 */
 
   /* radar / near-you motion (the signature motif, from the brand file's zradar) */
   --radar-cycle: 3.4s;
