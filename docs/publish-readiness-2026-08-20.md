@@ -1,6 +1,19 @@
 # ZAYA website — publish readiness
 
-**Prepared 20 August 2026 · measured against branch `design/system-pass-2026-08-19` @ `ce454e1`**
+**Prepared 20 August 2026 · originally measured against `design/system-pass-2026-08-19` @ `ce454e1`**
+**Revised 23 August 2026 · rebased onto `main` @ `2b8eba9`, and re-measured against the
+review branch `feat/truth-pass-2026-08-20` @ `c89cf61`**
+
+> **Why this page was revised.** It was written on a branch that forked *before* the
+> assistant gate, both design passes and the deploy fix landed on `main`, so several of
+> its findings had been fixed while the page still reported them as open. Every such
+> item below now carries a dated **RESOLVED** or **CHANGED** note saying what fixed it
+> and where. Nothing that was true has been softened; two findings got *worse* on
+> re-measurement and one is **new**.
+>
+> **Where the facts now live.** Items marked *on `main`* are fixed in the mainline.
+> Items marked *on the review branch* are fixed on `feat/truth-pass-2026-08-20`, which
+> is the branch the founder is reviewing and is **not merged to `main`**.
 
 ---
 
@@ -18,6 +31,12 @@ output**:
   (use "npm run build:draft" for a noindex preview build)
 ```
 
+> **Re-run 23 August 2026 on the review branch — same output, byte for byte.** The flag
+> is still `false` and the gate still refuses. Two things have been added since, and both
+> make the flag *harder* to flip by accident, not easier: the parked build now refuses to
+> run at `published: true`, and the publish gate now also refuses while the legal pages
+> carry a placeholder effective date instead of a real one.
+
 Flipping that word to `true` is **the founder's act, and nobody else's**. It is also
 **irreversible in practice**: the moment search engines are allowed in, they copy the
 pages, and those copies live in caches, indexes, screenshots and other people's archives.
@@ -27,9 +46,32 @@ Everything below is what stands between today and that flip.
 
 ---
 
-# ⛔ BLOCKER — read before anything else
+# ✅ WAS THE BLOCKER — RESOLVED 20–23 August 2026
 
-## The AI assistant chat has no on/off switch, and it is on every page
+## The AI assistant chat now has its own on/off switch, and it ships OFF
+
+> **RESOLVED on `main`.** The gate described below as missing was built on
+> `feat/assistant-gate` (`9e120ab`) and **merged into `main`** at `b18aff7`. The
+> assistant now has a switch of its own that publishing cannot reach, it ships **off**,
+> and when it is off **no widget markup, no script and no styles are emitted on any
+> page at all** — there is nothing to un-hide. Re-measured 23 August on the review
+> branch: the built `/`, `/privacy/` and `/terms/` contain **zero** widget markup.
+> The relay at `/api/assistant` now refuses every call that does not carry a shared
+> secret, closing the separate fact that it was reachable by anyone.
+>
+> **Still open, and still the founder's:** the public-launch decision (W-D4b) is not
+> taken, and the shared rate limiter (B7) is still not built. Those are prerequisites
+> for turning the assistant **on**, not for publishing the site. **Publishing no longer
+> exposes the assistant.**
+>
+> **One new, smaller problem this uncovered — see B9 below:** the Privacy Policy still
+> tells visitors "This site offers a small assistant chat", which is no longer true
+> while the assistant is off.
+
+The original finding is kept below, unedited, because it is the record of why the gate
+was built.
+
+### —— original finding, 20 August 2026, now fixed ——
 
 The assistant widget in the bottom corner of the site was built as a **founder-access
 preview**. The code says so in three separate places. The plan was that a *second*
@@ -70,6 +112,10 @@ completed first. **Doing nothing is the same as choosing (b) by accident.**
 > anyone. **That branch is not merged**, so everything this section says remains true of
 > `main` and of this branch. The shared rate limiter is still **not** done. The
 > public-launch decision (W-D4b) remains the founder's and is not taken.
+
+> **Superseded, 2026-08-23.** That branch **is** merged now — `b18aff7` on `main`. The
+> sentence above beginning "That branch is not merged" is no longer true, and neither is
+> the table above it. See the RESOLVED box at the top of this section.
 
 ---
 
@@ -175,11 +221,15 @@ The moment you publish, those texts become a public promise to every visitor.
 2. **Retention.** The live policy commits to deleting contact details after 24 months.
    Counsel should confirm that is defensible.
 
-3. **One accuracy gap I found.** The "Join the pilot" form on the homepage collects
-   **name, phone, shop name and message**. The Privacy Policy's list of what you collect
-   mentions name, phone, e-mail, role and message — it does **not** mention **shop
-   name**, and it lists two fields the form does not have. For a sole trader a shop name
-   can identify a person. Small, but it is the kind of mismatch a regulator reads first.
+3. **One accuracy gap I found — RE-CHECKED 2026-08-23, STILL OPEN, unchanged.** The
+   "Join the pilot" form on the homepage collects **name, phone, shop name and message**.
+   I re-read the built form and the live policy on 23 August and the mismatch is exactly
+   as first reported: the Privacy Policy's list of what you collect mentions name, phone,
+   e-mail, role and message — it does **not** mention **shop name**, and it lists two
+   fields the form does not have. For a sole trader a shop name can identify a person.
+   Small, but it is the kind of mismatch a regulator reads first. **Give counsel this
+   together with B9** — both are the policy and the site disagreeing about what the site
+   actually does.
 
 **Done looks like:** a written note from the lawyer saying the Privacy Policy and Terms —
 including Section 5a, the assistant's data path — are cleared for publication, plus any
@@ -193,21 +243,38 @@ wording changes they require, merged into the two files.
 process and no assistant can make this decision on your behalf.
 
 **Done looks like:** A1 done, A2 signed off, Section B below complete, and you giving
-the instruction in writing. Then `"published": false` becomes `"published": true` and
-`public/robots.txt` is changed in the same commit (see C3 — they are two separate
-switches, not one).
+the instruction in writing. Then `"published": false` becomes `"published": true`.
+
+> **Corrected 2026-08-23.** This used to say `public/robots.txt` had to be changed in the
+> same commit because they were two separate switches. **That is no longer true** —
+> `robots.txt` is generated from the same flag and follows it automatically (see C3).
+> What *does* have to happen in the same commit now is putting a **real effective date**
+> on the Privacy Policy and Terms: the gate refuses a publish build while they read
+> "set at go-live".
 
 ---
 
 # B · ENGINEERING — what must be fixed or done first
 
-Severity is stated honestly. Two items must be resolved before publish; the rest are
-either blocked on you, or are configuration steps that only become possible after A1.
+Severity is stated honestly. **Revised 2026-08-23:** when this list was written, two
+items had to be resolved before publish (B1 and B2). **Both are now done**, along with
+B3, B4, B6 and the broken half of B5. Three items remain — B5's disabled sitemap, B8,
+and the new B9 — and none of them is a stop on its own. The rest are either blocked on
+you, or are configuration steps that only become possible after A1.
 
-### Must be resolved before publish
+### ~~Must be resolved before publish~~ — both now resolved
 
-**B1 · The assistant gate — BLOCKER.** See the red section at the top of this page. This
-is the one item that is a genuine stop.
+**B1 · The assistant gate — ~~BLOCKER~~ RESOLVED (2026-08-23, on `main`).** Built,
+merged at `b18aff7`, and re-measured: the assistant has its own switch, ships off, and
+emits nothing when off. See the box at the top of this page. **This is no longer a stop.**
+
+**B2 · The hero subheading changed size, and nothing said so — ~~HIGH~~ RESOLVED
+(2026-08-23, on `main`).** The design pass's own F-series fix (`d8758b4`, merged at
+`319ff9f`) restored the hero and the branch re-measured the delta as **0.00 at eight
+different browser widths** — including the 1000px width that produced the ‑34.4px
+described below. The finding as written is kept for the record; the defect is gone.
+
+The original finding, 20 August 2026:
 
 **B2 · The hero subheading changed size, and nothing said so — HIGH.** On the current
 branch, the paragraph under the big headline stopped being a fixed 17px and became a
@@ -230,6 +297,31 @@ screenshotted. Fix it or ratify it deliberately — but do not publish it unexam
 
 ### Configuration and hygiene — do these before the flip
 
+**B3 · The live build currently skips the safety gate — ~~MEDIUM~~ RESOLVED
+(2026-08-23, on `main`).** Closed at the *other* end, at `2b8eba9`. The production build
+still runs `build:draft` — deliberately, because the gated build refuses while the site
+is parked, and switching it would have frozen the founder's preview. Instead
+`build:draft` now runs `scripts/check-draft.mjs`, which **refuses to build at all when
+`published` is true**. The pair is exhaustive over the flag, so the measurement below —
+"`build:draft` produced all three pages with the do-not-index tag removed" — **can no
+longer happen**: that build now exits before Astro runs.
+
+I re-ran all four combinations myself on the review branch on 23 August, and quote the
+exact exit codes:
+
+| flag | `npm run build` (gated) | `npm run build:draft` (parked) |
+|---|---|---|
+| `published: false` (as committed) | **refuses, exit 1** — *"publish gate: site.json published is false"* | **succeeds, exit 0** — output carries `noindex, nofollow` on all three pages and a `Disallow: /` robots.txt |
+| `published: true` (throwaway flip, restored) | **refuses, exit 1** — *"privacy has an UNSET effective date"* | **refuses, exit 1** — *"a draft build would emit an INDEXABLE site with no gate having run"* |
+
+So **no build path on this branch produces an indexable site**, in either flag state —
+and at `published: true` *both* paths refuse, because the publish gate also now checks
+that the legal pages carry a real effective date (`0074803`). The throwaway flip was
+reverted immediately and the revert proved four ways (clean `git status`, identical
+SHA-256, the gate failing again with the original message, and a clean worktree).
+
+The original finding, 20 August 2026:
+
 **B3 · The live build currently skips the safety gate — MEDIUM.** `netlify.toml` sets the
 production build to `npm run build:draft`, which is the *ungated* build. This was a
 deliberate temporary measure so the site could sit on the free address. But it means the
@@ -240,31 +332,74 @@ from the one flag in `site.json`. At go-live this line must be switched back to
 `npm run build`. Note that **`GO-LIVE.md` Step 4 does not mention this step** even though
 `netlify.toml` points at it — the instructions have a hole in them.
 
-**B4 · Two different `published` flags exist — LOW, but confusing.** `src/config/site.ts`
-declares `published: false` and is **never imported by anything**. The live one is
-`src/content/data/site.json`. If someone ever flips the wrong file, nothing happens and
-the mistake is invisible. Delete the dead one or wire it up.
+**B4 · Two different `published` flags exist — ~~LOW~~ RESOLVED (2026-08-23, on `main`).**
+The dead file was deleted. `src/config/site.ts` no longer exists in `main`; I checked.
+There is now exactly one `published` flag, `src/content/data/site.json`, read by exactly
+three consumers: the page layout, the robots route, and the publish gate.
 
-**B5 · The site map is switched off, but `robots.txt` promises one — LOW.** The sitemap
-plugin is commented out in `astro.config.mjs` (it was crashing the build). The
-post-publish text sitting in `public/robots.txt` tells search engines to fetch
-`https://zayaethiopia.com/sitemap-index.xml`, which the build does not produce. Either
-get the plugin working again or delete that line before publishing — pointing crawlers at
-a missing file is a poor first impression.
+**B5 · The site map is switched off, but `robots.txt` promises one — ~~LOW~~ RESOLVED
+(2026-08-23, on `main`).** The broken promise is gone. `public/robots.txt` was deleted
+and replaced by a generated route, `src/pages/robots.txt.ts`, which emits **no `Sitemap:`
+line at all** while the plugin is disabled. I read the generated output on 23 August and
+confirmed it. **The sitemap plugin is still disabled** (`@astrojs/sitemap` 3.2 crashes on
+this build) — that part remains an open, genuinely LOW item: re-enable the integration
+and add the `Sitemap:` line back **in the same change**, never one without the other.
 
-**B6 · The content editor loads code from the internet without a version pin — LOW/MEDIUM.**
-`public/admin/index.html` pulls the Sveltia CMS editor from `cdn.jsdelivr.net` with **no
-version number**, so it silently upgrades itself. The file's own comment says to pin the
-version at deploy. That was never done. Pin it.
+**B6 · The content editor loads code from the internet without a version pin —
+~~LOW/MEDIUM~~ RESOLVED (2026-08-23, on the review branch).** Fixed on
+`fix/cms-oauth-hardening` (`62df316`), merged into the review branch on 23 August. The
+editor bundle is now **pinned to an exact version** and carries an **SRI hash**
+(`sha384`) plus `crossorigin`, so the browser refuses to run it if the file at that URL
+ever changes. Its own test suite asserts all of that, and the tests pass.
 
-**B7 · The assistant's abuse limit is not global — MEDIUM, tied to B1.** Verified in the
+**Two further `/admin` holes were closed in the same change, and neither was in the
+original list — both were publish blockers in their own right:**
+
+- **The login token could be handed to the wrong website.** The `/admin` login sent the
+  GitHub token back with a wildcard destination. It now checks the receiving origin
+  against an allowlist derived from this deploy, and refuses look-alike domains, plain
+  `http`, sandboxed frames and forged host headers. Tested.
+- **The login had no CSRF protection.** The GitHub handshake now mints a 256-bit random
+  `state`, carries it in an `HttpOnly` / `SameSite=Lax` / `Secure` cookie that expires in
+  ten minutes, burns it on use, and **rejects the callback** if it is missing, empty,
+  truncated or mismatched. Tested, including the rejection paths.
+- The OAuth scope was also narrowed from full private-repo access to
+  `public_repo,user:email`.
+
+**B7 · The assistant's abuse limit is not global — STILL OPEN, but no longer blocks
+publishing (2026-08-23).** Unchanged in the code. What changed is what it blocks: with
+B1 resolved, this is now a prerequisite for turning the **assistant** on (W-D4b), not for
+publishing the **site**. Verified in the
 code and openly admitted there: request counting happens per running server instance, so
 neither the per-visitor limit nor the daily budget is truly enforced across the whole
 site. Acceptable for a quiet preview; not acceptable for a public page. This is the
 public-launch item that was deferred.
 
-**B8 · The repo's own `npm run check` cannot run — LOW.** It asks to install a missing
-dependency and stops. Worth fixing so pre-publish checks are actually runnable.
+**B8 · The repo's own `npm run check` cannot run — STILL OPEN, LOW (re-checked
+2026-08-23).** Unchanged. I ran it again on the review branch: it still stops and asks to
+install `@astrojs/check`. Worth fixing so pre-publish checks are actually runnable.
+
+**B9 · The Privacy Policy describes an AI chat the site no longer has — NEW, MEDIUM
+(found 2026-08-23).** A consequence of B1 being fixed. Section 5a of the live Privacy
+Policy opens *"This site offers a small assistant chat"* and goes on to describe the
+Google/Gemini data path in detail. With the assistant off, **the site offers no such
+chat** — no widget, no script, nothing. I measured it: the word "assistant" appears
+**four times in the built `/privacy/` page and zero times anywhere else in the built
+site.** So the only place the assistant still exists on the deployed site is a policy
+paragraph saying it exists.
+
+That is the same class of over-claim this whole review is about, pointing the other way:
+a document promising a feature rather than a feature outrunning its evidence. It is
+**not** a safety problem — it over-discloses rather than under-discloses, and nothing is
+being collected — but it should not go to counsel (A2) or to the public in this state.
+
+**This has deliberately not been fixed here.** Section 5a is legal text and its wording
+is bound up with the counsel review in A2. The two clean options are (a) render Section
+5a only when the assistant is actually switched on, from the same flag, so the disclosure
+and the feature can never disagree; or (b) reword it to the conditional — *"if and when
+this site offers an assistant chat"*. **Either way it is a decision for the founder and
+counsel together, not an engineering edit**, which is why it is written down here instead
+of changed.
 
 ### DNS and hosting — NOT POSSIBLE YET (blocked on A1)
 
@@ -337,8 +472,15 @@ counted and listed:
 | `/api/assistant` | The AI chat relay — **see the blocker at the top of this page** |
 | `/auth`, `/callback` | The GitHub login handshake for the content editor |
 
-**Supporting files:** `/robots.txt`, `/favicon.svg`, `/og.png`, and 15 files under
-`/_astro/` (the stylesheet, one script, 7 photographs, 6 font files). 23 files in total.
+**Supporting files — RE-MEASURED 2026-08-23 on the review branch.** The inventory has
+changed, because the AI-generated photographs were deleted and real app screenshots were
+added: `/robots.txt`, `/favicon.svg`, `/og.png`, `/admin/index.html`, `/admin/config.yml`
+and 24 files under `/_astro/` (the stylesheet, one script, **6 font files, and 16
+screenshots of the real app** — English and Amharic, at two pixel densities). **32 files
+in total**, up from 23. The three indexable pages are unchanged.
+
+> The old count said "7 photographs". There are now **no photographs** in the build —
+> see C2.
 
 ### C2 · What personal and business information goes public with it
 
@@ -348,50 +490,124 @@ counted and listed:
   numbers** from strangers, into the host's form store. This is the moment the Privacy
   Policy stops being a document and starts being an obligation — which is why A2 comes
   first.
-- The eight photographs on the site are AI-generated placeholders. The founder cleared
-  them for commercial use on 8 July 2026, **including** an accepted trademark exposure
-  (a Coca-Cola cooler in the storefront image, a Nestlé "Nido" pack in the customer-app
-  image). That ruling was made for a pilot. It is worth re-confirming that it still
-  holds for a *publicly indexed* site.
+- ~~The eight photographs on the site are AI-generated placeholders.~~ **RESOLVED
+  2026-08-23, on the review branch.** All eight AI-generated images were **deleted from
+  the repository**, not merely hidden — including both trademark exposures (the
+  Coca-Cola cooler and the Nestlé "Nido" pack) and, separately, an AI-generated picture
+  of an app screen that had been presented as though it were the real product. In their
+  place the site now shows **16 screenshots of the actual app**, in English and Amharic,
+  each recorded with its provenance. There is no longer any AI-generated imagery on the
+  site, so the 8 July 2026 commercial-use ruling and its accepted trademark exposure no
+  longer need re-confirming for a publicly indexed site — there is nothing left for
+  them to cover.
 
-### C3 · Important: it is TWO switches, not one
+### C3 · ~~Important: it is TWO switches, not one~~ — CORRECTED 2026-08-23: it is now ONE
 
-I measured this. Flipping `published` to `true`:
+**This section has been overtaken by a fix and its warning no longer applies.** The
+hand-edit trap it describes is gone.
 
-- **Removes the "do not index" tag from all three pages at once.** There is no way to
-  publish one page and hold another back — it is site-wide, immediately.
-- **Does NOT change `public/robots.txt`.** A comment in that file says "a build step
-  regenerates this" — **there is no such build step.** I searched the whole repository.
-  The file still says `Disallow: /` and must be edited **by hand**, in the same commit.
+`public/robots.txt` — the static file that had to be edited by hand — **was deleted**.
+`/robots.txt` is now generated by `src/pages/robots.txt.ts` from the **same single flag**
+as the pages' "do not index" tag. Flipping `published` to `true` now changes **both** in
+the same build, with no ordering to get wrong and nothing to remember. I re-measured this
+on 23 August: at `published: false` the generated file reads `Disallow: /`; the flag is
+read by exactly three consumers and there is no second switch to forget.
 
-If you flip only the flag: pages invite indexing while `robots.txt` blocks crawling —
-Google may list bare URLs with no description. If you flip only `robots.txt`: crawlers
-are let in and then told by each page not to index it. **Both must change together, or
-neither.**
+**One thing from the original still holds:** the flag is **site-wide and immediate**.
+There is no way to publish one page and hold another back.
 
-### C4 · The one surface that should not be public yet
+**And a stronger guarantee has been added since.** Because `build:draft` now refuses at
+`published: true` and the gated `build` refuses until the legal pages carry a real
+effective date, **flipping the flag on its own does not publish anything — it makes the
+site stop building** until the gate is genuinely satisfied. That is the intended
+behaviour, not a fault.
 
-**The AI assistant.** Not my opinion — the repository's own record. Three separate places
-in the code describe it as a founder-access preview whose public launch is a *separate*
-decision, and that decision is not implemented anywhere. Right now the ONLY thing holding
-it back from public traffic is the fact that nobody can find the site.
+The original text, 20 August 2026:
 
-Publishing removes that, and nothing replaces it.
+> I measured this. Flipping `published` to `true` **removes the "do not index" tag from
+> all three pages at once**, but **does NOT change `public/robots.txt`** — a comment in
+> that file claimed "a build step regenerates this" and there was no such build step, so
+> the file still said `Disallow: /` and had to be edited by hand in the same commit.
+> Flipping only one of the two left the site in a contradictory state either way.
+
+### C4 · ~~The one surface that should not be public yet~~ — RESOLVED 2026-08-23
+
+**The AI assistant is no longer exposed by publishing.** The original text said the only
+thing holding the assistant back from public traffic was that nobody could find the site,
+and that publishing removed it. That was true when written; it is not true now.
+
+The separate decision the code kept describing has been **implemented**. The assistant is
+off, emits nothing, and its relay refuses unauthenticated callers. Publishing the site no
+longer turns it on — turning it on is its own act, with its own switch and its own
+prerequisites (B7, W-D4b).
+
+**What replaced "nobody can find the site" is an actual switch.**
+
+The original text, 20 August 2026:
+
+> **The AI assistant.** Not my opinion — the repository's own record. Three separate
+> places in the code describe it as a founder-access preview whose public launch is a
+> *separate* decision, and that decision is not implemented anywhere. Right now the ONLY
+> thing holding it back from public traffic is the fact that nobody can find the site.
+> Publishing removes that, and nothing replaces it.
 
 ---
 
 ## The order, in one line
 
-**A1 buy the domain → A2 counsel sign-off → B1 and B2 fixed → B3–B8 done → DNS
-configured → redirect and canonical checks pass → A3 your explicit go → both switches
-flipped in one commit.**
+**Revised 2026-08-23.** B1, B2, B3, B4, B5's broken promise and B6 are **done**. B7 no
+longer blocks publishing. What is left:
+
+**A1 buy the domain → A2 counsel sign-off (now including B9 and the A2·3 field mismatch)
+→ B5's sitemap, B8 and B9 done → DNS configured → redirect and canonical checks pass →
+A3 your explicit go → the single flag flipped, with a real effective date on the legal
+pages in the same commit.**
+
+Two changes to the shape of that line are worth saying plainly. **It is one switch now,
+not two** — `robots.txt` follows the flag automatically. And **the legal effective date
+is now part of the gate**, so the go-live commit must set a real date or the build will
+refuse.
+
+The original line, 20 August 2026:
+
+> **A1 buy the domain → A2 counsel sign-off → B1 and B2 fixed → B3–B8 done → DNS
+> configured → redirect and canonical checks pass → A3 your explicit go → both switches
+> flipped in one commit.**
+
+---
+
+### What else changed on the review branch (not in the original list)
+
+The branch the founder is reviewing, `feat/truth-pass-2026-08-20`, also removed a set of
+public claims the site could not support. These were not in the original list because
+this page was written to answer "what stands between today and publishing", not "is what
+the site says true". They matter here because **each one was a thing the site claimed and
+could not evidence**, and every one of them would have been indexed on the day of the
+flip:
+
+- **The four priced subscription tiers are withdrawn.** The site advertised paid plans at
+  named prices. There is no billing code anywhere in the product to charge them with, so
+  the prices were a promise nothing could keep. They are gone rather than restated.
+- **The "pilot is live" badges are gone.** The site carried badges implying a merchant
+  pilot was already running. It is not. The badges were removed rather than softened.
+- **The invented app screenshot is deleted.** One image presented as a picture of the
+  product was AI-generated — it showed a screen the app does not have. It has been
+  deleted and replaced with screenshots of the real app (see C2).
+- **The ZAYA backronym is now on the home page**, as a short section explaining what the
+  four letters stand for — real, checkable meaning in place of the feature claims that
+  were removed.
+- **Feature claims are now on one labelling axis**, so a visitor can tell at a glance
+  what exists today from what is planned, instead of every claim reading as shipped.
+- **Five measured accessibility failures were fixed** at the same time.
+
+None of this changes the publish decision itself. It changes what would be published.
 
 ---
 
 ### How the facts on this page were established
 
-Everything above was measured on 20 August 2026 against `ce454e1`, in a scratch copy of
-the repository, by: running the repo's publish gate (`node scripts/check-publish.mjs`)
+**The 20 August measurements.** Everything not marked as revised was measured on
+20 August 2026 against `ce454e1`, in a scratch copy of the repository, by: running the repo's publish gate (`node scripts/check-publish.mjs`)
 and quoting its output verbatim; running the repo's build (`npm run build:draft`) and
 listing and searching the files it produced; running the repo's test suite
 (`npm test` — 138 checks passed, 0 failed); reading the layout, configuration, assistant
@@ -403,3 +619,25 @@ scratch copy that was never committed, never pushed, and deleted afterwards**. I
 reverted immediately, and the revert was proved three ways: `git status` clean, the
 file's checksum identical before and after, and the publish gate failing again with the
 same message. **The real repository was never modified — `published` is still `false`.**
+
+**The 23 August revisions.** Every item marked RESOLVED, CHANGED, CORRECTED, RE-MEASURED
+or RE-CHECKED above was re-measured on 23 August 2026 in a throwaway worktree of
+`feat/truth-pass-2026-08-20` @ `c89cf61`, by: running the repo's full test suite
+(`npm test` — all five suites pass, including the new CMS OAuth suite); running the
+build; listing and searching every file the build produced; running **both** build
+commands in **both** flag states and recording all four exit codes (the table in B3);
+reading `astro.config.mjs`, the generated robots route, the page layout, the assistant
+config and the `/admin` page directly; and confirming by direct check that
+`src/config/site.ts` and `public/robots.txt` no longer exist.
+
+The `published: true` flip was again made **once, in a throwaway worktree**, and again
+reverted immediately — this time proved **four** ways: `git status` clean for that file,
+SHA-256 identical to the committed version
+(`2d937fd7b3bf0d531c331bb3d1ed58708bf3373cc872574f078a079c7909a3b7`), the publish gate
+failing again with its original message, and the whole worktree clean. **`published` is
+still `false` in every branch, and nothing in this revision published anything.**
+
+**What was deliberately NOT done:** nothing was merged to `main`; no domain, DNS or
+hosting setting was touched; the assistant was not enabled; and the Privacy Policy's
+Section 5a was left exactly as it is, because B9 is counsel's call and not an engineering
+edit.
