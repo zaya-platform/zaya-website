@@ -143,6 +143,44 @@
   });
 })();
 
+// A3 (2026-08-23): the tap-through demo — one stepper per persona pane
+// (merchant + customer; diaspora has no captures because nothing of it is
+// built, so it has no stepper). All steps are server-rendered HTML; with no JS
+// they flow as a plain visible list and the nav chrome stays hidden, so this
+// module only ever ADDS behaviour. Keyboard: the prev/next/dot buttons are real
+// buttons, and Arrow Left/Right work anywhere inside a demo. ONE motion at a
+// time: the step swap (CSS transition on .demo-step; reduced-motion makes it
+// an instant swap — CSS, not JS, owns that).
+(function(){
+  var demos=document.querySelectorAll('[data-demo]');
+  Array.prototype.forEach.call(demos,function(demo){
+    var steps=[].slice.call(demo.querySelectorAll('.demo-step'));
+    var dots=[].slice.call(demo.querySelectorAll('.demo-dot'));
+    var prev=demo.querySelector('.demo-prev'), next=demo.querySelector('.demo-next');
+    if(!steps.length||!prev||!next) return;
+    var i=0;
+    function sync(){ prev.disabled=(i===0); next.disabled=(i===steps.length-1); }
+    function go(n){
+      if(n===i||n<0||n>=steps.length) return;
+      demo.setAttribute('data-dir', n>i?'next':'prev');
+      steps[i].classList.remove('is-current');
+      if(dots[i]) dots[i].removeAttribute('aria-current');
+      i=n;
+      steps[i].classList.add('is-current');
+      if(dots[i]) dots[i].setAttribute('aria-current','true');
+      sync();
+    }
+    prev.addEventListener('click',function(){go(i-1);});
+    next.addEventListener('click',function(){go(i+1);});
+    dots.forEach(function(dot,n){ dot.addEventListener('click',function(){go(n);}); });
+    demo.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'){ e.preventDefault(); go(i+1); }
+      else if(e.key==='ArrowLeft'){ e.preventDefault(); go(i-1); }
+    });
+    sync();
+  });
+})();
+
 // Header feature dropdowns: reflect open state for a11y (aria-expanded), keyboard-open
 // via CSS :focus-within, and close on Escape. Each trigger is ALSO a real link to its
 // section, so the menu degrades to plain nav links with no JS.
