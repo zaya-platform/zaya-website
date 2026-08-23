@@ -72,6 +72,13 @@ We built a safety rule: the site **refuses to go public** until real Privacy + T
    purpose**, naming exactly what is missing in the log. *(Tell me and I'll do both
    in one commit.)*
 
+   ⚠ **Pick the go-live DATE too.** Both legal pages currently say
+   *"Effective date: set at go-live"* — a policy that says on its own face that it
+   is not yet in force. The publish gate now **refuses** while either page says
+   that, so at go-live put the real date in `src/content/legal/privacy.md` and
+   `src/content/legal/terms.md` (line 7 of each), e.g.
+   `**Effective date:** 1 September 2026`. Same commit as the two lines above.
+
 ---
 
 ### What’s already done for you (no action needed)
@@ -81,5 +88,6 @@ self-hosted fonts · works on the free subdomain now and swaps to zayaethiopia.c
 the noindex + publish safety gate · the private GitHub repo.
 
 ### Still needed from you
-zayaethiopia.com registration · final Privacy/Terms wording · confirmed/commissioned photos
-(the current ones are marked placeholders). When those land, going live is Steps 3–4 above.
+zayaethiopia.com registration · final Privacy/Terms wording · **the effective date those two
+pages take force from** · confirmed/commissioned photos (the current ones are marked
+placeholders). When those land, going live is Steps 3–4 above.
