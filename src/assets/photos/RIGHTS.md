@@ -1,70 +1,50 @@
-# Photos — REMOVED 2026-08-23 (truth pass R3)
+# Photos — persona photos RESTORED by founder ruling 2026-08-23 (A4)
 
-**This directory holds no photographs any more.** Eight AI-generated images used
-to live here and appear on the homepage. All eight are gone — files and all —
-and the reason is written down rather than left as a silent deletion.
+The truth pass (R3, 2026-08-23) removed all eight AI-generated photographs and
+recorded a **standing option**: any of them may return only with (1) a visible
+"Illustration" label in the rendered page and (2) the third-party-trademark
+question resolved per file, as the founder's own decision. **The founder has now
+ruled**, and this pass executes the ruling for the three *persona* photos. The
+per-file record — inspections, what was and was not altered, and the left-out
+grounds — is `_rights.json`, which is machine-read by the publish gate.
 
-## What was removed
+## What ships (2 of 8)
 
-`storefront.jpg` · `storefront-wide.jpg` · `counter-sale.jpg` · `supermarket.jpg`
-· `stock-check.jpg` · `credit-book.jpg` · `customer-app.jpg` · `diaspora-family.jpg`
+| file | pane | trademarks | altered |
+|---|---|---|---|
+| `credit-book.jpg` | merchant | none found (pixel-level inspection, all shelf regions) | nothing — byte-for-byte from history |
+| `diaspora-family.jpg` | diaspora | none found (pixel-level inspection incl. the grocery box) | nothing — byte-for-byte from history |
 
-Recoverable from git history at `5d923d2`.
+Both carry a **visible overlay chip** in the rendered page — "Illustration" /
+<span lang="am">ምሳሌያዊ ምስል</span> — and the diaspora image additionally keeps the
+**Planned** pill and an on-image caption saying the picture illustrates the plan
+and is not a delivered order.
 
-## Why — two separate reasons
+## What stays out (6 of 8)
 
-### 1. `customer-app.jpg` was a fabricated app interface
+- **`customer-app.jpg` — LEFT OUT**, on the ruling's own escape clause ("a
+  missing photo is honest, a trademark is a legal exposure"). Two independent
+  grounds: Nestlé **NIDO** is legible on six-plus cans across half the frame and
+  cannot be removed without wrecking the image; and its phone screen is the
+  **fabricated app interface** the truth pass removed *unconditionally, not
+  relabelled*. The customer pane shows the real product instead — live captures
+  in the interactive demo.
+- `storefront.jpg` (Coca-Cola cooler + invented "ZAYA MINI MARKET" shopfront),
+  `storefront-wide.jpg`, `counter-sale.jpg`, `supermarket.jpg`,
+  `stock-check.jpg` — **not persona photos; the ruling does not restore them.**
 
-It showed a woman in a shop aisle holding a phone whose screen displayed an
-**invented UI** — not ZAYA's layout, not ZAYA's palette, not any build that has
-ever existed. It sat in the **customer role pane**, under the pill **"Built — in
-device testing"**, with the alt text *"A customer comparing local choices with
-ZAYA"*. That is a generated picture of a product, presented as evidence that the
-product exists. It is removed unconditionally. It is not relabelled, not kept as
-an "illustration", and no condition brings it back.
+## The gate
 
-### 2. All eight carried visible third-party trademarks
+`scripts/check-publish.mjs` refuses a publish build while any image file in this
+directory lacks a structured `photos[]` record, while any shipped record's
+`trademarks.status` is not `"resolved"`, while any shipped record is not
+`illustration:true`, while `cleared !== true`, or while any `*rights-pending*`
+filename remains. Red-then-green proven 2026-08-23.
 
-The previous version of `_rights.json` recorded the exposure itself. Quoted
-verbatim from the `decision` field it carried:
+## Provenance
 
-> "Trademark exposure (Coca-Cola cooler in storefront hero; Nestlé 'Nido' in
-> customer-app.jpg) reviewed and ACCEPTED by the founder 2026-07-08; proceeding
-> with these images for the pilot."
-
-A visible **"Illustration"** label answers *"is this a photograph?"*. It does not
-answer *"may we publish Coca-Cola's and Nestlé's marks in our advertising?"*.
-So a relabel leaves the actual exposure exactly where it was, which is why
-relabelling was not treated as a fix.
-
-`storefront.jpg` had a third problem on top: it invented a lit **"ZAYA MINI
-MARKET"** shopfront that does not exist, and the page captioned it as a
-"ZAYA-powered" shop.
-
-## The standing option — recorded, NOT implemented
-
-If the founder later wants any of these back on the site:
-
-1. each carries a **visible "Illustration" label in the rendered page**, not only
-   in a manifest; and
-2. the **trademark question goes to him as its own decision**, separately from
-   the AI-provenance question.
-
-Those are two different questions, and the 2026-07-08 clearance answered only the
-first. Provenance was cleared. The marks were *noted and accepted* for a pilot
-that had not opened — which is not the same as clearing them for public
-promotion. This pass does not put any of them back.
-
-## What replaced them
-
-`src/assets/screens/` — the platform's own **S9-T12 golden baselines**, the
-reference screens the founder reviewed and approved, copied byte-for-byte and
-unretouched, with full provenance in
-[`../screens/PROVENANCE.md`](../screens/PROVENANCE.md).
-
-## The gate still runs
-
-`scripts/check-publish.mjs` still reads `_rights.json` and still refuses a
-publish build unless `cleared === true`, and still fails on any
-`*rights-pending*` filename in this directory. Both checks stay live. They simply
-have nothing left to act on.
+All images: AI-generated by the founder via ChatGPT (OpenAI) — founder-owned,
+synthetic people, no real individuals. Restored byte-for-byte from git history
+(pre-deletion blobs at `d42fd02~1`), identity verified by blob hash. The app
+screens shown elsewhere on the page are **not** from this directory — they are
+real-app captures with their own record in `../demo/_provenance.json`.

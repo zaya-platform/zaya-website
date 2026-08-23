@@ -254,77 +254,137 @@ console.log('\nRATCHET F — no priced plan may be offered while no billing code
     /published when billing opens/.test(kbSrc));
 }
 
-// ── G. the imagery (R3) ──────────────────────────────────────────────────────
+// ── G. the imagery ───────────────────────────────────────────────────────────
 // A picture makes a claim as loudly as a sentence, and none of the ratchets
 // above can see one. Ratchet A counts the word "nearby" in COPY; it would not
 // have noticed a screenshot with "Found in 4 shops nearby" printed across it.
 // This ratchet guards the pixels.
-console.log('\nRATCHET G — no fabricated product imagery, and no proximity claim smuggled in as a picture:');
+//
+// DELIBERATE CATALOGUE UPDATE, 2026-08-23 (the demo rework). Two rulings moved
+// the ground under G and the counts move WITH them, deliberately:
+//  · A4 — the founder EXECUTED the standing option the truth pass recorded:
+//    the persona photos return, each with a visible on-page "Illustration"
+//    chip and its trademark question resolved per file. Two of the three ship
+//    (credit-book, diaspora-family — pixel-inspected, no readable mark,
+//    nothing altered); customer-app.jpg stays OUT on the ruling's own escape
+//    clause (unremovable NIDO marks + it is the fabricated app interface).
+//  · A3 — the page now shows REAL-APP CAPTURES (src/assets/demo, icons
+//    present) inside the interactive demo; the golden baselines stay in the
+//    repo as the reference record but no longer render on the public page.
+//    KNOWN AND FLAGGED, not hidden: the browse and compare captures contain
+//    the APP'S OWN proximity wording in pixels ("Shops near you", "Browse
+//    near", "across nearby shops"). That is the platform's copy (its QF4
+//    wording domain) photographed unretouched — cropping it would be
+//    retouching. The SITE's own words remain bound by ratchets A–C, and G7
+//    below holds every caption and alt this page authors to the same ban.
+console.log('\nRATCHET G — imagery: labelled illustrations, real captures, no proximity claim in SITE-authored words:');
 {
   const index = read('src/pages/index.astro');
+  const css = read('src/styles/site.css');
   const prov = JSON.parse(read('src/assets/screens/_provenance.json'));
+  const demoProv = JSON.parse(read('src/assets/demo/_provenance.json'));
   const rights = JSON.parse(read('src/assets/photos/_rights.json'));
   const photoDir = readdirSync(new URL('../src/assets/photos/', import.meta.url));
   const screenDir = readdirSync(new URL('../src/assets/screens/', import.meta.url));
+  const demoDir = readdirSync(new URL('../src/assets/demo/', import.meta.url));
 
-  // G1 — the eight AI photographs are GONE, files and all. A relabel is not a fix:
-  // the repo's own rights record named visible Coca-Cola and Nestlé marks.
-  const AI_PHOTOS = ['storefront.jpg', 'storefront-wide.jpg', 'counter-sale.jpg', 'supermarket.jpg',
-    'stock-check.jpg', 'credit-book.jpg', 'customer-app.jpg', 'diaspora-family.jpg'];
-  check('no AI photograph file remains on disk',
-    AI_PHOTOS.every((f) => !photoDir.includes(f)), photoDir.join(','));
-  check('no image file of any kind remains in src/assets/photos',
-    !photoDir.some((f) => /\.(jpe?g|png|webp|avif|gif|svg)$/i.test(f)), photoDir.join(','));
-  check('the page imports none of them', !/from '\.\.\/assets\/photos/.test(index));
-  check('the removal and the trademark reason are RECORDED, not silent',
-    rights.photos.length === 0 && !!rights.removed && /Coca-Cola/.test(JSON.stringify(rights.removed)));
-  check('the standing "Illustration label + founder decides the trademark" option is recorded and NOT implemented',
-    /RECORDED, NOT IMPLEMENTED/.test(rights.standingOptionNotImplemented.status)
-    && /Illustration/.test(rights.standingOptionNotImplemented.what));
-  check('customer-app.jpg — the fabricated app interface — is named as removed unconditionally',
-    /FABRICATED APP INTERFACE/.test(rights.removed.reasons['customer-app.jpg']));
+  // G1 — the persona-photo ruling, implemented EXACTLY: two restored, six out.
+  const RESTORED = ['credit-book.jpg', 'diaspora-family.jpg'];
+  const STILL_GONE = ['storefront.jpg', 'storefront-wide.jpg', 'counter-sale.jpg',
+    'supermarket.jpg', 'stock-check.jpg', 'customer-app.jpg'];
+  const photoImages = photoDir.filter((f) => /\.(jpe?g|png|webp|avif|gif|svg)$/i.test(f));
+  check('exactly the two ruled photos are on disk, nothing else',
+    photoImages.length === 2 && RESTORED.every((f) => photoImages.includes(f)), photoImages.join(','));
+  check('the six unrestored photos stay gone (customer-app.jpg included)',
+    STILL_GONE.every((f) => !photoDir.includes(f)), photoDir.join(','));
+  check('the page imports exactly the two ruled photos',
+    (index.match(/from '\.\.\/assets\/photos\//g) || []).length === 2
+    && /photos\/credit-book\.jpg/.test(index) && /photos\/diaspora-family\.jpg/.test(index)
+    && !/photos\/customer-app/.test(index));
+  check('each restored photo carries a visible Illustration chip, localized (EN + አማ)',
+    (index.match(/class="ill-chip"/g) || []).length === 2
+    && (index.match(/>Illustration</g) || []).length === 2
+    && (index.match(/ምሳሌያዊ ምስል/g) || []).length === 2);
+  check('every shipped photo has a structured rights record: illustration:true + trademarks resolved',
+    RESTORED.every((f) => {
+      const r = (rights.photos || []).find((p) => p.file === f);
+      return r && r.illustration === true && r.trademarks && r.trademarks.status === 'resolved'
+        && /pixel/i.test(r.trademarks.inspection) && /NOTHING/.test(r.trademarks.altered);
+    }));
+  check('customer-app.jpg is recorded LEFT OUT on both grounds (NIDO + fabricated interface)',
+    !!rights.leftOut && /NIDO/.test(JSON.stringify(rights.leftOut['customer-app.jpg']))
+    && /FABRICATED app interface/i.test(JSON.stringify(rights.leftOut['customer-app.jpg'])));
+  check('the alt text of each restored photo says what it is NOT (no photo of a ZAYA shop / delivered order)',
+    /AI-generated illustration, not a photograph of a ZAYA shop/.test(index)
+    && /AI-generated illustration of the planned diaspora basket, not a photograph of a delivered order/.test(index));
 
   // G2 — the two proximity baselines never enter this repo. Exact, both ways:
-  // 7 screens x 2 languages x 2 text scales.
+  // 7 screens x 2 languages x 2 text scales. And the baselines as a whole have
+  // LEFT the public page (they remain in the repo as the reference record).
   for (const n of [4, 8]) {
     check(`no screen${n} baseline was copied in (it renders distances)`,
       !screenDir.some((f) => f.startsWith(`screen${n}_`)), screenDir.filter((f) => f.startsWith(`screen${n}_`)).join(','));
     check(`the page renders no screen${n}`, !new RegExp(`screen${n}_`).test(index));
   }
   const pngs = screenDir.filter((f) => f.endsWith('.png'));
-  check('exactly 28 baselines present (7 screens x en/am x 1.25x/1.5625x)', pngs.length === 28, `found ${pngs.length}`);
+  check('exactly 28 baselines still present in the repo record (7 screens x en/am x 2 scales)', pngs.length === 28, `found ${pngs.length}`);
   check('the provenance file agrees with what is on disk', prov.files === pngs.length && prov.screens.length === 7);
   check('the exclusion of screens 4 and 8 is written down with its reason',
     /nearby/.test(prov.excluded.screen8_price_compare) && /Distance/.test(prov.excluded.screen4_shop_detail));
+  check('the golden baselines no longer render on the public page (nothing imports them)',
+    !/from '\.\.\/assets\/screens/.test(index));
 
-  // G3 — provenance, not vibes.
-  check('provenance names the source repo, path, branch and commit SHA',
-    /golden/i.test(prov.sourcePath) && prov.sourceBranch === 'main' && /^[0-9a-f]{40}$/.test(prov.sourceCommit));
-  check('provenance asserts the files are unmodified copies',
-    /NOT re-rendered/.test(prov.integrity) && /NOT cropped/.test(prov.integrity) && /NOT upscaled/.test(prov.integrity));
-  check('the harness artefacts are disclosed, not painted over',
-    prov.disclosures.some((d) => /GALLERY CHROME IS BAKED IN/.test(d))
-    && prov.disclosures.some((d) => /ICON GLYPHS RENDER AS EMPTY SQUARES/.test(d)));
-  check('the page itself tells the reader about both artefacts, not just the repo',
-    /pill row along the bottom edge/.test(index) && /empty squares where icons should be/i.test(index));
-  // The am baselines are stamped "DRAFT — pending native review" by the app
-  // itself. Showing them without saying so would let a machine-authored
-  // translation read as a finished one — and cropping the badge off would be
-  // the website undoing the app's own honesty.
-  check('the Amharic DRAFT badge is disclosed in the record',
-    prov.disclosures.some((d) => /AMHARIC BASELINE CARRIES A VISIBLE DRAFT BADGE/.test(d)));
-  check('the page explains the Amharic DRAFT badge instead of hoping nobody reads fidel',
-    /DRAFT badge, and it is telling the truth/.test(index) && /pending native review/.test(index));
+  // G3 — the demo captures: provenance, not vibes.
+  const demoPngs = demoDir.filter((f) => f.endsWith('.png'));
+  check('exactly 18 captures on disk (9 screens x en/am)', demoPngs.length === 18, `found ${demoPngs.length}`);
+  check('every capture on disk is named in the capture provenance',
+    demoPngs.every((f) => demoProv.files && !!demoProv.files[f]), demoPngs.filter((f) => !demoProv.files?.[f]).join(','));
+  check('the page renders all 18 captures (both languages of all 9 screens ship in the HTML)',
+    demoPngs.every((f) => index.includes(f.replace('.png', ''))));
+  check('capture provenance names the platform commit and states the icons are PRESENT',
+    /^[0-9a-f]{7,40}$/.test(demoProv.platform_commit) && /PRESENT/.test(demoProv.icons));
+  check('the page discloses the seeded data in visitor voice',
+    /seeded demo data, not pilot data/.test(index) && /unretouched/.test(index));
+  // The Amharic translation is machine-authored, pending native review; the
+  // captures carry no baked-in badge, so the SITE adds the chip — one per
+  // step's phone screen — and explains it in plain words.
+  // Source-level count: the chip is authored once per stepper TEMPLATE (inside
+  // the .map over steps), so 2 in source = one chip on every one of the 9
+  // rendered steps' phones. It sits inside .phone-screen, over the shot.
+  check('every step\'s phone carries the site-side ረቂቅ/DRAFT chip (once per stepper template, inside the screen)',
+    (index.match(/class="draft-chip"/g) || []).length === 2
+    && (index.match(/<div class="phone-screen">[\s\S]*?class="draft-chip"/g) || []).length === 2,
+    `found ${(index.match(/class="draft-chip"/g) || []).length}`);
+  check('the DRAFT chip is gated to the Amharic screens by the language toggle (CSS)',
+    /\.draft-chip\{display:none/.test(css) && /#dlang-am:checked~\.role-explorer \.draft-chip\{display:inline-flex\}/.test(css));
+  check('the page explains the draft mark instead of hoping nobody reads fidel',
+    /machine-authored and awaits native review/.test(index) && /ረቂቅ/.test(index));
 
-  // G4 — nothing may upscale a 360px baseline into a claim of higher fidelity.
-  check('screens are capped at their recorded width and never cover-cropped',
-    /\.screen-pair img\{[^}]*max-width:360px/.test(read('src/styles/site.css'))
-    && /\.role-media\.is-screen img\{[^}]*object-fit:contain/.test(read('src/styles/site.css')));
+  // G4 — nothing may upscale a 360px-recorded screen into a claim of higher
+  // fidelity, cover-crop it, tint it, or hover-zoom it.
+  check('demo screens are capped at their recorded CSS width and never cover-cropped',
+    /\.phone-screen img\{[^}]*max-width:360px/.test(css) && /\.phone-screen img\{[^}]*object-fit:contain/.test(css));
+  check('the demo media neutralises the photo treatment (no tint, no hover zoom)',
+    /\.role-media\.is-demo::after\{content:none\}/.test(css)
+    && /\.role-pane:hover \.role-media\.is-demo img\{transform:none\}/.test(css));
 
-  // G5 — the diaspora pane has nothing built, so it shows nothing.
-  check('the Planned diaspora pane carries no image at all',
-    /data-role-pane="diaspora"[\s\S]*?role-media is-empty/.test(index)
-    && !/data-role-pane="diaspora"[\s\S]*?<img/.test(index.slice(index.indexOf('data-role-pane="diaspora"'), index.indexOf('</section>', index.indexOf('data-role-pane="diaspora"')))));
+  // G5 — the diaspora pane still shows NO product screens (nothing is built);
+  // what it carries is its ruled illustration, chip-labelled, with the Planned
+  // pill kept and an on-image caption saying what the picture is not.
+  {
+    const pane = index.slice(index.indexOf('data-role-pane="diaspora"'), index.indexOf('</article>', index.indexOf('data-role-pane="diaspora"')));
+    check('the diaspora pane contains no app capture and no demo stepper',
+      !/assets\/demo/.test(pane) && !/data-demo/.test(pane) && !/class="phone"/.test(pane));
+    check('the diaspora pane keeps the Planned pill AND labels its illustration',
+      /class="role-status planned">Planned</.test(pane) && /class="ill-chip"/.test(pane)
+      && /illustrates the plan/.test(pane) && /not a delivered order/i.test(pane));
+  }
+
+  // G7 — SITE-authored words about the imagery stay inside the proximity ban.
+  // (The captions/alts are this site's voice; the pixels are the platform's.)
+  const capText = [...index.matchAll(/\b(?:t|c|alt):\s*'([^']*)'/g)].map((m) => m[1]).join(' ');
+  check('no demo caption, title or alt uses "nearby" / "near you" / "shops near"',
+    !/nearby|near you|shops near|near me/i.test(capText), capText.match(/[^ ]*near[^ ]*/gi)?.join(',') || '');
 }
 
 console.log(`\n${failures ? `✘ ${failures} claim ratchet(s) failed` : '✔ all claim ratchets passed'}`);

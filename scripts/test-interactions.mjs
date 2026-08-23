@@ -191,13 +191,17 @@ console.log('\na11y landmarks + reduced-motion completeness + one-story narrativ
   check('the skip link exists, is styled, and targets a focusable #main',
     /skip-link/.test(base) && /\.skip-link\{/.test(css) && /href="#main"/.test(base) && /<main id="main" tabindex="-1">/.test(base));
   // The Ken Burns pan this used to guard belonged to the AI photo mosaic
-  // (.shot). Photos, markup, animation and override are all gone together
-  // (R3) — so the honest assertion is that none of it came back.
+  // (.shot). Mosaic, markup, animation and override stay gone. The IMPORT
+  // assertion moved WITH the founder's 2026-08-23 restoration ruling (A4):
+  // exactly the two ruled persona photos import, as labelled illustrations —
+  // never the mosaic, never customer-app.jpg. Ratchet G (test-claims.mjs)
+  // holds the full per-file record.
   check('the AI photo mosaic and its Ken Burns pan are gone, not just hidden',
-    !/\.shot\{/.test(css) && !/@keyframes kb1/.test(css) && !/class="shot/.test(index)
-    // the IMPORT, not the word: the frontmatter comment explains at length why
-    // src/assets/photos is now empty, and that explanation must stay legal.
-    && !/from '\.\.\/assets\/photos/.test(index));
+    !/\.shot\{/.test(css) && !/@keyframes kb1/.test(css) && !/class="shot/.test(index));
+  check('photo imports are exactly the two the ruling restored (labelled illustrations)',
+    (index.match(/from '\.\.\/assets\/photos\//g) || []).length === 2
+    && /photos\/credit-book\.jpg/.test(index) && /photos\/diaspora-family\.jpg/.test(index)
+    && !/photos\/customer-app/.test(index) && !/photos\/storefront/.test(index));
   check('narrative order: pain -> how ZAYA solves it (solve) -> the honest audiences (toggle)',
     index.indexOf('id="problems"') > 0
     && index.indexOf('id="problems"') < index.indexOf('id="solutions"')
@@ -205,6 +209,61 @@ console.log('\na11y landmarks + reduced-motion completeness + one-story narrativ
   check('each audience sold once — the "For merchants" grid is cut (toggle carries it)', !/id="merchants"/.test(index));
   check('the two "at a glance" strips deduped — hero-proof removed, trust rail kept', !/hero-proof/.test(index) && /trust-rail/.test(index));
   check('stacked pale band sections get a hairline seam', /\.band\{background:#F4FBFB;border-top:1px solid/.test(css));
+}
+
+console.log('\nthe interactive demo (A3) — persona-driven tap-through contracts:');
+{
+  // The EXISTING persona switch drives which flow shows: the two steppers live
+  // INSIDE the merchant and customer role panes; the Planned diaspora pane gets
+  // none (nothing is built, so there is nothing to step through).
+  const demoIds = [...index.matchAll(/data-demo="([a-z]+)"/g)].map((m) => m[1]);
+  check('exactly two steppers: merchant + customer, none for diaspora',
+    demoIds.length === 2 && demoIds.includes('merchant') && demoIds.includes('customer'), demoIds.join(','));
+  // Every step is server-rendered; the first starts current in each stepper.
+  check('all 9 steps ship in the HTML (4 merchant + 5 customer), both languages each',
+    (index.match(/class=\{`demo-step/g) || []).length === 2 // one template per stepper
+    && index.includes('DEMO.merchant.map') && index.includes('DEMO.customer.map')
+    && (index.match(/scr scr-en/g) || []).length === 2 && (index.match(/scr scr-am/g) || []).length === 2
+    && [...index.matchAll(/\bk: '([a-z]+)'/g)].length === 9);
+  check('the flows are the ruled arcs: merchant sale→orders→credit, customer browse→order→track',
+    /dashboard[\s\S]*?'sale'[\s\S]*?'orders'[\s\S]*?'credit'/.test(index.replace(/\bk: /g, ''))
+    && /'browse'[\s\S]*?'compare'[\s\S]*?'shop'[\s\S]*?'order'[\s\S]*?'track'/.test(index));
+  // NO-JS fallback: nav chrome is hidden until the bundle arms html.js, and the
+  // steps flow as a plain visible list (never a dead widget).
+  check('the prev/dots/next chrome is JS-gated (hidden without html.js)',
+    /\.demo-nav\{display:none/.test(css) && /html\.js \.demo-nav\{display:flex\}/.test(css));
+  check('without JS every step flows statically; with JS steps stack into one viewport',
+    /\.demo-step\+\.demo-step\{margin-top/.test(css) && /html\.js \.demo-step\{position:absolute/.test(css));
+  // ONE motion at a time, on the ratified tokens; reduced-motion => instant.
+  check('the step swap runs on the token duration/easing and nothing else animates with it',
+    /html\.js \.demo-step\{[^}]*transition:opacity var\(--dur\) var\(--ease\),transform var\(--dur\) var\(--ease\)/.test(css));
+  check('reduced-motion makes the swap instant', /html\.js \.demo-step\{transition:none!important;transform:none!important\}/.test(css));
+  // Keyboard + a11y: real buttons, labelled dots, arrow keys, live captions.
+  check('dots are labelled buttons announcing step N of M and the step title',
+    /class="demo-dot" data-goto=\{i\} aria-label=\{`Step \$\{i \+ 1\} of/.test(index));
+  check('arrow keys step the demo (module scoped to [data-demo], separate from the role tabs)',
+    /querySelectorAll\('\[data-demo\]'\)/.test(siteJs) && /demo\.addEventListener\('keydown'/.test(siteJs)
+    && /ArrowRight[\s\S]{0,60}go\(i\+1\)/.test(siteJs));
+  check('the current step announces politely (aria-live on the track)',
+    (index.match(/class="demo-track" aria-live="polite"/g) || []).length === 2);
+  check('prev/next disable at the ends (the flow has honest bounds, no wrap illusion)',
+    /prev\.disabled=\(i===0\); next\.disabled=\(i===steps\.length-1\)/.test(siteJs));
+  // Persona colour ROLES, as ruled: customer teal, merchant plum; the phone
+  // frame's accent follows the active persona via the --persona custom prop.
+  check('persona accents are the ruled roles (merchant plum, customer teal) and the frame follows them',
+    /\.role-media\.is-demo\[data-persona="merchant"\]\{--persona:var\(--plum\)/.test(css)
+    && /\.role-media\.is-demo\[data-persona="customer"\]\{--persona:var\(--teal\)/.test(css)
+    && /\.phone\{[^}]*var\(--persona,var\(--teal\)\)\}/.test(css));
+  // The EN/አማ pairing survives as a CSS-only TOGGLE (works with JS off), which
+  // also relabels each caption's language tag and reveals the AM draft chip.
+  check('the language toggle is CSS-only radios (zmean pattern) with a visible focus ring',
+    /id="dlang-en" checked/.test(index) && /id="dlang-am"/.test(index)
+    && /#dlang-en:checked~\.role-explorer .scr-am[^{]*\{display:none\}/.test(css)
+    && /#dlang-am:checked~\.role-explorer .scr-en[^{]*\{display:none\}/.test(css)
+    && /#dlang-en:focus-visible~\.dlang \[for="dlang-en"\]/.test(css));
+  check('the toggle relabels the caption language tags (EN and አማ tags both ship)',
+    (index.match(/class="cap-lang cl-en"/g) || []).length === 2
+    && (index.match(/class="cap-lang cl-am"/g) || []).length === 2);
 }
 
 console.log('\nrobustness — no reveal content ever trapped hidden (even on a failed bundle):');

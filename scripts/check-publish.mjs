@@ -22,6 +22,54 @@ import { assistantState } from '../src/config/assistant-state.mjs';
 
 const fail = (m) => { console.error(`\n✖ publish gate: ${m}\n  (use "npm run build:draft" for a noindex preview build)\n`); process.exit(1); };
 
+// ── SHIPPED-IMAGE TRADEMARK GATE (A4c, founder ruling 2026-08-23) ───────────
+// The truth pass established the fact this gate now enforces: an "Illustration"
+// label answers "is this a photograph?" — it does NOT answer "may we publish a
+// third party's marks in our advertising?". The founder's restoration ruling
+// made trademark resolution a PER-FILE condition, so the manifest
+// (src/assets/photos/_rights.json) now carries a structured record per shipped
+// image, and this check refuses a publish build while any image in the photos
+// directory ships without one, or with one whose trademark question is not
+// recorded as resolved, or without the ruling's visible-illustration condition.
+//
+// PLACED BEFORE the published-flag check ON PURPOSE: image legality is a fact
+// about the files, not about whether the site is currently parked, so ordering
+// it first keeps the check provable red-then-green while published=false (flip
+// a record to unresolved → this fails; restore it → the gate proceeds to the
+// park check). Nothing else about the gate's semantics changes: every check
+// must still pass for a publish build.
+{
+  const photosDirUrl = new URL('../src/assets/photos/', import.meta.url);
+  const rightsUrl = new URL('../src/assets/photos/_rights.json', import.meta.url);
+  let shippedImages = [];
+  try { shippedImages = readdirSync(photosDirUrl).filter((f) => /\.(jpe?g|png|webp|avif|gif|svg)$/i.test(f)); } catch { /* no dir — nothing shipped */ }
+  if (shippedImages.length) {
+    if (!existsSync(rightsUrl)) fail('images ship from src/assets/photos/ but _rights.json is missing — no image ships without its rights record.');
+    const rights = JSON.parse(readFileSync(rightsUrl, 'utf8'));
+    const records = new Map((rights.photos || [])
+      .filter((p) => p && typeof p === 'object')
+      .map((p) => [p.file, p]));
+    for (const f of shippedImages) {
+      const rec = records.get(f);
+      if (!rec) {
+        fail(`src/assets/photos/${f} ships with NO structured rights record in _rights.json — every shipped image needs a per-file record with its trademark status.`);
+      }
+      if (!rec.trademarks || rec.trademarks.status !== 'resolved') {
+        fail(
+          `src/assets/photos/${f} carries an UNRESOLVED trademark flag (trademarks.status: ${JSON.stringify(rec.trademarks?.status ?? '(absent)')}).\n` +
+            '    A publish build must not ship a third party\'s marks. Resolve it the way the ruling allows —\n' +
+            '    crop or patch the mark out and record exactly what was altered, or take the image off the\n' +
+            '    page (a missing photo is honest; a trademark is a legal exposure) — then set\n' +
+            `    trademarks.status:"resolved" for ${f} in src/assets/photos/_rights.json with the inspection recorded.`,
+        );
+      }
+      if (rec.illustration !== true) {
+        fail(`src/assets/photos/${f} is not recorded as illustration:true — the founder's restoration ruling requires every shipped photo to be a visibly labelled illustration.`);
+      }
+    }
+  }
+}
+
 // ── DATED FIELDS ON THE LEGAL PAGES ─────────────────────────────────────────
 // Both pages open with a line of the shape
 //   **Effective date:** <value> · **Last updated:** <value>

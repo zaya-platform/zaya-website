@@ -1,0 +1,94 @@
+{
+  "source": "REAL APP CAPTURES — replaces the golden-test baseline images whose harness loaded no icon font",
+  "platform_commit": "1b6114a",
+  "platform_commit_full": "Merge branch 'docs/zs10eep' into main (S10 plan)",
+  "captured": "2026-08-23",
+  "method": {
+    "build": "flutter build web --release --pwa-strategy=none (Flutter 3.24.0, per app; NO ZAYA_GATEWAY_URL define — on web the app calls the origin it was served from, per packages/dart/zaya_networking gateway_origin.dart)",
+    "backend": "isolated docker compose stack, project name zayacap, base infrastructure/docker/docker-compose.yml + a ports overlay using !override (postgres 127.0.0.1:5433, redis 6380, auth 3011, merchants 3012, gateway 8081); DEMO_FIXED_OTP=000000, BROWSE_ENABLED=true, ORDERS_ENABLED=true; migrations via the compose migrate one-shot; seeds database/seeds/browse_demo_seed.sql + preview_merchant_seed.sql; the founder's live stack (project 'docker', default ports) was never touched",
+    "serving": "per-app ~20-line node static server proxying /v1 and /health to 127.0.0.1:8081 (same-origin, no CORS): customer on 127.0.0.1:8091, merchant on 127.0.0.1:8092",
+    "driver": "headless Chrome 151 via raw CDP (dependency-free client); Emulation.setDeviceMetricsOverride 360x800 DPR 2 mobile; prefers-reduced-motion: reduce; fonts.ready awaited before every capture",
+    "data": "real flows on the isolated stack: customer +251911000003 placed a live order (2x dabo + 1x sugar, ETB 122.00) at the seeded demo shop; the merchant (+251911000001) inbox shows that order pending with the masked phone; a quick sale of ETB 472.00 was recorded (dashboard shows 872.00 = 400 seeded + 472); a credit charge of ETB 150 was recorded (balance owed ETB 300)"
+  },
+  "viewport": "360x800 CSS at DPR 2 (PNGs are 720x1600)",
+  "languages": {
+    "en": "English",
+    "am": "Amharic"
+  },
+  "icons": "PRESENT — the web builds ship assets/fonts/MaterialIcons-Regular.otf (tree-shaken, ~13-15 KB per app) and every capture was visually verified to show real glyphs (gear, QR, magnifier, location pin, receipt, cart, nav icons), not .notdef squares. That is the entire reason these captures exist.",
+  "language_switching": "in-app via Settings -> language dropdown -> Save (PATCH /me), per run",
+  "files": {
+    "customer_browse_am.png": {
+      "bytes": 109154,
+      "sha256": "67c228badcb7f3af"
+    },
+    "customer_browse_en.png": {
+      "bytes": 104457,
+      "sha256": "dce079d859e2b457"
+    },
+    "customer_checkout_am.png": {
+      "bytes": 120415,
+      "sha256": "f5c8533d4e02fce4"
+    },
+    "customer_checkout_en.png": {
+      "bytes": 125775,
+      "sha256": "acf8bc623fbc7a4d"
+    },
+    "customer_compare_am.png": {
+      "bytes": 172706,
+      "sha256": "8f70fe04823a504e"
+    },
+    "customer_compare_en.png": {
+      "bytes": 175490,
+      "sha256": "877efe6707b29ea1"
+    },
+    "customer_shop_am.png": {
+      "bytes": 126319,
+      "sha256": "46b8deb55caba2ee"
+    },
+    "customer_shop_en.png": {
+      "bytes": 122498,
+      "sha256": "d9ef90f3e450063d"
+    },
+    "customer_tracking_am.png": {
+      "bytes": 95937,
+      "sha256": "29550dd0204e39ad"
+    },
+    "customer_tracking_en.png": {
+      "bytes": 106256,
+      "sha256": "531f40051f62a017"
+    },
+    "merchant_credit_am.png": {
+      "bytes": 96549,
+      "sha256": "c8b0e17fd5b1ed99"
+    },
+    "merchant_credit_en.png": {
+      "bytes": 100699,
+      "sha256": "8646ba30961771f4"
+    },
+    "merchant_dashboard_am.png": {
+      "bytes": 87414,
+      "sha256": "37444d4a4d9ddfde"
+    },
+    "merchant_dashboard_en.png": {
+      "bytes": 93227,
+      "sha256": "9beeb156ec41ec0a"
+    },
+    "merchant_inbox_am.png": {
+      "bytes": 89462,
+      "sha256": "43bd8aa82170f9e5"
+    },
+    "merchant_inbox_en.png": {
+      "bytes": 88106,
+      "sha256": "15b62cd2541cc60b"
+    },
+    "merchant_sale_am.png": {
+      "bytes": 125324,
+      "sha256": "963a2dca816affb7"
+    },
+    "merchant_sale_en.png": {
+      "bytes": 126196,
+      "sha256": "348f772269a092c1"
+    }
+  }
+}

@@ -292,53 +292,102 @@
 @media(max-width:560px){.priceg{grid-template-columns:1fr}}
 
 
-/* ===== reference screens (R3, 2026-08-23) =====
-   This block replaces the photo mosaic (.pframe/.shot/.mosaic and its Ken Burns
-   pans) that carried the eight AI photographs. Those rules are DELETED, not left
-   dead: their only markup is gone, and CSS that styles nothing invites someone
-   to re-add the markup to "use" it.
+/* ===== the interactive demo (A3, 2026-08-23) =====
+   Replaces the golden-baseline gallery block (.screens/.screen-pair/
+   .screens-scale/.screens-note). Those rules are DELETED, not left dead: their
+   markup left the public page with the gallery, and CSS that styles nothing
+   invites someone to re-add the markup to "use" it.
 
-   THE ONE RULE HERE: never scale a screen up. These baselines are 360x800 at
-   DPR 1.0 and there is no 2x asset, so the images are capped at their natural
-   width and centred. `width:100%` with a 360px cap means they only ever shrink,
-   never stretch. No object-fit:cover anywhere near them — a cover crop on a
-   screenshot is exactly the "crop to flatter" this pass refuses. */
-.showcase{background:linear-gradient(180deg,#F6FBFB,#fff)}
-/* ONE SCREEN PER ROW, not a tiled wall. Two 360px images side by side plus a
-   caption column needs about 780px; squeezing three cards across a 1200px page
-   would render each baseline at roughly 140px, i.e. 39% of the size it was
-   recorded at, where the type is a texture rather than words. A product proof
-   nobody can read is decoration. Rows are taller; the screens are legible. */
-.screens{list-style:none;margin:30px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:20px}
-.screen{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:20px;box-shadow:var(--sh-sm);display:grid;grid-template-columns:auto minmax(220px,1fr);gap:30px;align-items:center}
-.screen-pair{display:flex;gap:14px;justify-content:flex-start;align-items:flex-start}
-.screen-pair figure{margin:0;flex:0 1 360px;min-width:0;text-align:center}
-.screen-pair img{display:block;width:100%;max-width:360px;height:auto;margin:0 auto;border-radius:10px;border:1px solid var(--line);background:var(--cloud)}
-.screen-pair figcaption{margin-top:7px;font-size:var(--fs-ui-xs);font-weight:650;color:var(--ink-soft);letter-spacing:.02em}
-.screen-cap b{display:block;font-size:var(--fs-h-2xs);line-height:var(--lh-h-2xs);letter-spacing:var(--ls-h-2xs);color:var(--navy)}
-.screen-cap span{display:block;margin-top:8px;font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.55}
-.screens-scale{margin-top:40px;padding:26px;border:1px solid var(--line);border-radius:var(--r-md);background:#fff}
-.screens-scale h3{font-size:var(--fs-h-2xs);line-height:var(--lh-h-2xs);letter-spacing:var(--ls-h-2xs);color:var(--navy);margin:0}
-.screens-scale>p{margin:8px 0 20px;font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.6;max-width:70ch}
-.screen-pair.four{flex-wrap:wrap;gap:18px;justify-content:center}
-.screen-pair.four figure{flex:1 1 220px;max-width:360px}
-.screens-note{margin-top:34px;padding:24px 26px;border-radius:var(--r-md);background:var(--cloud);border:1px solid var(--line)}
-.screens-note h3{font-size:var(--fs-ui-lg);color:var(--navy);margin:0 0 10px;line-height:1.35}
-.screens-note ol{margin:0 0 14px;padding-left:20px}
-.screens-note li{font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.6;margin-bottom:8px}
-.screens-note li b{color:var(--navy)}
-.screens-note p{font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.6;margin:0 0 8px;max-width:78ch}
-.screens-note code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 5px}
-.screens-lang{margin-bottom:0!important}
-@media(max-width:980px){
-  /* below the width two 360px screens + a caption column need, the caption
-     moves under the pair rather than the screens shrinking to fit it. */
-  .screen{grid-template-columns:1fr;gap:20px}
-  .screen-pair{justify-content:center}
-}
+   THE ONE RULE CARRIES OVER: never scale a screen up. The demo captures are
+   720x1600 recorded at 360x800 CSS (DPR 2), so 360px stays the hard ceiling —
+   the phone frame is narrower than that everywhere, meaning the screens only
+   ever DOWNSCALE from a 2x source, never stretch. No object-fit:cover near a
+   screenshot, no tint gradient over it, no hover zoom on it.
+
+   LANGUAGE TOGGLE — CSS-only radios (the zmean pattern, works with JS off).
+   The two .dlang-radio inputs are siblings of .role-explorer, so :checked can
+   reach every shot/caption/chip inside it. Exactly one radio is always checked;
+   both directions are written out so neither state depends on a default. */
+.dlang-radio{position:absolute;opacity:0;width:1px;height:1px;margin:-1px;overflow:hidden}
+.dlang{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.dlang-cap{font-size:var(--fs-ui-xs);font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.dlang label{cursor:pointer;border:1px solid var(--line);border-radius:var(--pill);padding:8px 16px;font-size:var(--fs-ui-sm);font-weight:650;color:var(--ink-soft);background:#fff;display:inline-flex;align-items:center;gap:8px;transition:color var(--dur-fast) var(--ease),background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease)}
+.dlang label:hover{color:var(--navy);border-color:var(--ink-faint)}
+.dlang label em{font-style:normal;font-size:var(--fs-ui-2xs);font-weight:750;color:var(--status-pilot);background:#fff4ec;border-radius:var(--pill);padding:2px 7px}
+#dlang-en:checked~.dlang [for="dlang-en"],#dlang-am:checked~.dlang [for="dlang-am"]{background:var(--navy);border-color:var(--navy);color:#fff}
+/* focus ring on the visible label (the radio itself is visually hidden) */
+#dlang-en:focus-visible~.dlang [for="dlang-en"],#dlang-am:focus-visible~.dlang [for="dlang-am"]{outline:3px solid var(--navy);outline-offset:2px}
+/* which language shows — shots, caption language tags, Illustration chip text */
+#dlang-en:checked~.role-explorer .scr-am,#dlang-en:checked~.role-explorer .cl-am,#dlang-en:checked~.role-explorer .ill-am{display:none}
+#dlang-am:checked~.role-explorer .scr-en,#dlang-am:checked~.role-explorer .cl-en,#dlang-am:checked~.role-explorer .ill-en{display:none}
+/* the site-side DRAFT chip rides ONLY on Amharic screens (honesty: the
+   translation is machine-authored, pending native review) */
+.draft-chip{display:none;position:absolute;top:10px;right:10px;z-index:2;align-items:center;gap:5px;border-radius:var(--pill);padding:4px 9px;font-size:var(--fs-ui-2xs);font-weight:750;letter-spacing:.03em;background:rgba(255,244,236,.95);color:var(--status-pilot);box-shadow:0 6px 18px rgba(16,35,63,.3)}
+.draft-chip i{font-style:normal}
+#dlang-am:checked~.role-explorer .draft-chip{display:inline-flex}
+
+/* the demo stage — persona colour ROLES, ruled: customer teal, merchant plum */
+.role-media.is-demo{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 18px 22px;background:linear-gradient(180deg,var(--persona-wash,#eef5f6),#f8fbfc)}
+.role-media.is-demo::after{content:none}
+.role-media.is-demo[data-persona="merchant"]{--persona:var(--plum);--persona-wash:#efecfa}
+.role-media.is-demo[data-persona="customer"]{--persona:var(--teal);--persona-wash:#e8f6f6}
+.demo{width:100%;display:flex;flex-direction:column;align-items:center}
+.demo-track{list-style:none;margin:0;padding:0;width:100%}
+.demo-step{display:flex;flex-direction:column;align-items:center;gap:14px}
+/* no-JS: every step is in the HTML and simply flows in order — the first is
+   visible where the stepper would start, the rest follow. Never a dead widget. */
+.demo-step+.demo-step{margin-top:30px}
+/* the CSS-drawn device: navy bezel, punch-hole, soft shadow, persona ring */
+.phone{position:relative;margin:0;width:clamp(180px,54%,242px);background:#101a2e;border-radius:30px;padding:9px;box-shadow:0 26px 56px -30px rgba(16,35,63,.55),0 0 0 3px var(--persona,var(--teal))}
+.phone-punch{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:#000;box-shadow:0 0 0 3px rgba(255,255,255,.07);z-index:2}
+.phone-screen{position:relative;border-radius:22px;overflow:hidden;background:#0d1526}
+/* HARD CEILING 360px = the recorded CSS size (source is 2x). Never upscaled,
+   never cover-cropped, never tinted, never hover-zoomed. */
+.phone-screen img{display:block;width:100%;max-width:360px;height:auto;object-fit:contain;transition:none}
+.role-pane:hover .role-media.is-demo img{transform:none}
+.demo-cap{text-align:center;max-width:36ch}
+.demo-cap b{display:block;font-size:var(--fs-ui-lg);color:var(--navy);line-height:1.3}
+.demo-cap span{display:block;margin-top:6px;font-size:var(--fs-ui-sm);color:var(--ink-soft);line-height:1.5}
+.cap-lang{display:inline-block;margin-top:9px;font-style:normal;font-size:var(--fs-ui-2xs);font-weight:750;letter-spacing:.05em;color:var(--ink-muted);border:1px solid var(--line);border-radius:var(--pill);padding:2px 9px;background:#fff}
+/* prev / dots / next — JS-only chrome, hidden until the bundle arms html.js */
+.demo-nav{display:none;align-items:center;gap:14px;margin-top:16px}
+html.js .demo-nav{display:flex}
+.demo-prev,.demo-next{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--navy);display:grid;place-items:center;cursor:pointer;padding:0;transition:background var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease)}
+.demo-prev svg,.demo-next svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.demo-prev:hover:not(:disabled),.demo-next:hover:not(:disabled){background:var(--persona,var(--teal));border-color:var(--persona,var(--teal));color:#fff}
+.demo-prev:disabled,.demo-next:disabled{opacity:.35;cursor:default}
+.demo-dots{display:flex;gap:6px}
+.demo-dot{width:22px;height:22px;border:0;border-radius:50%;background:transparent;display:grid;place-items:center;cursor:pointer;padding:0}
+.demo-dot::after{content:"";width:9px;height:9px;border-radius:50%;background:var(--line);transition:background var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+.demo-dot:hover::after{background:var(--ink-faint)}
+.demo-dot[aria-current="true"]::after{background:var(--persona,var(--teal));transform:scale(1.3)}
+/* JS ON: the tap-through. Steps stack in one viewport; the current one holds
+   the layout. ONE motion at a time — the slide/fade of the step swap, on the
+   ratified token durations, direction-aware via data-dir. Reduced-motion makes
+   the swap instant (media block at the end of the 2026 section). */
+html.js .demo-track{position:relative}
+html.js .demo-step{position:absolute;inset:0 0 auto;margin:0!important;opacity:0;visibility:hidden;transform:translateX(26px);transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility 0s linear var(--dur)}
+html.js .demo[data-dir="prev"] .demo-step{transform:translateX(-26px)}
+html.js .demo-step.is-current{position:relative;opacity:1;visibility:visible;transform:none;transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility 0s}
+/* the demo-section honesty note (visitor voice — seeded data + the AM draft) */
+.demo-note{margin:18px 4px 0;font-size:var(--fs-ui-sm);color:var(--ink-soft);line-height:1.6;max-width:88ch}
+.demo-note b{font-weight:750}
+
+/* ===== the labelled illustrations (A4, founder ruling 2026-08-23) ===== */
+.ill-chip{position:absolute;z-index:2;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:6px;border-radius:var(--pill);padding:5px 11px;font-size:var(--fs-ui-2xs);font-weight:750;letter-spacing:.04em;background:rgba(30,42,74,.85);color:#fff;backdrop-filter:blur(8px)}
+/* merchant pane: the credit-book illustration as a small labelled card in the
+   copy column — the media slot now belongs to the real product */
+.role-ill{position:relative;margin:22px 0 0;width:100%;border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--sh-sm)}
+.role-ill img{display:block;width:100%;height:128px;object-fit:cover}
+/* diaspora pane: the illustration IS the media (nothing is built, so there is
+   no screen) — Planned pill on top, chip top-right, honest caption at the
+   bottom over the base .role-media::after legibility gradient */
+.role-media.is-ill img{width:100%;height:100%;object-fit:cover;display:block}
+.role-media.is-ill .ill-chip{left:auto;right:22px;top:22px;bottom:auto}
+.role-media.is-ill .ill-note{position:absolute;z-index:2;left:22px;right:22px;bottom:18px;margin:0;color:#fff;font-size:var(--fs-ui-sm);font-weight:600;line-height:1.45;text-shadow:0 1px 8px rgba(3,12,30,.65)}
 @media(max-width:520px){
-  .screen-pair figure{flex:1 1 45%}
-  .screens-scale,.screens-note{padding:20px 16px}
+  .phone{width:clamp(170px,62%,220px)}
+  .demo-nav{gap:10px}
 }
 
 /* Scroll-reveal — enabled ONLY when JS is present (html.js is set inline in
@@ -581,22 +630,12 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .role-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(15,29,54,.55));pointer-events:none}
 .role-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease)}
 .role-pane:hover .role-media img{transform:scale(1.035)}
-/* R3(b): the panel now holds a real 360x800 screenshot, not a photograph. Three
-   things the photo treatment did are wrong for a screenshot and are switched
-   off here: object-fit:cover CROPS it, the ::after gradient TINTS it, and the
-   hover scale UPSCALES it. All three would be doctoring. The screen is
-   contained, untinted, unscaled, and never wider than the 360px it was
-   recorded at. */
-.role-media.is-screen{display:grid;place-items:center;padding:28px 20px;background:linear-gradient(180deg,#eef5f6,#f7fbfb)}
-.role-media.is-screen::after{content:none}
-.role-media.is-screen img{width:auto;max-width:min(100%,360px);height:auto;max-height:min(100%,600px);object-fit:contain;border-radius:12px;border:1px solid var(--line);box-shadow:0 18px 44px -26px rgba(16,35,63,.5);transition:none}
-.role-pane:hover .role-media.is-screen img{transform:none}
-/* Nothing of the diaspora basket is built, so there is no screen and the panel
-   says so rather than borrowing a picture of something else. */
-.role-media.is-empty{display:grid;align-content:center;padding:34px 26px;background:repeating-linear-gradient(135deg,#f2f5f7,#f2f5f7 12px,#eef2f5 12px,#eef2f5 24px)}
-.role-media.is-empty::after{content:none}
-.role-empty{margin:0;font-size:var(--fs-ui-lg);font-weight:650;color:var(--navy);line-height:1.4;max-width:32ch}
-.role-empty span{display:block;margin-top:10px;font-size:var(--fs-ui);font-weight:400;color:var(--ink-soft);line-height:1.55}
+/* A3, 2026-08-23: the single-screenshot media (.is-screen) and the empty
+   diaspora media (.is-empty) are REPLACED by the interactive demo (.is-demo)
+   and the labelled illustration media (.is-ill) — both defined in the demo
+   block earlier in this file. Their honesty rules carry over unchanged: no
+   cover crop on a screenshot, no tint over it, no hover zoom on it, and a hard
+   360px ceiling (the recorded CSS width; the captures are a 2x source). */
 /* Not uppercased any more: the axis labels are phrases ("Built — in device
    testing"), and uppercase + .08em tracking made them overflow the media pill. */
 .role-status{position:absolute;z-index:2;top:22px;left:22px;max-width:calc(100% - 44px);border-radius:var(--pill);padding:7px 11px;font-size:var(--fs-ui-2xs);font-weight:750;letter-spacing:.02em;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(16,35,63,.14)}
@@ -616,10 +655,8 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .text-btn:hover{color:var(--navy)}
 
 section{padding:88px 0}
-.showcase{background:#fff}
 .solve{background:#F4FBFB}
 .band{background:#F4FBFB;border-top:1px solid rgba(30,42,74,.05)}
-.showcase{background:#fff}
 .sec-head{max-width:700px;margin-bottom:46px}
 .sec-head h2{font-size:var(--fs-h);line-height:1.05;letter-spacing:var(--ls-h)}
 .cards{gap:18px}
@@ -747,6 +784,9 @@ section{padding:88px 0}
   .role-pane,.lock .mk,html.js .hero .copy>*{animation:none!important}
   .lock .mk .rr{animation:none!important;opacity:0}
   .hubwrap{transition:none!important;transform:none!important}
+  /* A3: the demo step swap becomes an INSTANT swap — same content, no motion */
+  html.js .demo-step{transition:none!important;transform:none!important}
+  .demo-dot::after,.dlang label,.demo-prev,.demo-next{transition:none!important}
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
