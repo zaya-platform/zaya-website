@@ -13,7 +13,8 @@
     "test:assistant": "node scripts/test-assistant.mjs",
     "test:interactions": "node scripts/test-interactions.mjs",
     "test:gate": "node scripts/test-assistant-gate.mjs",
-    "test": "node scripts/test-assistant-gate.mjs && node scripts/test-assistant.mjs && node scripts/test-interactions.mjs"
+    "test:oauth": "node scripts/test-cms-oauth.mjs",
+    "test": "node scripts/test-assistant-gate.mjs && node scripts/test-assistant.mjs && node scripts/test-interactions.mjs && node scripts/test-cms-oauth.mjs"
   },
   "dependencies": {
     "astro": "^4.15.0",

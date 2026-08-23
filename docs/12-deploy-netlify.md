@@ -28,10 +28,37 @@ in the browser):
    - Authorization callback URL: your relay's `/callback` (from step 2).
    - Callback URL: `https://<your-netlify-site>/callback`. Copy the **Client ID** + **Client Secret**.
 2. The OAuth relay is **already in this repo** as Netlify Functions (`netlify/functions/auth.mjs`
-   + `callback.mjs`, routed via `netlify.toml`) — **no Cloudflare/Netlify-Identity needed**.
+   + `callback.mjs`, sharing `netlify/oauth-shared.mjs`, routed via `netlify.toml`) —
+   **no Cloudflare/Netlify-Identity needed**.
    In Netlify → Site configuration → Environment variables, add `GITHUB_CLIENT_ID` and
    `GITHUB_CLIENT_SECRET`.
 3. In `public/admin/config.yml` set `backend.base_url` to your Netlify site URL.
+
+### C1. How the relay protects the token (P1c, 2026-08-23)
+The relay hands the browser a GitHub token that can **rewrite this repo**, so it is fussy
+about who gets it. Two rules, both proved by `npm run test:oauth` — no deploy needed:
+
+- **Origin allowlist.** The callback popup releases the token only to an origin this deploy
+  vouches for: *this deploy's own origin*, plus Netlify's `URL` / `DEPLOY_PRIME_URL` /
+  `DEPLOY_URL`, plus anything listed in `CMS_ALLOWED_ORIGINS`, plus deploy aliases of the
+  **same** Netlify site (`<branch>--<site>.netlify.app`). Anything else is refused and the
+  popup says so. **Why the alias rule exists:** `config.yml` pins `base_url` to one host, so
+  a branch deploy's `/admin` (on `preview-assistant--zayaethiopia.netlify.app`) opens the
+  relay on the **production** host — a plain same-origin check would break CMS login on every
+  preview. Set `CMS_ALLOW_DEPLOY_PREVIEWS=false` to drop the alias rule if previews stop
+  mattering.
+- **CSRF `state`.** `/auth` mints 256 CSPRNG bits and parks a copy in an
+  `HttpOnly; Secure; SameSite=Lax` cookie scoped to the relay's own host; `/callback` refuses
+  unless GitHub's echoed `state` matches that cookie, then burns it. Lax is deliberate: the
+  cookie still rides GitHub's top-level redirect back, but never a cross-site subresource.
+
+**Environment variables (all optional — the defaults are the safe ones):**
+
+| Variable | Default | Use it when |
+|---|---|---|
+| `CMS_ALLOWED_ORIGINS` | *(empty)* | You edit from a host the deploy can't infer (apex **and** `www`, a staging domain). Comma-separated full origins. |
+| `CMS_ALLOW_DEPLOY_PREVIEWS` | on | Set to `false` to refuse `<branch>--<site>.netlify.app` openers. |
+| `GITHUB_OAUTH_SCOPE` | `public_repo,user:email` | The website repo is **public**, so `public_repo` is enough and full `repo` (every private repo the editor can reach) is not. **If this repo is ever made private, set `repo,user:email` or CMS saves start failing.** Narrowing only takes effect for *new* authorizations — an editor who already granted `repo` keeps it until they revoke the app at github.com/settings/applications. |
 4. **Invite editors** = add them as **collaborators** (write) on the GitHub repo. They visit
    `/admin`, sign in with GitHub, and edit via the draft → review → publish workflow.
    Their saves commit to the repo → Netlify rebuilds → the site updates. No new database.
@@ -40,9 +67,36 @@ in the browser):
 > Alternative (also fine): keep **Decap CMS** with the same GitHub backend + the same OAuth relay.
 > Sveltia is recommended purely because it's actively maintained and faster.
 
-## D. Pin the CMS version (stability)
-`public/admin/index.html` loads Sveltia from a CDN. Before go-live, pin an exact version, e.g.
-`https://cdn.jsdelivr.net/npm/@sveltia/cms@X.Y.Z/dist/sveltia-cms.js`.
+## D. The CMS bundle is pinned **and** hash-checked (done, 2026-08-23)
+`public/admin/index.html` loads Sveltia from jsDelivr. It used to load the *unversioned* tag,
+so every visit ran whatever the CDN served at that moment — in a tab holding a repo-write
+GitHub token. It is now pinned to **`@sveltia/cms@0.196.0`** with a **subresource-integrity**
+hash, so the browser runs that exact file or nothing at all:
+
+```
+sha384-CAkV2ok/JoSJwP/CCrXGYho2VRacSfJ93JUAftvaq7ACeWeVxXpnFrSGE2hpNeKC
+```
+
+That hash was computed from the real 1,967,464-byte asset and confirmed byte-identical from
+jsDelivr **and** unpkg independently. `crossorigin="anonymous"` is required — without it the
+browser silently skips the integrity check.
+
+**Upgrading — move the version and the hash together, never one alone:**
+```bash
+curl -sSL https://cdn.jsdelivr.net/npm/@sveltia/cms@<NEW>/dist/sveltia-cms.js -o /tmp/cms.js
+node -e "const c=require('crypto'),f=require('fs');console.log('sha384-'+c.createHash('sha384').update(f.readFileSync('/tmp/cms.js')).digest('base64'))"
+npm run test:oauth   # asserts the tag is pinned and the hash is real
+```
+A version/hash mismatch means the editor does not load at all. That is the intended
+failure mode, not a bug.
+
+**Residual, stated plainly:** SRI covers the entry bundle only. Once running, Sveltia
+*dynamically imports* optional extras — Shiki syntax highlighting and PDF.js preview — from
+`unpkg.com` at their own pinned versions. `import()` cannot carry an integrity hash, so those
+are pinned upstream but not hash-checked here, and they execute in the same token-bearing
+session. Closing that needs either a self-hosted CMS bundle or an `/admin` Content-Security-
+Policy restricting `script-src`/`connect-src` to the CDN hosts — a bigger change than a pin,
+and untested against the CMS, so it is written down rather than done.
 
 ---
 
