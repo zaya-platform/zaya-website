@@ -28,7 +28,7 @@
 //
 // Counts are EXACT on purpose. Removing a catalogued occurrence fails too —
 // that forces the catalogue to be updated deliberately instead of drifting.
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
@@ -252,6 +252,79 @@ console.log('\nRATCHET F — no priced plan may be offered while no billing code
   }
   check('the assistant states the paid-plans line instead',
     /published when billing opens/.test(kbSrc));
+}
+
+// ── G. the imagery (R3) ──────────────────────────────────────────────────────
+// A picture makes a claim as loudly as a sentence, and none of the ratchets
+// above can see one. Ratchet A counts the word "nearby" in COPY; it would not
+// have noticed a screenshot with "Found in 4 shops nearby" printed across it.
+// This ratchet guards the pixels.
+console.log('\nRATCHET G — no fabricated product imagery, and no proximity claim smuggled in as a picture:');
+{
+  const index = read('src/pages/index.astro');
+  const prov = JSON.parse(read('src/assets/screens/_provenance.json'));
+  const rights = JSON.parse(read('src/assets/photos/_rights.json'));
+  const photoDir = readdirSync(new URL('../src/assets/photos/', import.meta.url));
+  const screenDir = readdirSync(new URL('../src/assets/screens/', import.meta.url));
+
+  // G1 — the eight AI photographs are GONE, files and all. A relabel is not a fix:
+  // the repo's own rights record named visible Coca-Cola and Nestlé marks.
+  const AI_PHOTOS = ['storefront.jpg', 'storefront-wide.jpg', 'counter-sale.jpg', 'supermarket.jpg',
+    'stock-check.jpg', 'credit-book.jpg', 'customer-app.jpg', 'diaspora-family.jpg'];
+  check('no AI photograph file remains on disk',
+    AI_PHOTOS.every((f) => !photoDir.includes(f)), photoDir.join(','));
+  check('no image file of any kind remains in src/assets/photos',
+    !photoDir.some((f) => /\.(jpe?g|png|webp|avif|gif|svg)$/i.test(f)), photoDir.join(','));
+  check('the page imports none of them', !/from '\.\.\/assets\/photos/.test(index));
+  check('the removal and the trademark reason are RECORDED, not silent',
+    rights.photos.length === 0 && !!rights.removed && /Coca-Cola/.test(JSON.stringify(rights.removed)));
+  check('the standing "Illustration label + founder decides the trademark" option is recorded and NOT implemented',
+    /RECORDED, NOT IMPLEMENTED/.test(rights.standingOptionNotImplemented.status)
+    && /Illustration/.test(rights.standingOptionNotImplemented.what));
+  check('customer-app.jpg — the fabricated app interface — is named as removed unconditionally',
+    /FABRICATED APP INTERFACE/.test(rights.removed.reasons['customer-app.jpg']));
+
+  // G2 — the two proximity baselines never enter this repo. Exact, both ways:
+  // 7 screens x 2 languages x 2 text scales.
+  for (const n of [4, 8]) {
+    check(`no screen${n} baseline was copied in (it renders distances)`,
+      !screenDir.some((f) => f.startsWith(`screen${n}_`)), screenDir.filter((f) => f.startsWith(`screen${n}_`)).join(','));
+    check(`the page renders no screen${n}`, !new RegExp(`screen${n}_`).test(index));
+  }
+  const pngs = screenDir.filter((f) => f.endsWith('.png'));
+  check('exactly 28 baselines present (7 screens x en/am x 1.25x/1.5625x)', pngs.length === 28, `found ${pngs.length}`);
+  check('the provenance file agrees with what is on disk', prov.files === pngs.length && prov.screens.length === 7);
+  check('the exclusion of screens 4 and 8 is written down with its reason',
+    /nearby/.test(prov.excluded.screen8_price_compare) && /Distance/.test(prov.excluded.screen4_shop_detail));
+
+  // G3 — provenance, not vibes.
+  check('provenance names the source repo, path, branch and commit SHA',
+    /golden/i.test(prov.sourcePath) && prov.sourceBranch === 'main' && /^[0-9a-f]{40}$/.test(prov.sourceCommit));
+  check('provenance asserts the files are unmodified copies',
+    /NOT re-rendered/.test(prov.integrity) && /NOT cropped/.test(prov.integrity) && /NOT upscaled/.test(prov.integrity));
+  check('the harness artefacts are disclosed, not painted over',
+    prov.disclosures.some((d) => /GALLERY CHROME IS BAKED IN/.test(d))
+    && prov.disclosures.some((d) => /ICON GLYPHS RENDER AS EMPTY SQUARES/.test(d)));
+  check('the page itself tells the reader about both artefacts, not just the repo',
+    /pill row along the bottom edge/.test(index) && /empty squares where icons should be/i.test(index));
+  // The am baselines are stamped "DRAFT — pending native review" by the app
+  // itself. Showing them without saying so would let a machine-authored
+  // translation read as a finished one — and cropping the badge off would be
+  // the website undoing the app's own honesty.
+  check('the Amharic DRAFT badge is disclosed in the record',
+    prov.disclosures.some((d) => /AMHARIC BASELINE CARRIES A VISIBLE DRAFT BADGE/.test(d)));
+  check('the page explains the Amharic DRAFT badge instead of hoping nobody reads fidel',
+    /DRAFT badge, and it is telling the truth/.test(index) && /pending native review/.test(index));
+
+  // G4 — nothing may upscale a 360px baseline into a claim of higher fidelity.
+  check('screens are capped at their recorded width and never cover-cropped',
+    /\.screen-pair img\{[^}]*max-width:360px/.test(read('src/styles/site.css'))
+    && /\.role-media\.is-screen img\{[^}]*object-fit:contain/.test(read('src/styles/site.css')));
+
+  // G5 — the diaspora pane has nothing built, so it shows nothing.
+  check('the Planned diaspora pane carries no image at all',
+    /data-role-pane="diaspora"[\s\S]*?role-media is-empty/.test(index)
+    && !/data-role-pane="diaspora"[\s\S]*?<img/.test(index.slice(index.indexOf('data-role-pane="diaspora"'), index.indexOf('</section>', index.indexOf('data-role-pane="diaspora"')))));
 }
 
 console.log(`\n${failures ? `✘ ${failures} claim ratchet(s) failed` : '✔ all claim ratchets passed'}`);

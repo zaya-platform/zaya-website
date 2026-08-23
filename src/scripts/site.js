@@ -1,16 +1,17 @@
-// ZAYA site interactions — hero hub-and-spoke canvas, lightbox, scroll-reveal,
-// dropdown menus, role tabs, FAQ, forms. Astro-native, vanilla, no deps. Runs
+// ZAYA site interactions — hero hub-and-spoke canvas, scroll-reveal, dropdown
+// menus, role tabs, FAQ, forms. Astro-native, vanilla, no deps. Runs
 // client-side (Astro <script>), JS-gated so the static page always renders.
 
   // Signal that the interaction bundle actually executed. The html.js fallback in
   // <head> drops 'js' (un-hiding all reveal content) if this never fires — so a
   // bundle load/parse failure can never leave content trapped hidden.
   document.documentElement.classList.add('zr-armed');
-  // lightbox
-  (function(){var lb=document.getElementById('lb');if(!lb)return;var im=lb.querySelector('img'),cp=lb.querySelector('.lbcap');
-    document.querySelectorAll('.shot,.pframe').forEach(function(el){el.addEventListener('click',function(){var g=el.querySelector('img');if(!g)return;im.src=g.src;var c=el.querySelector('.cap');cp.textContent=c?c.textContent:'';lb.classList.add('open');});});
-    lb.addEventListener('click',function(){lb.classList.remove('open');});
-  })();
+  // The photo lightbox is REMOVED (R3, 2026-08-23). It bound clicks to
+  // .shot/.pframe: .shot was the AI photo mosaic, now deleted, and .pframe had
+  // had no markup for some time. It was click-only — no keyboard path, no focus
+  // trap, no Escape — so it was also a small a11y defect. Nothing replaces it:
+  // the reference screens are shown at their true recorded width and there is
+  // no 2x asset to zoom to.
   // Hero hub-and-spoke (#eco): the central ZAYA hub linked to six honest nodes. The
   // hub + node cards are real DOM; this canvas draws ONLY the dashed teal spokes and
   // the travelling pulses (the "wave") between them — measuring each card's live

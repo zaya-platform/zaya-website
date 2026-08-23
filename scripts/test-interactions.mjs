@@ -177,8 +177,27 @@ console.log('\nfull-page honesty reconciliation (Rider/Supplier are not live ZAY
 
 console.log('\na11y landmarks + reduced-motion completeness + one-story narrative:');
 {
-  check('a <main id="main"> landmark wraps the page + a skip-to-content link exists', /<main id="main">/.test(base) && /skip-link/.test(base) && /\.skip-link\{/.test(css));
-  check('reduced-motion also stops the even-photo Ken Burns (!important + nth-child)', /\.shot img,\.shot:nth-child\(2n\) img\{animation:none!important\}/.test(css));
+  // P1b-3, 2026-08-23. THIS CHECK USED TO ENCODE THE DEFECT. It asserted
+  // `<main id="main">` exists — which was true, and useless, because that
+  // <main> wrapped the ENTIRE document including the site header and the
+  // footer. A <header>/<footer> nested inside <main> is not a banner/
+  // contentinfo landmark, so the page shipped zero of each, and "Skip to
+  // content" targeted an element that begins ABOVE the header. The check now
+  // asserts the structure that makes the landmark true.
+  check('<main id="main"> is a SIBLING of the chrome, not its wrapper (named slots)',
+    /<slot name="header" \/>\s*<main id="main"[^>]*>\s*<slot \/>\s*<\/main>\s*<slot name="footer" \/>/.test(base));
+  check('the homepage puts its header and footer in those slots (=> real banner + contentinfo)',
+    /<header class="site-header" slot="header">/.test(index) && /<footer class="foot" slot="footer">/.test(index));
+  check('the skip link exists, is styled, and targets a focusable #main',
+    /skip-link/.test(base) && /\.skip-link\{/.test(css) && /href="#main"/.test(base) && /<main id="main" tabindex="-1">/.test(base));
+  // The Ken Burns pan this used to guard belonged to the AI photo mosaic
+  // (.shot). Photos, markup, animation and override are all gone together
+  // (R3) — so the honest assertion is that none of it came back.
+  check('the AI photo mosaic and its Ken Burns pan are gone, not just hidden',
+    !/\.shot\{/.test(css) && !/@keyframes kb1/.test(css) && !/class="shot/.test(index)
+    // the IMPORT, not the word: the frontmatter comment explains at length why
+    // src/assets/photos is now empty, and that explanation must stay legal.
+    && !/from '\.\.\/assets\/photos/.test(index));
   check('narrative order: pain -> how ZAYA solves it (solve) -> the honest audiences (toggle)',
     index.indexOf('id="problems"') > 0
     && index.indexOf('id="problems"') < index.indexOf('id="solutions"')

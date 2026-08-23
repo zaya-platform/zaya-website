@@ -1,0 +1,76 @@
+{
+  "what": "S9-T12 reference-screen golden baselines — the founder-approved reference screens of the ZAYA apps, copied here byte-for-byte as the website's product proof.",
+  "sourceRepo": "ZAYA platform monorepo (D:/ZAYA App Project/roject in All)",
+  "sourcePath": "apps/customer_app/test/goldens/baselines/",
+  "sourceBranch": "main",
+  "sourceCommit": "a196d42d3490d66eea43012fd458a52d417cf386",
+  "sourceCommitDate": "2026-08-18T10:44:06+03:00",
+  "sourceCommitSubject": "feat(s9-t12): golden infra + the reference-screen baselines - budget-measured, platform-honest",
+  "reachableFrom": "platform main @ 1b6114a46c229e05a94786069d7755f118e511c3 (2026-08-23)",
+  "copiedOn": "2026-08-23",
+  "copiedBy": "website truth pass, R3(b)",
+  "integrity": "every file here hashes identically to its blob in the source commit (git hash-object == git rev-parse main:<path>). NOT re-rendered, NOT retouched, NOT cropped, NOT upscaled, NOT recompressed.",
+  "renderedAs": "360x800 CSS px at devicePixelRatio 1.0 — the low-end reference viewport. Display them at their natural pixel size or smaller; there is no 2x asset and upscaling one would be a fabrication.",
+  "textScales": {
+    "1_25x": "the shipped app-wide baseline text scale",
+    "1_5625x": "that baseline under a 1.25x OS large-text bump"
+  },
+  "languages": [
+    "en",
+    "am"
+  ],
+  "languageBasis": "the ruled pilot language bar (FDR-028 r1): EN + AM full parity. om/ti are staged post-pilot and have no approved look to freeze, so no baseline exists for them.",
+  "chromeMounted": true,
+  "disclosures": [
+    "GALLERY CHROME IS BAKED IN. These were recorded through GalleryScreenPage with its control bar mounted — the founder reviewed and approved that view, and a bare-screen re-render would freeze a view nobody approved. The pill row along the bottom edge of every image (EN / አማ / OM / ትግ and መደበኛ/Standard / ካልቅ/Large) is the reference gallery's own language and text-size switcher. It is NOT part of the shipped app. It is left in because cropping it out would be retouching.",
+    "ICON GLYPHS RENDER AS EMPTY SQUARES. The golden harness (apps/customer_app/test/flutter_test_config.dart) loads only the three bundled TEXT families — Poppins, Inter, Noto Sans Ethiopic. The Material icon font is not loaded, so every Icon() slot rasterises as the .notdef box. Those squares are an artefact of the recording harness, not the app's iconography. They are left in for the same reason.",
+    "EVERY AMHARIC BASELINE CARRIES A VISIBLE DRAFT BADGE, and it is accurate. The gallery stamps 'ረቂቅ — የአፍ መፍቻ ቋንቋ ተናጋሪ ግምገማ በመጠበቅ ላይ' / 'DRAFT — pending native review' on am because its strings are machine-authored and the S9-T10 native-reviewer pass has not happened (galleryPilotDraftLangs = {am}). en is the authoring language and carries no badge. The badge is left in the frame and restated in words on the page: the app refuses to let a draft translation pass as finished, and the website must not undo that by cropping.",
+    "RECORDED ON WINDOWS. Skia rasterises text slightly differently per platform; these are the Windows baselines.",
+    "STATIC SEED DATA around a fixed reference moment (2026-08-18 10:30). The shop names, prices and order numbers are the gallery's seed module, not live pilot data."
+  ],
+  "excluded": {
+    "screen4_shop_detail": "NOT copied. It renders a 'Distance — 350 m · Bole' row. The website carries a zero-tolerance proximity ratchet (scripts/test-claims.mjs, RATCHET A/C) because the platform has no shop lat/lng at all; browse is area-anchored. Shipping this screen would reintroduce, as a picture, the exact claim the copy pass just withdrew.",
+    "screen8_price_compare": "NOT copied. It renders 'Found in 4 shops nearby', 'Results match by item name across nearby shops', and per-shop distances (850 m / 350 m / 550 m / 1.2 km). Same reason, twice over: it carries the banned word AND the distance ranking."
+  },
+  "excludedNote": "These two baselines predate the website's proximity ban and the platform's own go-live sweep (four catalogued 'nearby' strings still stand in packages/dart/zaya_localization). They are not doctored out of the record — they are simply not brought across, and the reason is written here.",
+  "screens": [
+    {
+      "n": 1,
+      "id": "brand_surface",
+      "title": "Brand surface"
+    },
+    {
+      "n": 2,
+      "id": "merchant_cockpit",
+      "title": "Merchant cockpit"
+    },
+    {
+      "n": 3,
+      "id": "orders_list",
+      "title": "Orders"
+    },
+    {
+      "n": 5,
+      "id": "quick_sale_grid",
+      "title": "Quick Sale"
+    },
+    {
+      "n": 6,
+      "id": "order_status",
+      "title": "Order status"
+    },
+    {
+      "n": 7,
+      "id": "states",
+      "title": "Empty · error · offline"
+    },
+    {
+      "n": 9,
+      "id": "form_money_error",
+      "title": "Record credit"
+    }
+  ],
+  "files": 28,
+  "bytes": 1279589,
+  "refreshRecipe": "Re-copy from the platform repo; never re-render here. If the platform re-records (e.g. the S9-T13 linux lane), update sourceCommit and re-copy the whole set in one commit."
+}

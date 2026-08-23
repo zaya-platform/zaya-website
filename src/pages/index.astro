@@ -1,12 +1,73 @@
 ---
 import Base from '../layouts/Base.astro';
-import storefront from '../assets/photos/storefront.jpg';
-import counterSale from '../assets/photos/counter-sale.jpg';
-import supermarket from '../assets/photos/supermarket.jpg';
-import stockCheck from '../assets/photos/stock-check.jpg';
-import creditBook from '../assets/photos/credit-book.jpg';
-import customerApp from '../assets/photos/customer-app.jpg';
-import diasporaFamily from '../assets/photos/diaspora-family.jpg';
+
+// ── R3, 2026-08-23 — WHAT USED TO BE IMPORTED HERE ──────────────────────────
+// Eight AI-generated photographs (src/assets/photos/*.jpg). All eight are gone,
+// files and all. Two separate reasons, and neither is fixed by a caption:
+//
+//  (a) customer-app.jpg was a FABRICATED APP INTERFACE. It showed a woman in a
+//      shop aisle holding a phone whose screen displayed an invented UI that has
+//      never existed in any ZAYA build — no ZAYA layout, no ZAYA palette — and it
+//      sat in the CUSTOMER role pane under the pill "Built — in device testing"
+//      with the alt text "A customer comparing local choices with ZAYA". A
+//      generated picture of a product that does not look like that, presented as
+//      evidence that the product exists, is the single worst thing that was on
+//      this page. Removed unconditionally; not relabelled, not kept as
+//      "illustration".
+//
+//  (b) The other seven were AI lifestyle photography carrying VISIBLE
+//      THIRD-PARTY TRADEMARKS. The repo's own src/assets/photos/_rights.json
+//      said so in its "decision" field, verbatim: "Trademark exposure
+//      (Coca-Cola cooler in storefront hero; Nestlé 'Nido' in customer-app.jpg)
+//      reviewed and ACCEPTED by the founder 2026-07-08". An "Illustration"
+//      label answers "is this a photograph?" — it does not answer "may we
+//      publish Coca-Cola's and Nestlé's marks in our advertising?". Relabelling
+//      leaves the actual exposure exactly where it was, so relabelling is not
+//      the fix. storefront.jpg additionally invents a lit "ZAYA MINI MARKET"
+//      shopfront that does not exist.
+//
+//  STANDING OPTION, RECORDED AND NOT IMPLEMENTED: if the founder later wants any
+//  of them back, they return with a visible "Illustration" label AND the
+//  trademark question goes to him as a separate decision. That is his call, not
+//  this pass's. The files are recoverable from git history at 5d923d2.
+//
+// ── WHAT REPLACES THEM ──────────────────────────────────────────────────────
+// The real thing: the platform's own S9-T12 golden baselines — the reference
+// screens the founder reviewed and approved — copied byte-for-byte, unretouched.
+// Full provenance in src/assets/screens/PROVENANCE.md + _provenance.json.
+import s1en from '../assets/screens/screen1_en_1_25x.png';
+import s1am from '../assets/screens/screen1_am_1_25x.png';
+import s2en from '../assets/screens/screen2_en_1_25x.png';
+import s2am from '../assets/screens/screen2_am_1_25x.png';
+import s2enLarge from '../assets/screens/screen2_en_1_5625x.png';
+import s2amLarge from '../assets/screens/screen2_am_1_5625x.png';
+import s3en from '../assets/screens/screen3_en_1_25x.png';
+import s3am from '../assets/screens/screen3_am_1_25x.png';
+import s5en from '../assets/screens/screen5_en_1_25x.png';
+import s5am from '../assets/screens/screen5_am_1_25x.png';
+import s6en from '../assets/screens/screen6_en_1_25x.png';
+import s6am from '../assets/screens/screen6_am_1_25x.png';
+import s7en from '../assets/screens/screen7_en_1_25x.png';
+import s7am from '../assets/screens/screen7_am_1_25x.png';
+import s9en from '../assets/screens/screen9_en_1_25x.png';
+import s9am from '../assets/screens/screen9_am_1_25x.png';
+
+// The gallery, in the platform's own screen order. `n` is the platform's screen
+// number — screens 4 and 8 are ABSENT and the gap is deliberate: both render
+// distances ("350 m · Bole", "850 m · Gerji") and screen 8 also renders the word
+// "nearby" twice. This site bans proximity claims (scripts/test-claims.mjs
+// ratchets A and C) because the platform has no shop lat/lng at all. A claim the
+// copy pass withdrew must not walk back in as a picture, where a word-count
+// ratchet cannot see it. See src/assets/screens/PROVENANCE.md.
+const SCREENS = [
+  { n: 1, title: 'Brand surface',            en: s1en, am: s1am, note: 'The opening moment, on real bundled type.' },
+  { n: 2, title: 'Merchant cockpit',         en: s2en, am: s2am, note: 'The shop owner’s day: sales, orders, credit outstanding, low stock.' },
+  { n: 3, title: 'Orders',                   en: s3en, am: s3am, note: 'Incoming orders with their state and cash-on-delivery totals.' },
+  { n: 5, title: 'Quick Sale',               en: s5en, am: s5am, note: 'The point-of-sale grid — tap to add, tap the minus to remove.' },
+  { n: 6, title: 'Order status',             en: s6en, am: s6am, note: 'What the customer sees: waiting → confirmed → out for delivery → delivered.' },
+  { n: 7, title: 'Empty · error · offline', en: s7en, am: s7am, note: 'The states most product shots leave out.' },
+  { n: 9, title: 'Record credit',            en: s9en, am: s9am, note: 'Writing a debt down — including the screen you get when the write fails.' },
+];
 // CMS-managed content (admin edits these JSON files via Decap /admin)
 import pricing from '../content/data/pricing.json';
 import contact from '../content/data/contact.json';
@@ -53,7 +114,10 @@ const HUB = [
 });
 ---
 <Base>
-<header class="site-header">
+{/* P1b-3: the page chrome goes into Base's NAMED slots so it renders as a direct
+    child of <body> and therefore actually EXPOSES a banner landmark. Inside the
+    old <main> wrapper it exposed none. Same for the footer below. */}
+<header class="site-header" slot="header">
   <div class="pilot-strip">
     <div class="wrap pilot-strip-in">
       <span><b>Merchant pilot opening</b> in Nifas Silk Lafto</span>
@@ -230,31 +294,71 @@ const HUB = [
       </div>
 
       <article class="role-pane is-active" role="tabpanel" id="role-pane-merchant" aria-labelledby="role-tab-merchant" data-role-pane="merchant">
-        <div class="role-media"><img loading="lazy" src={creditBook.src} alt="A shop owner managing the digital credit book with ZAYA" /><span class="role-status built">Built — in device testing</span></div>
+        <div class="role-media is-screen"><img loading="lazy" width={s2en.width} height={s2en.height} src={s2en.src} alt="Reference screen 2, Merchant cockpit: a Welcome heading, a fixed reference date, four shortcuts (Sale, Products, Orders, Credit) and a Today panel showing sales ETB 2,075.00, 4 orders, ETB 770.00 credit outstanding and 3 low-stock items." /><span class="role-status built">Built — in device testing</span></div>
         <div class="role-copy"><span class="role-kicker">Run the whole shop from one phone</span><h3>Sell faster. Know your stock. Keep every credit clear.</h3><p>ZAYA gives neighbourhood merchants the everyday tools that matter first&mdash;sales, inventory, credit, incoming orders and a clear view of the day.</p><ul><li>Fast point-of-sale flow</li><li>Stock tracking as you sell</li><li>Digital customer credit book</li><li>Assign a delivery, settle the cash once</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Join as a merchant</a></div></div>
       </article>
 
       <article class="role-pane" role="tabpanel" id="role-pane-customer" aria-labelledby="role-tab-customer" data-role-pane="customer" hidden>
-        <div class="role-media"><img loading="lazy" src={customerApp.src} alt="A customer comparing local choices with ZAYA" /><span class="role-status built">Built — in device testing</span></div>
+        <div class="role-media is-screen"><img loading="lazy" width={s6en.width} height={s6en.height} src={s6en.src} alt="Reference screen 6, Order status: order ZA-1042 marked Out for delivery, with a four-step timeline — waiting for the shop, confirmed, out for delivery, delivered — and the order record beneath it." /><span class="role-status built">Built — in device testing</span></div>
         <div class="role-copy"><span class="role-kicker">Find what you need in your area</span><h3>Shops in your area, clearer choices and fewer wasted trips.</h3><p>The customer app is built and being tested on real devices: choose your area, see what the shops in it actually have, and compare prices before you leave home.</p><ul><li>Choose your area, then browse its shops</li><li>Price comparison in Birr</li><li>Simple local ordering</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Get launch updates</a></div></div>
       </article>
 
       <article class="role-pane" role="tabpanel" id="role-pane-diaspora" aria-labelledby="role-tab-diaspora" data-role-pane="diaspora" hidden>
-        <div class="role-media"><img loading="lazy" src={diasporaFamily.src} alt="A family receiving essential goods at home" /><span class="role-status planned">Planned</span></div>
+        {/* NO IMAGE, ON PURPOSE. Nothing of the diaspora basket is built, so no
+            reference screen of it exists. The generated photograph that used to
+            sit here showed a family receiving goods that no ZAYA build can
+            deliver — a picture of a feature standing in for the feature. The
+            panel now says what it is instead of illustrating what it is not. */}
+        <div class="role-media is-empty"><span class="role-status planned">Planned</span><p class="role-empty">No screen to show — none of this is built yet.<span>Every other panel on this page shows a real reference screen. This one cannot, and will not until there is one.</span></p></div>
         <div class="role-copy"><span class="role-kicker">Planned — for the diaspora</span><h3>Choose the basket. Trust the local shop. See proof it arrived.</h3><p>Where we want to take ZAYA next: choose real goods&mdash;not send money&mdash;through a trusted neighbourhood shop, delivered with proof. Planned — nothing of it is built yet.</p><ul><li>Choose essential goods</li><li>One clear shelf-price flow</li><li>Local delivery with proof</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Follow what we are building</a></div></div>
       </article>
     </div>
   </div>
 </section>
 
-<section class="showcase">
+{/* R3(b). This section used to be four AI-generated shop photographs under the
+    heading "In real Ethiopian shops" — a claim about shops that are not yet
+    running ZAYA, illustrated with shops that do not exist. It now shows the
+    thing that IS real and was buried: the approved reference screens, straight
+    out of the platform's golden baselines, unretouched. */}
+<section class="showcase" id="screens">
   <div class="wrap">
-    <div class="sec-head"><span class="eyebrow">In real Ethiopian shops</span><h2>Built with the shops that run the neighbourhood.</h2><p>From the corner mini-market to the supermarket — this is where ZAYA works.</p></div>
-    <div class="mosaic">
-      <div class="shot reveal"><img loading="lazy" src={storefront.src} alt="A ZAYA-powered neighbourhood mini market at dusk"><div class="cap">A modern mini market<span>Stocked, lit, and online</span></div></div>
-      <div class="shot reveal"><span class="tagpin">A sale in ~5s</span><img loading="lazy" src={counterSale.src} alt="A shop owner serving a customer at the counter"><div class="cap">Serve, ring up, done<span>The whole counter, in one phone</span></div></div>
-      <div class="shot reveal"><img loading="lazy" src={supermarket.src} alt="A modern Ethiopian supermarket aisle"><div class="cap">Shop to supermarket<span>One platform, any size</span></div></div>
-      <div class="shot reveal"><img loading="lazy" src={stockCheck.src} alt="A shop owner checking stock on the shelves with a phone"><div class="cap">Stock, always in hand<span>Know before you run out</span></div></div>
+    <div class="sec-head"><span class="eyebrow">The screens themselves</span>
+      <h2>This is the product, unretouched.</h2>
+      <p>Seven of the nine reference screens the founder reviewed and approved, copied byte-for-byte out of the app repository&rsquo;s golden baselines &mdash; the images the build itself is tested against. Not mock-ups, not renders, not photographs of a phone.</p>
+    </div>
+
+    <ul class="screens">
+      {SCREENS.map((s) => (
+        <li class="screen reveal">
+          <div class="screen-pair">
+            <figure><img loading="lazy" width={s.en.width} height={s.en.height} src={s.en.src} alt={`Reference screen ${s.n}, ${s.title}, in English.`} /><figcaption>English</figcaption></figure>
+            <figure><img loading="lazy" width={s.am.width} height={s.am.height} src={s.am.src} alt={`Reference screen ${s.n}, ${s.title}, in Amharic.`} /><figcaption lang="am">አማርኛ</figcaption></figure>
+          </div>
+          <div class="screen-cap"><b>{s.title}</b><span>{s.note}</span></div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="screens-scale">
+      <h3>Every screen also has a large-text baseline.</h3>
+      <p>The app ships at a 1.25&times; text scale, and is tested again at 1.5625&times; &mdash; that same baseline under a 1.25&times; operating-system large-text setting. The merchant cockpit at both scales, in both languages:</p>
+      <div class="screen-pair four">
+        <figure><img loading="lazy" width={s2en.width} height={s2en.height} src={s2en.src} alt="Merchant cockpit in English at the shipped 1.25 times text scale." /><figcaption>English &middot; 1.25&times;</figcaption></figure>
+        <figure><img loading="lazy" width={s2enLarge.width} height={s2enLarge.height} src={s2enLarge.src} alt="The same English merchant cockpit at 1.5625 times text scale: the same content, larger type, more wrapping." /><figcaption>English &middot; 1.5625&times;</figcaption></figure>
+        <figure><img loading="lazy" width={s2am.width} height={s2am.height} src={s2am.src} alt="Merchant cockpit in Amharic at the shipped 1.25 times text scale." /><figcaption lang="am">አማርኛ</figcaption><figcaption>1.25&times;</figcaption></figure>
+        <figure><img loading="lazy" width={s2amLarge.width} height={s2amLarge.height} src={s2amLarge.src} alt="The same Amharic merchant cockpit at 1.5625 times text scale." /><figcaption lang="am">አማርኛ</figcaption><figcaption>1.5625&times;</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="screens-note">
+      <h3>Two things in these pictures are not the product &mdash; read them before you judge them</h3>
+      <ol>
+        <li><b>The pill row along the bottom edge</b> (EN / <span lang="am">አማ</span> / OM / <span lang="ti">ትግ</span>, and <span lang="am">መደበኛ</span>/Standard / <span lang="am">ካልቅ</span>/Large) is the reference gallery&rsquo;s own language and text-size switcher, not an app control. The baselines were recorded with it mounted because that is the view that was approved. It is left in the frame because cropping it out would be retouching.</li>
+        <li><b>The empty squares where icons should be</b> are an artefact of the recording harness: it loads the three bundled text fonts and not the icon font, so every icon slot rasterises as the missing-glyph box. That is the harness, not the app&rsquo;s iconography.</li>
+      </ol>
+      <p>Recorded 18 Aug 2026 at 360&times;800 CSS pixels, the low-end reference device, from a fixed seed &mdash; the shop names, prices and order numbers are test data, not pilot data. Two of the nine approved screens are <b>not</b> shown here: both display distances between shops, and this platform has no shop coordinates, so those two say something the product cannot do. Full record: <code>src/assets/screens/PROVENANCE.md</code>.</p>
+      <p class="screens-lang"><b>Every <span lang="am">አማርኛ</span> screen carries a DRAFT badge, and it is telling the truth.</b> <span lang="am">ረቂቅ &mdash; የአፍ መፍቻ ቋንቋ ተናጋሪ ግምገማ በመጠበቅ ላይ</span> means &ldquo;draft &mdash; pending native review&rdquo;. The Amharic copy is machine-authored and has not yet been through a native reviewer; the app says so on its own screens rather than letting the translation pass as finished, and we are not going to crop that off. English is the authoring language and carries no badge. Afaan Oromoo and <span lang="ti">ትግርኛ</span> render in the app but are staged post-pilot with no approved look frozen, so there is no baseline of them to show at all.</p>
     </div>
   </div>
 </section>
@@ -348,8 +452,13 @@ const HUB = [
   </div>
 </section>
 
-<div class="lb" id="lb"><button class="lbx" aria-label="Close">&times;</button><img alt=""><div class="lbcap"></div></div>
-<footer class="foot">
+{/* The photo lightbox is GONE with the photos it opened. It bound clicks to
+    .shot / .pframe — .shot was the AI mosaic (removed) and .pframe has had no
+    markup for some time. It was also a click-only overlay with no keyboard
+    path and no focus trap, so removing it is a small a11y gain rather than a
+    loss. The reference screens are shown at their true 360px width and there
+    is nothing honest to zoom them to: there is no 2x asset. */}
+<footer class="foot" slot="footer">
   <div class="wrap">
     <div class="foot-grid">
       <div class="fabout">
@@ -360,7 +469,14 @@ const HUB = [
         <p>The trusted digital front door to Ethiopia's commerce — for neighbourhood shops and their customers, with support for diaspora families planned.</p>
       </div>
       <div class="fcol"><h4>Solutions</h4><a href="#experience">Merchants</a><a href="#experience">Customers</a><a href="#diaspora">Diaspora</a><a href="#pricing">Pricing</a></div>
-      <div class="fcol"><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#contact">Contact</a></div>
+      {/* P1b-5: "About" and "Careers" were href="#" — links that go nowhere.
+          There is no /about page and the careers content collection
+          (src/content/careers) is EMPTY, so there is nothing to link to.
+          They are REMOVED rather than pointed at a page invented to justify
+          the link: a footer that offers a company story and open roles that
+          do not exist is the same over-claim as the rest of this pass.
+          Add them back the day the pages exist. */}
+      <div class="fcol"><h4>Company</h4><a href="#contact">Contact</a></div>
       <div class="fcol"><h4>Legal</h4><a href="/terms">Terms &amp; Conditions</a><a href="/privacy">Privacy Policy</a><a href="/terms">User Agreement</a></div>
     </div>
     <div class="foot-base"><span>© 2026 ZAYA App PLC · Addis Ababa, Ethiopia</span><span>One labelling axis: <b class="lg planned">Planned</b> · <b class="lg built">Built — in device testing</b> · <b class="lg pilot">In pilot</b> · <b class="lg live">Live</b> <span class="lg-note">— nothing on this site is in pilot or live yet.</span></span></div>
