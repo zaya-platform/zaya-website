@@ -191,12 +191,22 @@ export function isEnglishReply(text) {
 }
 
 // ── Output post-check for the MODEL step (honesty enforcement in CODE, not
-// just in the prompt). A reply that claims availability of a roadmap item, or
-// carries a number the grounding does not, or is not clean English, degrades
-// to the handoff.
-const ROADMAP_TERMS = [
+// just in the prompt). A reply that claims availability of anything ZAYA has,
+// or carries a number the grounding does not, or is not clean English,
+// degrades to the handoff.
+//
+// R1/P1a (2026-08-23): this list was ROADMAP_TERMS, built when "roadmap" was
+// the only unavailable rung. On the one labelling axis NOTHING is In pilot and
+// NOTHING is Live — the BUILT things (sales, stock, the credit book, browsing,
+// ordering, delivery + COD settlement) are as unavailable to the public as the
+// planned ones, and a model reply calling any of them "live" or "available" is
+// the same lie. The list is renamed and widened to cover both rungs. It fails
+// closed: a false positive only ever downgrades a reply to the human handoff.
+const UNAVAILABLE_TERMS = [
   'delivery', 'deliver', 'diaspora', 'basket', 'ride', 'taxi', 'school', 'cctv',
   'checkout', 'voice', 'smart tool', 'recommendation', 'transport', 'money transfer', 'remittance',
+  'sale', 'stock', 'inventory', 'credit book', 'credit ledger', 'browse', 'order',
+  'barcode', 'dashboard', 'pilot',
 ];
 // "is/are/now/currently/already available|live|launched|ready|active|out",
 // "has/have launched", "you can (use|order|get) ... (today|now)".
@@ -207,7 +217,7 @@ export function violatesHonesty(reply, groundingText) {
   if (reply.length > 1200) return true; // runaway generation
   if (!isEnglishReply(reply)) return true; // W-D5: model text is English-only
   const lower = reply.toLowerCase();
-  for (const term of ROADMAP_TERMS) {
+  for (const term of UNAVAILABLE_TERMS) {
     if (lower.includes(term) && AVAILABILITY_CLAIMS.test(reply)) return true;
   }
   // Any number that reads like a price/plan figure must appear in the

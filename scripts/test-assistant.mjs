@@ -43,12 +43,28 @@ console.log('curated cascade (no key set):');
   const r = await call('What is ZAYA?');
   check('FAQ answers "What is ZAYA?" from the KB', r.status === 200 && r.source === 'kb' && /local-commerce/.test(r.reply));
   check('curated answers include safe guided follow-ups', Array.isArray(r.suggestions) && r.suggestions.length >= 2 && r.suggestions.every((x) => Array.isArray(x) && x.length === 2));
+  // R2: the three PAID tiers are withdrawn until billing code exists, so the
+  // assistant must NOT quote 199/299/999 any more. What it must do instead is
+  // give the Free tier verbatim and say the paid plans are not published yet.
   const p = await call('How much does the Pro plan cost?');
-  check('pricing comes from the curated KB with the real number', p.source === 'kb' && p.reply.includes('299'));
+  check('pricing comes from the curated KB', p.source === 'kb' && p.entryId === 'pricing');
+  check('the withdrawn tier prices are NOT quoted', !/\b(199|299|999)\b/.test(p.reply));
+  check('the Free tier is given verbatim', p.reply.includes('Free — 0 ETB — forever'));
+  check('the paid-plans line replaces them', /published when billing opens/i.test(p.reply));
   const guidedPlan = await call('What does ZAYA cost for merchants?');
-  check('brand name does not overpower pricing intent', guidedPlan.source === 'kb' && guidedPlan.entryId === 'pricing' && guidedPlan.reply.includes('299'));
+  check('brand name does not overpower pricing intent', guidedPlan.source === 'kb' && guidedPlan.entryId === 'pricing' && guidedPlan.reply.includes('Free — 0 ETB — forever'));
+  // R1: delivery is one of the BUILT things. The old assertion pinned it as
+  // "roadmap" — which was the defect, not the contract. It must now say BUILT
+  // and still never say available/live.
   const d = await call('Can I get delivery today?');
-  check('roadmap honesty: delivery is "roadmap", never available', d.source === 'kb' && /roadmap/i.test(d.reply) && !/\bis (now )?available\b/i.test(d.reply));
+  check('delivery honesty: BUILT and in device testing, never available/live',
+    d.source === 'kb' && d.entryId === 'delivery' && /BUILT and in device testing/.test(d.reply)
+    && !/\bis (now )?available\b/i.test(d.reply) && !/\bis live\b/i.test(d.reply));
+  const l = await call('Is ZAYA live yet?');
+  check('"is ZAYA live?" answers No, on the one axis', l.source === 'kb' && /^No/.test(l.reply) && /Built — in device testing/.test(l.reply) && /nothing is live/i.test(l.reply));
+  const near = await call('Does ZAYA find shops near me?');
+  check('proximity honesty: the assistant answers AREA, and denies distance sorting',
+    near.source === 'kb' && near.entryId === 'area-not-proximity' && /works by AREA, not by your location/.test(near.reply));
   const m = await call('Can I send money to my family with ZAYA?');
   check('diaspora honesty: NOT a money-transfer service', m.source === 'kb' && /not a money-transfer/i.test(m.reply));
 }
@@ -121,9 +137,12 @@ console.log('KB ↔ approved content parity (drift guard):');
   const { ENTRIES } = await import('../netlify/functions/assistant/kb.mjs');
   const pricing = JSON.parse(await (await import('node:fs')).promises.readFile(new URL('../src/content/data/pricing.json', import.meta.url), 'utf8'));
   const en = ENTRIES.find((e) => e.id === 'pricing').answers.en;
+  check('pricing.json publishes exactly one tier (the Free one)', pricing.tiers.length === 1 && pricing.tiers[0].price === 0);
   for (const t of pricing.tiers) {
-    if (t.price > 0) check(`KB pricing carries the real ${t.name} number (${t.price})`, en.includes(String(t.price)));
+    check(`KB carries the published ${t.name} tier headline verbatim`, en.includes(t.headline));
   }
+  check('KB carries the paid-plans line verbatim', en.includes(pricing.paidLine));
+  check('KB quotes no price the site does not publish', !/(199|299|999|1[,.]?135|2[,.]?150|1[,.]?705|3[,.]?230)/.test(en));
   // W-D5 Afaan Oromoo model gate: prove no locale/input combination reaches the model with no key
   check('no key -> nothing is source:model', true); // covered structurally above (no key set)
 }

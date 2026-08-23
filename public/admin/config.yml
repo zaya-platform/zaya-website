@@ -41,6 +41,11 @@ collections:
         fields:
           - { name: currency, label: Currency, widget: string, default: ETB }
           - { name: note, label: "Footnote", widget: string }
+          # The three paid tiers are WITHDRAWN from the public site until billing
+          # exists (no billing/subscription/entitlement/plan-gating code is merged
+          # on the platform). Until then this single line stands in their place —
+          # do not re-add priced tiers here without the billing code shipping.
+          - { name: paidLine, label: "Paid-plans line (shown under the Free card)", widget: string }
           - name: tiers
             label: Tiers
             widget: list
@@ -48,6 +53,7 @@ collections:
               - { name: name, widget: string }
               - { name: price, widget: number }
               - { name: period, widget: string }
+              - { name: headline, label: "Headline (rendered verbatim, e.g. Free — 0 ETB — forever)", widget: string }
               - { name: from, label: "From (≥)", widget: boolean, default: false }
               - { name: highlight, widget: boolean, default: false }
               - { name: blurb, widget: string }

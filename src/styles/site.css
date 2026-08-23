@@ -75,8 +75,10 @@
   .drop a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;font-size:var(--fs-ui);font-weight:500;color:var(--ink)}
   .drop a:hover{background:var(--cloud)}
   .drop a .st{font-size:var(--fs-ui-2xs);font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:var(--pill);white-space:nowrap}
-  .st.live{color:var(--status-live);background:#E4F5F4} .st.launch{color:var(--status-launching);background:#FFF1E8}
-  .st.road{color:var(--status-roadmap);background:#EEEBFB} .st.soon{color:var(--status-future);background:#F1F3F5}
+  /* ONE LABELLING AXIS: Planned -> Built (in device testing) -> In pilot -> Live.
+     Colour/ground pairs are the previously-verified ones, re-pointed by name. */
+  .st.live{color:var(--status-live);background:#E4F5F4} .st.pilot{color:var(--status-pilot);background:#FFF1E8}
+  .st.built{color:var(--status-built);background:#EEEBFB} .st.planned{color:var(--status-planned);background:#F1F3F5}
   .nav .cta{margin-left:6px}
   /* hamburger (mobile/tablet only) */
   .burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;flex:none;
@@ -236,12 +238,25 @@
 .foot .fcol a:hover{color:#fff}
 .foot .fabout p{font-size:var(--fs-ui);margin-top:14px;max-width:34ch;color:rgba(255,255,255,.6)}
 .foot-base{border-top:1px solid rgba(255,255,255,.12);margin-top:38px;padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:var(--fs-ui-sm)}
+/* Footer legend for the ONE labelling axis. The chip tokens are tuned for pale
+   chip grounds and go dark-on-dark here, so the legend has its own light set —
+   same four rungs, same order, low->high. */
+.foot-base .lg{font-weight:700;white-space:nowrap}
+.foot-base .lg.planned{color:rgba(255,255,255,.62)}
+.foot-base .lg.built{color:#b3a8f2}
+.foot-base .lg.pilot{color:#F4A261}
+.foot-base .lg.live{color:var(--mint)}
+.foot-base .lg-note{color:rgba(255,255,255,.62);font-weight:500}
 @media(max-width:940px){.pain-grid,.contact-cards{grid-template-columns:1fr 1fr}.ben-grid{grid-template-columns:1fr}.love-grid,.foot-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.pain-grid,.contact-cards{grid-template-columns:1fr}}
 
 
 [id]{scroll-margin-top:96px}
 .priceg{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:8px}
+/* The three paid tiers are WITHDRAWN until billing exists (R2). One card left,
+   so the four-column track would strand it in a narrow left-hand column. */
+.priceg.one{grid-template-columns:minmax(0,420px);justify-content:center}
+.paid-line{text-align:center;color:var(--ink-soft);font-size:var(--fs-ui);margin-top:22px}
 .pcard{border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 24px;background:#fff;display:flex;flex-direction:column;position:relative;box-shadow:var(--sh-sm)}
 .pcard.pfeat{border-color:var(--teal);box-shadow:0 0 0 2px rgba(19,183,180,.22),var(--sh-md)}
 .pcard .ptag{position:absolute;top:-11px;left:24px;background:var(--teal-deep);color:#fff;font-size:var(--fs-ui-xs);font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:var(--pill)}
@@ -249,7 +264,7 @@
 /* BESPOKE: the price figure is the single largest thing on a pricing card by
    design — it outranks the card title deliberately. No chrome step is meant to
    be this big, and putting it on a heading step would tie it to page headings. */
-.pcard .pp{font-size:32px;font-weight:800;margin:12px 0 2px;letter-spacing:-.02em;color:var(--navy)}
+.pcard .pp{font-size:32px;font-weight:800;margin:12px 0 2px;letter-spacing:-.02em;color:var(--navy);line-height:1.14;text-wrap:balance}
 .pcard .pp small{font-size:var(--fs-ui-sm);font-weight:500;color:var(--ink-soft)}
 .pcard .pd{font-size:var(--fs-ui);color:var(--ink-soft);margin-bottom:18px;min-height:38px}
 .pcard ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
@@ -357,11 +372,11 @@ button{font:inherit}
 .pilot-strip{background:linear-gradient(90deg,#14213d,var(--navy) 46%,#123f48);color:#fff;font-size:var(--fs-ui-xs);letter-spacing:.01em}
 .pilot-strip-in{height:34px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .pilot-strip-in>span{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78)}
-.pilot-strip-in i{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px rgba(93,202,165,.14);animation:pilotPulse 2.2s ease-out infinite}
+/* The pulsing mint "live" dot is GONE with the "Merchant pilot live" claim it
+   decorated — a breathing green dot is a status claim of its own. */
 .pilot-strip-in b{color:#fff;font-weight:700}
 .pilot-strip-in a{color:var(--mint);font-weight:650;transition:color .2s}
 .pilot-strip-in a:hover{color:#fff}
-@keyframes pilotPulse{0%{box-shadow:0 0 0 0 rgba(93,202,165,.42)}70%,100%{box-shadow:0 0 0 8px rgba(93,202,165,0)}}
 
 .nav{height:72px;gap:22px}
 .lock .mk{width:58px;height:58px}
@@ -488,7 +503,10 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .trust-rail-in>div{padding:0 26px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:1px}
 .trust-rail-in>div:first-child{padding-left:0}.trust-rail-in>div:last-child{border-right:0}
 .trust-rail span{font-size:var(--fs-ui-2xs);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);font-weight:650}
-.trust-rail b{font-size:var(--fs-ui-lg);color:var(--navy)}
+.trust-rail b{font-size:var(--fs-ui-lg);color:var(--navy);line-height:1.25}
+/* An axis label is a phrase, not a two-word stat — it needs the chrome size, or
+   it wraps to three lines inside a quarter-width rail cell. */
+.trust-rail b.axis{font-size:var(--fs-ui);font-weight:700;color:var(--status-built)}
 
 .role-section{padding:100px 0;background:linear-gradient(180deg,#fff,#f6fbfb)}
 .role-heading{display:grid;grid-template-columns:1.2fr .8fr;gap:70px;align-items:end;margin-bottom:38px}
@@ -508,10 +526,13 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .role-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(15,29,54,.55));pointer-events:none}
 .role-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease)}
 .role-pane:hover .role-media img{transform:scale(1.035)}
-.role-status{position:absolute;z-index:2;top:22px;left:22px;border-radius:var(--pill);padding:7px 11px;font-size:var(--fs-ui-2xs);font-weight:750;text-transform:uppercase;letter-spacing:.08em;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(16,35,63,.14)}
+/* Not uppercased any more: the axis labels are phrases ("Built — in device
+   testing"), and uppercase + .08em tracking made them overflow the media pill. */
+.role-status{position:absolute;z-index:2;top:22px;left:22px;max-width:calc(100% - 44px);border-radius:var(--pill);padding:7px 11px;font-size:var(--fs-ui-2xs);font-weight:750;letter-spacing:.02em;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(16,35,63,.14)}
 .role-status.live{background:rgba(234,251,247,.94);color:var(--status-live)}
-.role-status.launch{background:rgba(255,241,232,.94);color:var(--status-launching)}
-.role-status.road{background:rgba(238,235,251,.94);color:var(--status-roadmap)}
+.role-status.pilot{background:rgba(255,241,232,.94);color:var(--status-pilot)}
+.role-status.built{background:rgba(238,235,251,.94);color:var(--status-built)}
+.role-status.planned{background:rgba(241,243,245,.94);color:var(--status-planned)}
 .role-copy{padding:clamp(34px,5vw,68px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
 .role-kicker{font-size:var(--fs-ui-xs);font-weight:750;letter-spacing:.11em;text-transform:uppercase;color:var(--teal-deep)}
 .role-copy h3{font-size:var(--fs-h-sm);line-height:1.04;letter-spacing:var(--ls-h-sm);margin-top:13px;max-width:14ch}
@@ -634,7 +655,7 @@ section{padding:88px 0}
   .pilot-form{padding:23px}
 }
 @media(prefers-reduced-motion:reduce){
-  .pilot-strip-in i,.role-pane,.lock .mk,html.js .hero .copy>*{animation:none!important}
+  .role-pane,.lock .mk,html.js .hero .copy>*{animation:none!important}
   .lock .mk .rr{animation:none!important;opacity:0}
   .hubwrap{transition:none!important;transform:none!important}
 }

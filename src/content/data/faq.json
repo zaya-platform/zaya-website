@@ -1,10 +1,11 @@
 {
   "items": [
-    { "q": "What is ZAYA?", "a": "ZAYA is Ethiopia's local-commerce platform connecting neighbourhood shops and their customers — everything near you. Support for diaspora families is on our roadmap." },
-    { "q": "Is ZAYA live yet?", "a": "Yes, in the pilot: merchants run sales, stock and the credit book, plus the supermarket dashboard. The customer app is launching; delivery, smart tools and the diaspora basket are on the roadmap." },
-    { "q": "What does it cost?", "a": "Customers use ZAYA free. Merchants start on a free plan with optional paid tiers — see the pricing section or contact us." },
+    { "q": "What is ZAYA?", "a": "ZAYA is Ethiopia's local-commerce platform connecting neighbourhood shops and their customers — everything near you. Support for diaspora families is planned." },
+    { "q": "Is ZAYA live yet?", "a": "No. We use one labelling axis: Built — in device testing, In pilot, Live, Planned. Merchant tools, customer browse and ordering, and delivery with cash-on-delivery settlement are all built and in device testing. Nothing is in pilot and nothing is live: no shop is running on ZAYA and no customer can download it yet." },
+    { "q": "What does it cost?", "a": "Customers use ZAYA free. Merchants start on the Free plan — 0 ETB, forever. Paid plans for larger shops will be published when billing opens; there is nothing to buy today." },
     { "q": "What languages does it support?", "a": "The app supports Amharic, Afaan Oromoo, Tigrinya and English. This website is in English for now; the other languages are planned for a later phase." },
-    { "q": "Does ZAYA send money for the diaspora?", "a": "No — ZAYA is not a money-transfer service. The plan is to let you order real goods, delivered to your family with proof — this diaspora basket is on our roadmap, not live yet." },
-    { "q": "How do I join?", "a": "Shop owners in Nifas Silk Lafto can join the pilot — reach us through the contact section." }
+    { "q": "Does ZAYA send money for the diaspora?", "a": "No — ZAYA is not a money-transfer service. The plan is to let you order real goods, delivered to your family with proof — this diaspora basket is planned, and none of it is built yet." },
+    { "q": "Does ZAYA find shops near me?", "a": "It works by area, not by your location. You choose your area and see the shops in it; ZAYA does not read your position and does not hold shop coordinates, so we never claim to sort shops by distance from you." },
+    { "q": "How do I join?", "a": "The merchant pilot is opening in Nifas Silk Lafto. Shop owners there can request early access through the contact section — we will be in touch before it starts." }
   ]
 }
