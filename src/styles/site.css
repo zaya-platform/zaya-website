@@ -748,3 +748,162 @@ section{padding:88px 0}
   .lock .mk .rr{animation:none!important;opacity:0}
   .hubwrap{transition:none!important;transform:none!important}
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE NAME — the ZAYA backronym block (founder request, 2026-08-23)
+   Markup: the `.zmean` section in src/pages/index.astro.
+
+   APPENDED AT THE END OF THE FILE ON PURPOSE. Two separate passes on this
+   stylesheet have now been bitten by the same fault — a later unconditional
+   rule at equal specificity silently beating an earlier one (the dead spacing
+   wiring; the mobile menu link that rendered at 14px while two declarations
+   said 16px). Nothing follows this block, so nothing can beat it.
+
+   ── ZERO JAVASCRIPT, BY CONSTRUCTION ──────────────────────────────────────
+   The letter picker is four native radios (visually hidden) driven by
+   `:checked ~` sibling selectors. There is no script, no island, no `html.js`
+   gate and no `.reveal` class anywhere in this section, so:
+     · with JS disabled it behaves IDENTICALLY — the radios and the sibling
+       selectors are the whole mechanism;
+     · no pillar is ever injected. All four <article>s are in the SSR HTML;
+     · a bundle load/parse failure cannot trap this content hidden, because no
+       bundle is involved.
+   Native radios also give the keyboard behaviour for free and correctly:
+   one tab stop for the group, Arrow keys move AND select with wrap-around,
+   Home/End jump to the ends, and AT announces "radio button, n of 4" against
+   a <fieldset>/<legend> group name. Re-implementing that in JS would be more
+   code doing the same thing worse.
+
+   ── CONTRAST, MEASURED (sRGB, WCAG 2.x formula) ───────────────────────────
+   Ground is `.band-navy`'s gradient. Its three stops have relative luminance
+   #1E2A4A 0.02426 · #16223f 0.01732 · #0e3a3f 0.03478, so #1E2A4A is the
+   LIGHTEST and every ratio below is quoted against it — the worst case. On the
+   other two stops each figure is higher.
+     TEXT (bar 4.5:1 — everything here is small text, so no 3:1 large-text
+     allowance is claimed anywhere):
+       white on the band ......................... 14.14:1   h2, letter glyphs
+       rgba(255,255,255,.82) on the band ......... 10.01:1   lead + closing note
+       --mint on the band ......................... 7.04:1   eyebrow, legend
+       white on an unselected tile (white .08
+         composited over the band = #303B58) ..... 11.10:1   letter glyph
+       rgba(255,255,255,.82) on that same tile .... 8.09:1   pillar word
+       --navy on a selected tile (white) ......... 14.14:1   letter glyph
+       --ink-soft on a selected tile (white) ...... 6.24:1   pillar word
+       --navy on the white panel ................. 14.14:1   panel h3
+       --ink on the white panel .................. 14.14:1   panel sentence
+       --ink-soft on the white panel .............. 6.24:1   evidence line
+       --status-built on its own chip (#EEEBFB) ... 6.07:1   the axis chip
+     NON-TEXT (bar 3:1):
+       selected tile (white) vs the band ......... 14.14:1   THE selection
+                                                             indicator: the
+                                                             tile inverts, so
+                                                             selection is not
+                                                             carried by hue
+       unselected tile border (white .38) vs band . 3.35:1
+       white panel vs the band ................... 14.14:1
+       focus ring (white) vs the band ............ 14.14:1
+   DELIBERATELY NOT USED: --teal-deep as label ink (4.14:1 on white) and white
+   on --teal-deep (4.14:1). Both are on tokens.css's KNOWINGLY STILL FAILING
+   list; this section adds no new instance of either. --coral appears only as
+   the .eyebrow's decorative dot, which carries no information.
+
+   THE FOCUS RING. The site ring is `outline:3px solid var(--navy)`, which is
+   1:1 on this band — the exact failure the P1b ring fix was written to end,
+   in the other direction. It goes white here, the same treatment
+   .pilot-strip and .foot already have. The ring is drawn on the LABEL (the
+   radio itself is clipped to nothing), and `outline-offset:3px` keeps a band-
+   coloured gap between tile and ring, so the ring is measured against the
+   band on both sides even when the tile underneath is white.
+
+   TOKENS ONLY — no new colour, no new size. --fs-h-xs gets its first consumer
+   here; tokens.css records that it was still owed one.
+   ══════════════════════════════════════════════════════════════════════════ */
+.zmean{position:relative;overflow:hidden}
+.zmean .sec-head{max-width:760px}
+
+.zmean-x{border:0;padding:0;margin:0;min-inline-size:0;position:relative}
+.zmean-x>legend{display:block;width:100%;padding:0;margin:0 0 16px;text-align:center;
+  font-size:var(--fs-ui-xs);font-weight:750;letter-spacing:.11em;text-transform:uppercase;color:var(--mint)}
+
+/* Clipped to nothing, never display:none — a display:none radio is not
+   focusable and the keyboard group would disappear with it. The outline is
+   dropped here ONLY because it is redrawn, larger, on the label below; this is
+   not a bare outline:0. */
+.zmean-radio{position:absolute;top:0;left:0;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.zmean-radio:focus-visible{outline:0}
+
+/* Four columns at every width, so the row keeps reading as the word ZAYA. */
+.zmean-letters{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);max-width:920px;margin:0 auto}
+.zmean-letter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);
+  padding:clamp(14px,2.2vw,26px) var(--sp-2);border-radius:var(--r-md);cursor:pointer;text-align:center;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.38);color:#fff;
+  transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+/* A letter glyph is isolated, so the scale's optical negative tracking would
+   only shave its right side bearing. The size comes from the token; the
+   tracking is reset for that reason and no other. */
+.zmean-letter .zl{font-size:var(--fs-h-lg);line-height:var(--lh-h-lg);letter-spacing:0;font-weight:800}
+.zmean-letter .zn{font-size:var(--fs-ui-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.82)}
+.zmean-letter:hover{background:rgba(255,255,255,.16);transform:translateY(-2px)}
+
+#zmean-z:checked~.zmean-letters [for="zmean-z"],
+#zmean-a1:checked~.zmean-letters [for="zmean-a1"],
+#zmean-y:checked~.zmean-letters [for="zmean-y"],
+#zmean-a2:checked~.zmean-letters [for="zmean-a2"]{background:#fff;border-color:#fff;color:var(--navy);transform:none}
+#zmean-z:checked~.zmean-letters [for="zmean-z"] .zn,
+#zmean-a1:checked~.zmean-letters [for="zmean-a1"] .zn,
+#zmean-y:checked~.zmean-letters [for="zmean-y"] .zn,
+#zmean-a2:checked~.zmean-letters [for="zmean-a2"] .zn{color:var(--ink-soft)}
+
+#zmean-z:focus-visible~.zmean-letters [for="zmean-z"],
+#zmean-a1:focus-visible~.zmean-letters [for="zmean-a1"],
+#zmean-y:focus-visible~.zmean-letters [for="zmean-y"],
+#zmean-a2:focus-visible~.zmean-letters [for="zmean-a2"]{outline:3px solid #fff;outline-offset:3px}
+
+/* All four panels share ONE grid cell, so the stage is always as tall as the
+   tallest pillar and switching letters shifts nothing on the page. Hidden
+   panels use visibility, not display, for the same reason — and visibility
+   also keeps them out of the tab order and out of the a11y tree. */
+.zmean-stage{display:grid;max-width:920px;margin:var(--sp-5) auto 0}
+.zmean-panel{grid-area:1/1;background:#fff;color:var(--ink);border-radius:var(--r-lg);
+  padding:clamp(22px,3vw,34px);box-shadow:var(--sh-sm);
+  opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility 0s linear var(--dur)}
+#zmean-z:checked~.zmean-stage [data-zmean="z"],
+#zmean-a1:checked~.zmean-stage [data-zmean="a1"],
+#zmean-y:checked~.zmean-stage [data-zmean="y"],
+#zmean-a2:checked~.zmean-stage [data-zmean="a2"]{opacity:1;visibility:visible;transform:none;
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility 0s}
+.zmean-panel h3{font-size:var(--fs-h-xs);line-height:var(--lh-h-xs);letter-spacing:var(--ls-h-xs);color:var(--navy)}
+.zmean-panel p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--ink);margin-top:var(--sp-3);max-width:58ch}
+.zmean-panel .zmean-ev{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);
+  margin-top:var(--sp-4);font-size:var(--fs-ui);color:var(--ink-soft);max-width:none}
+/* The axis chip has no shared base rule in this file — each context sizes its
+   own — so this one states its box. Colour and ground come from .st.built. */
+.zmean-panel .zmean-ev .st{font-size:var(--fs-ui-2xs);font-weight:700;letter-spacing:.03em;
+  padding:3px 9px;border-radius:var(--pill);white-space:nowrap}
+
+.zmean-note{max-width:920px;margin:var(--sp-4) auto 0;text-align:center;
+  font-size:var(--fs-ui);color:rgba(255,255,255,.82)}
+
+@media(max-width:640px){
+  .zmean-letters{gap:6px}
+  .zmean-letter{padding:12px 4px;border-radius:var(--r-sm);gap:4px}
+  .zmean-letter .zl{font-size:var(--fs-h-sub);line-height:var(--lh-h-sub)}
+  .zmean-letter .zn{font-size:var(--fs-ui-2xs);letter-spacing:.04em}
+}
+
+/* Same content, no motion. The hover lift and the panel cross-fade are the
+   only motion in the section; both stop, and the panel's 8px entry offset is
+   pinned out so a switch is an instant swap rather than a shortened slide. */
+@media(prefers-reduced-motion:reduce){
+  .zmean-letter,.zmean-panel{transition:none!important}
+  .zmean-letter:hover{transform:none}
+  .zmean-panel{transform:none!important}
+}
+
+/* On paper there is no picker, so print every pillar. */
+@media print{
+  .zmean-stage{display:block}
+  .zmean-panel{opacity:1!important;visibility:visible!important;transform:none!important;
+    box-shadow:none;border:1px solid var(--line);margin-bottom:10px}
+}

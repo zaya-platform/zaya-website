@@ -222,6 +222,81 @@ const HUB = [
   </div>
 </div>
 
+{/* ── THE NAME (founder request, 2026-08-23) ─────────────────────────────────
+    Decision D-018 makes the brand identity — the backronym included — a binding
+    architectural artifact, so the NAME and the four PILLAR NAMES below are
+    quoted verbatim from docs/ZEPO/06_reference/ZAYA_Current_State_Summary_v3.0.md
+    §6, as is the one-sentence summary in the lead. Nothing else here is.
+
+    WHAT IS DELIBERATELY *NOT* COPIED, AND WHY. The brand book's pillar
+    paragraphs describe a product that does not exist: GPS listing "within a
+    configurable radius (default 5 km)", a map view, geo-filters (distance,
+    rating, open-now), price comparison across twenty shops at once, expiry
+    alerts, payment unification across Telebirr/M-Pesa, and voice-first
+    interaction. Reproducing them here would put the exact over-claiming the
+    NO-GO review condemned onto the most prominent part of the page, and the
+    radius/20-shops language would walk straight through the R4 proximity ban
+    that scripts/test-claims.mjs ratchets A and C now guard.
+    So this section says WHAT THE NAME MEANS, not what the app does. Each
+    letter's explanatory line is written for this site and describes intent;
+    the capability claim is quarantined in the evidence line beneath it, where
+    it carries the one labelling axis (R1) and names a specific built thing.
+
+    NO JAVASCRIPT AT ALL. The reveal is four native radios plus :checked sibling
+    selectors, so it behaves identically with JS on and off — there is no
+    bundle to fail, nothing is injected, and every pillar is in the HTML. See
+    the "THE NAME" block in site.css for the a11y measurements. */}
+<section class="band-navy zmean" id="meaning">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">What the name means</span>
+      <h2>ZAYA is an acronym. Every letter is a promise we can keep.</h2>
+      <p>Zonal &middot; Availability &middot; Yours &middot; Access &mdash; your neighbourhood market, visible, yours, and open to everyone.</p>
+    </div>
+
+    <fieldset class="zmean-x">
+      <legend>Choose a letter to read what it stands for</legend>
+
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-z" checked />
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-a1" />
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-y" />
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-a2" />
+
+      <div class="zmean-letters">
+        <label class="zmean-letter" for="zmean-z"><span class="zl">Z</span><span class="zn">Zonal</span></label>
+        <label class="zmean-letter" for="zmean-a1"><span class="zl">A</span><span class="zn">Availability</span></label>
+        <label class="zmean-letter" for="zmean-y"><span class="zl">Y</span><span class="zn">Yours</span></label>
+        <label class="zmean-letter" for="zmean-a2"><span class="zl">A</span><span class="zn">Access</span></label>
+      </div>
+
+      <div class="zmean-stage" aria-live="polite">
+        <article class="zmean-panel" data-zmean="z">
+          <h3>Z &mdash; Zonal</h3>
+          <p>You pick the area; ZAYA shows the shops in it. The zone is your choice, never a guess made for you.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>Choosing an area, and browsing the shops in it.</span></p>
+        </article>
+        <article class="zmean-panel" data-zmean="a1">
+          <h3>A &mdash; Availability</h3>
+          <p>Know before you go &mdash; real stock and real prices, straight from the shop&rsquo;s own book.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>Stock and prices kept in the shop&rsquo;s own book.</span></p>
+        </article>
+        <article class="zmean-panel" data-zmean="y">
+          <h3>Y &mdash; Yours</h3>
+          <p>Your shop, your book, your customers. The shopkeeper&rsquo;s call on credit and price comes before anything ZAYA suggests.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>The merchant cockpit and the digital credit ledger.</span></p>
+        </article>
+        <article class="zmean-panel" data-zmean="a2">
+          <h3>A &mdash; Access</h3>
+          <p>Nobody locked out &mdash; four languages, cash on delivery, and the low-end Android phones people actually own.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>Cash-on-delivery settlement; four languages rendering in the app.</span></p>
+        </article>
+      </div>
+    </fieldset>
+
+    <p class="zmean-note">This says what the name means &mdash; it is not a feature list. Everything ZAYA can actually do is labelled where it is claimed, further down this page.</p>
+  </div>
+</section>
+
 <section class="band"><div class="wrap">
   <div class="sec-head">
     <span class="eyebrow" id="problems">The problem today</span>
