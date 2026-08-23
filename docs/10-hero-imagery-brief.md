@@ -1,5 +1,18 @@
 # 10 · Hero & Imagery Brief (photo direction)
 
+> **SUPERSEDED FOR THE HOMEPAGE — 2026-08-23 (truth pass R3).**
+> The eight AI-generated images this brief specified were **removed**, files and
+> all. Two reasons: `customer-app.jpg` showed a **fabricated app interface**
+> presented as evidence the product exists, and all eight carried **visible
+> third-party trademarks** that the repo's own `_rights.json` had recorded and
+> accepted for a pilot that had not opened.
+> The homepage now shows the platform's real **S9-T12 reference-screen
+> baselines** instead — see `src/assets/screens/PROVENANCE.md` and
+> `src/assets/photos/RIGHTS.md`.
+> This brief is kept as the record of the direction that was set, and it is
+> still the spec **if commissioned photography of the real pilot shops is ever
+> shot**. It is no longer a description of what is on the site.
+
 **Why this exists.** Free-licensed (Wikimedia Commons) photography does **not** contain a
 modern-Ethiopian-shop/supermarket-owner image that is both on-persona and
 representation-neutral. Two searches confirmed it. The build tool used here **cannot

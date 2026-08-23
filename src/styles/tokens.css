@@ -145,11 +145,12 @@
  * type) and the heading/body hierarchy ratio is preserved.
  *
  * ── A11Y STATUS (F5) — what this file may and may not claim ────────────────
- * FIXED here: --status-live and --status-launching. Both are chip labels at
+ * FIXED here: --status-live and --status-pilot (was --status-launching). Both are chip labels at
  * small sizes, and both were chosen against WHITE while being painted on their
  * own TINTED chip grounds, where they fell under the AA bar. Each now has its
  * own value that clears 4.5:1 on the ground it is actually painted on — the
- * same treatment --status-roadmap and --status-future already had.
+ * same treatment --status-built and --status-planned (was --status-roadmap and
+ * --status-future) already had.
  * KNOWINGLY STILL FAILING, and therefore NOT claimed anywhere in this file:
  * --teal-deep used as small label ink (the eyebrow, the role kicker, the price
  * plan name, the shot tag, the lockup tagline, the assistant menu button),
@@ -247,14 +248,39 @@
    * Each value must clear the 4.5:1 AA bar against the chip background it is
    * actually used on (see .st.* and .role-status.* in site.css). Verifying
    * against white is the mistake that let two of them ship under the bar.
-   * Change a chip background and these must be re-measured with it. */
+   * Change a chip background and these must be re-measured with it.
+   *
+   * CSS SYNTAX DEFECT FIXED 2026-08-23 — this comment used to CLOSE right here,
+   * and the "ONE LABELLING AXIS" paragraph below then ran on OUTSIDE any
+   * comment. CSS does not read a bare leading `*` as prose: the parser took it
+   * as the start of a declaration and discarded everything up to the next
+   * semicolon — and the next semicolon was the one ending
+   * `--status-live: #0A7877;`. So --status-live WAS NEVER DEFINED.
+   * MEASURED in a live browser before the fix:
+   * getComputedStyle(document.documentElement).getPropertyValue('--status-live')
+   * returned the EMPTY STRING while its three siblings returned their hexes.
+   * It went unnoticed only because nothing on the site currently claims the
+   * "Live" rung, so `.st.live{color:var(--status-live)}` had no element to fail
+   * on — the first honest "Live" chip would have shipped with no colour at all.
+   * The stray comment terminator is removed and the token is back.
+   *
+   * ONE LABELLING AXIS (2026-08-23): the four rungs are the estate's ratified
+   * vocabulary — Planned -> Built (in device testing) -> In pilot -> Live
+   * (EXEC-DASHBOARD: BUILT != DEPLOYED != LIVE). The four verified
+   * colour/ground PAIRS below are UNCHANGED — only the token names moved onto
+   * the new rungs, so no contrast measurement is invalidated:
+   *   --status-planned = the old --status-future value+ground (ink-soft/#F1F3F5)
+   *   --status-built   = the old --status-roadmap value+ground (#5648B0/#EEEBFB)
+   *   --status-pilot   = the old --status-launching value+ground (#A8591C/#FFF1E8)
+   *   --status-live    = unchanged in name, value and ground (#0A7877/#E4F5F4)
+   * Teal is DELIBERATELY reserved for the rung nothing has reached. */
   --status-live:        #0A7877;   /* NOT var(--teal-deep): the brand teal fails on
                                     * both of this chip's grounds. Its own value,
                                     * darkened only as far as the bar requires. */
-  --status-launching:   #A8591C;   /* darkened from #B4611F, which was tuned against
+  --status-pilot:       #A8591C;   /* darkened from #B4611F, which was tuned against
                                     * white and failed on its own chip ground */
-  --status-roadmap:     #5648B0;
-  --status-future:      var(--ink-soft);
+  --status-built:       #5648B0;
+  --status-planned:     var(--ink-soft);
 
   /* ---- Typography families ---- */
   --font-sans: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;

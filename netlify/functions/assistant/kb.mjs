@@ -5,16 +5,35 @@
 // contact.json and the page copy). The assistant may ground in NOTHING else —
 // no web search, no model world-knowledge presented as ZAYA facts.
 //
-// HONESTY TAGS (binding): status live | launching | roadmap. Roadmap items
-// (delivery, diaspora basket, rides, schools, smart tools) are ALWAYS "on the
-// roadmap / coming", never "available". No invented prices/dates/features.
+// HONESTY TAGS (binding) — ONE LABELLING AXIS, the estate's ratified
+// vocabulary (EXEC-DASHBOARD: BUILT != DEPLOYED != LIVE):
+//
+//   status: 'planned' | 'built' | 'pilot' | 'live' | 'fact'
+//   public wording, used verbatim and uniformly:
+//     planned -> "Planned"
+//     built   -> "Built — in device testing"
+//     pilot   -> "In pilot"
+//     live    -> "Live"
+//
+// TRUE STATE TODAY (2026-08-23): merchant tools, customer browse/order, and the
+// delivery + COD settlement machine are ALL 'built' — the same rung, no rung
+// higher. Barcode scanning, sorting by the user's location, and the diaspora
+// basket are 'planned'. NOTHING is 'pilot' and NOTHING is 'live'.
+//
+// P1a FIX (2026-08-23): this file previously stated unbuilt and unshipped
+// capabilities in the PRESENT TENSE — "Yes, in the pilot: merchants run sales,
+// stock and the credit book", "a merchant on ZAYA records every sale" — while
+// its own header above forbids exactly that. It also had delivery filed as
+// 'roadmap' when delivery is one of the things that IS built. Both are
+// corrected here.
 //
 // LANGUAGES (founder ruling W-D5): en/am/om/ti are served from THESE
 // human-curated layers only; novel model generation is ENGLISH-ONLY.
 // ⚠ The am/om/ti strings are DRAFT-UNVERIFIED (the standing localization
 // rule): native-speaker review is a precondition of the PUBLIC launch
 // (W-D4b) — acceptable for the founder-access preview, where the founder
-// himself is the reviewer.
+// himself is the reviewer. The 2026-08-23 honesty corrections below touched
+// am/om/ti as well and are DRAFT-UNVERIFIED on the same terms.
 
 export const LOCALES = ['en', 'am', 'om', 'ti'];
 
@@ -62,7 +81,7 @@ export const STRINGS = {
 };
 
 // ── FAQ + KB entries ─────────────────────────────────────────────────────────
-// Each entry: id · status (live|launching|roadmap|fact) · keywords (matched
+// Each entry: id · status (planned|built|pilot|live|fact) · keywords (matched
 // against the normalized question; en keywords match all locales since users
 // mix languages) · answers per locale (missing locale -> en answer is NOT
 // substituted for am/om/ti — the handoff is, keeping W-D5 clean).
@@ -72,21 +91,21 @@ export const ENTRIES = [
     status: 'fact',
     keywords: ['what is zaya', 'about zaya', 'zaya', 'super app', 'platform', 'ዛያ', 'ምንድን', 'እንታይ', 'maali'],
     answers: {
-      en: "ZAYA is Ethiopia's local-commerce platform — connecting shops, customers and diaspora families in one intelligent app. Everything near you.",
-      am: 'ዛያ የኢትዮጵያ የአካባቢ ንግድ መድረክ ነው — ሱቆችን፣ ደንበኞችንና የዲያስፖራ ቤተሰቦችን በአንድ አፕ የሚያገናኝ። ሁሉም ነገር በአቅራቢያዎ።',
-      om: "ZAYA waltajjii daldala naannoo Itoophiyaa ti — suuqota, maamiltoota fi maatii diyaaspooraa appii tokko keessatti wal qunnamsiisa.",
-      ti: 'ዛያ ናይ ኢትዮጵያ መድረኽ ንግዲ ከባቢ እዩ — ድኳናት፣ ዓማዊልን ስድራቤታት ዲያስፖራን ኣብ ሓደ ኣፕ ዘራኽብ።',
+      en: "ZAYA is Ethiopia's local-commerce platform — connecting neighbourhood shops and their customers in one app, with support for diaspora families planned. Everything near you.",
+      am: 'ዛያ የኢትዮጵያ የአካባቢ ንግድ መድረክ ነው — ሱቆችንና ደንበኞችን በአንድ አፕ የሚያገናኝ፤ ለዲያስፖራ ቤተሰቦች ያለው ድጋፍ በእቅድ ላይ ነው። ሁሉም ነገር በአቅራቢያዎ።',
+      om: "ZAYA waltajjii daldala naannoo Itoophiyaa ti — suuqota fi maamiltoota appii tokko keessatti wal qunnamsiisa; deeggarsi maatii diyaaspooraa karoora irra jira.",
+      ti: 'ዛያ ናይ ኢትዮጵያ መድረኽ ንግዲ ከባቢ እዩ — ድኳናትን ዓማዊልን ኣብ ሓደ ኣፕ ዘራኽብ፤ ንስድራቤታት ዲያስፖራ ዝወሃብ ደገፍ ኣብ መደብ እዩ።',
     },
   },
   {
     id: 'is-zaya-live',
-    status: 'live',
+    status: 'built',
     keywords: ['live', 'launched', 'available now', 'working', 'pilot', 'started', 'use it now', 'ተጀምሯል', 'jalqabame'],
     answers: {
-      en: 'Yes, in the pilot: merchants run sales, stock and the credit book, plus the supermarket dashboard. The customer app is launching; delivery, smart tools and the diaspora basket are on the roadmap — coming, not available yet.',
-      am: 'አዎ፣ በሙከራው (ፓይለት)፦ ነጋዴዎች ሽያጭ፣ ክምችትና የብድር ደብተር ይመዘግባሉ። የደንበኛ አፕ በመጀመር ላይ ነው፤ ማድረስ (ዴሊቨሪ) እና ሌሎች አገልግሎቶች በእቅድ ላይ ናቸው — ገና አልተጀመሩም።',
-      om: "Eeyyee, piilotii keessatti: daldaltoonni gurgurtaa, kuusaa fi galmee liqii galmeessu. Appiin maamilaa jalqabaa jira; geejjibni (delivery) fi tajaajilonni biroo karoora irra jiru — amma hin jiran.",
-      ti: 'እወ፣ ኣብቲ ፓይለት፦ ነጋዶ መሸጣ፣ ክምችትን መዝገብ ልቓሕን ይምዝግቡ። ናይ ዓሚል ኣፕ ይጅምር ኣሎ፤ ምብጻሕ (ዴሊቨሪ) ኣብ መደብ እዩ — ገና ኣይተጀመረን።',
+      en: 'No — not yet, and we label this on one axis: Planned, Built — in device testing, In pilot, Live. The merchant tools, customer browse and ordering, and delivery with cash-on-delivery settlement are all BUILT and in device testing. Nothing is in pilot and nothing is live: no shop is running on ZAYA yet and there is nothing to download.',
+      am: 'ገና አይደለም። አንድ የመለያ መስመር እንጠቀማለን፦ በእቅድ ላይ፣ ተገንብቷል — በመሣሪያዎች ላይ በሙከራ ላይ፣ በሙከራው (ፓይለት) ውስጥ፣ በሥራ ላይ። የነጋዴ መሣሪያዎች፣ የደንበኛ ማሰስና ማዘዝ፣ እንዲሁም ማድረስ (ዴሊቨሪ) ከጥሬ ገንዘብ ክፍያ ማወራረድ ጋር — ሁሉም ተገንብተዋል፤ አሁን በመሣሪያዎች ላይ በሙከራ ላይ ናቸው። ገና ማንም ሱቅ በዛያ ላይ አይሠራም።',
+      om: "Lakki, ammatti miti. Sarara mallattoo tokko fayyadamna: Karoora irra, Ijaarameera — meeshaalee irratti qorannoo irra, Piilotii keessa, Hojii irra. Meeshaaleen daldalaa, sakatta'uu fi ajajuun maamilaa, akkasumas geejjibni kaffaltii harkaa waliin — hundi isaanii ijaaramaniiru, amma meeshaalee irratti qoratamaa jiru. Suuqiin tokko iyyuu ZAYA irratti hin hojjetu.",
+      ti: 'ኖ፣ ገና ኣይኮነን። ሓደ መስመር ምልክት ንጥቀም፦ ኣብ መደብ፣ ተሰሪሑ — ኣብ መሳርሒታት ይፍተን ኣሎ፣ ኣብ ፓይለት፣ ኣብ ስራሕ። መሳርሒታት ነጋዶ፣ ምድላይን ምእዛዝን ዓሚል፣ ከምኡውን ምብጻሕ ምስ ምውራድ ገንዘብ ኢድ — ኩሎም ተሰሪሖም፣ ሕጂ ኣብ መሳርሒታት ይፍተኑ ኣለዉ። ገና ሓንቲ ድኳን እውን ብዛያ ኣይትሰርሕን።',
     },
   },
   {
@@ -94,10 +113,10 @@ export const ENTRIES = [
     status: 'fact',
     keywords: ['price', 'cost', 'pricing', 'plan', 'fee', 'pay', 'birr', 'etb', 'how much', 'subscription', 'ዋጋ', 'ክፍያ', 'gatii', 'kaffaltii'],
     answers: {
-      en: 'Customers use ZAYA free, always. Merchant plans: Free (0 ETB, forever — sales, stock, credit book, one phone), Starter (199 ETB/month), Pro (299 ETB/month) and Premium Max (from 999 ETB/month, per branch, for supermarkets/multi-branch). Roughly 5% off on 6-month and 10% off on annual plans. No hidden fees.',
-      am: 'ደንበኞች ዛያን ሁልጊዜ በነጻ ይጠቀማሉ። የነጋዴ እቅዶች፦ ነጻ (0 ብር)፣ Starter (199 ብር/ወር)፣ Pro (299 ብር/ወር)፣ Premium Max (ከ999 ብር/ወር ጀምሮ፣ በቅርንጫፍ)። የ6 ወርና የዓመት እቅዶች ቅናሽ አላቸው። የተደበቀ ክፍያ የለም።',
-      om: "Maamiltoonni ZAYA yeroo hunda bilisaan fayyadamu. Karoorri daldaltootaa: Bilisa (0 ETB), Starter (199 ETB/ji'a), Pro (299 ETB/ji'a), Premium Max (999 ETB/ji'a irraa eegalee, damee tokkoon). Kaffaltiin dhokataan hin jiru.",
-      ti: 'ዓማዊል ዛያ ኩሉ ግዜ ብነጻ ይጥቀሙ። መደባት ነጋዶ፦ ነጻ (0 ብር)፣ Starter (199 ብር/ወርሒ)፣ Pro (299 ብር/ወርሒ)፣ Premium Max (ካብ 999 ብር/ወርሒ ጀሚሩ፣ ብጨንፈር)። ሕቡእ ክፍሊት የለን።',
+      en: 'Customers use ZAYA free, always. Merchants start on the Free plan — Free — 0 ETB — forever (record every sale, track your stock, simple credit book, works on one phone). Paid plans for larger shops, published when billing opens. Nothing paid is on sale today and no price is being quoted; when they are published, 6-month and annual terms will save about 5% and about 10%. No hidden fees.',
+      am: 'ደንበኞች ዛያን ሁልጊዜ በነጻ ይጠቀማሉ። ነጋዴዎች በነጻው እቅድ ይጀምራሉ — ነጻ — 0 ብር — ለዘላለም (እያንዳንዱን ሽያጭ መመዝገብ፣ ክምችት መከታተል፣ ቀላል የብድር ደብተር፣ በአንድ ስልክ ይሠራል)። ለትላልቅ ሱቆች የሚከፈልባቸው እቅዶች ክፍያ ሲጀመር ይታተማሉ፤ ዛሬ የሚሸጥ የክፍያ እቅድ የለም ዋጋም አልተጠቀሰም። ሲታተሙ የ6 ወርና የዓመት ክፍያዎች ወደ 5% እና ወደ 10% ገደማ ይቆጥባሉ። የተደበቀ ክፍያ የለም።',
+      om: "Maamiltoonni ZAYA yeroo hunda bilisaan fayyadamu. Daldaltoonni karoora bilisaatiin jalqabu — Bilisa — 0 ETB — bara baraan (gurgurtaa hunda galmeessuu, kuusaa hordofuu, galmee liqii salphaa, bilbila tokkoon hojjeta). Karoorri kaffaltii suuqota gurguddaaf yeroo kaffaltiin banamu ni maxxanfama; har'a karoorri kaffaltii gurguramu hin jiru, gatiinis hin himamne. Yeroo maxxanfaman, waliigalteen ji'a 6 fi waggaa gara 5% fi gara 10% ni qusata. Kaffaltiin dhokataan hin jiru.",
+      ti: 'ዓማዊል ዛያ ኩሉ ግዜ ብነጻ ይጥቀሙ። ነጋዶ ብናይ ነጻ መደብ ይጅምሩ — ነጻ — 0 ብር — ንዘልኣለም (ነፍሲ ወከፍ መሸጣ ምምዝጋብ፣ ክምችት ምክትታል፣ ቀሊል መዝገብ ልቓሕ፣ ብሓደ ተሌፎን ይሰርሕ)። ንዓበይቲ ድኳናት ዝኸፍሉ መደባት ክፍሊት ምስ ተኸፍተ ክሕተሙ እዮም፤ ሎሚ ዝሽየጥ ናይ ክፍሊት መደብ የለን ዋጋ እውን ኣይተጠቕሰን። ምስ ተሓትሙ፣ ናይ 6 ወርሕን ናይ ዓመትን ክፍሊት ኣስታት 5% ከምኡውን ኣስታት 10% ክቑጥቡ እዮም። ሕቡእ ክፍሊት የለን።',
     },
   },
   {
@@ -113,57 +132,72 @@ export const ENTRIES = [
   },
   {
     id: 'diaspora',
-    status: 'roadmap',
+    status: 'planned',
     keywords: ['diaspora', 'money transfer', 'send money', 'remittance', 'family', 'abroad', 'basket', 'ገንዘብ መላክ', 'maallaqa erguu'],
     answers: {
-      en: 'ZAYA is NOT a money-transfer service. The diaspora basket — on the roadmap, not yet available — will let you order real goods for your family from a local shop, delivered with proof. No cash is sent.',
-      am: 'ዛያ የገንዘብ ማስተላለፊያ አገልግሎት አይደለም። የዲያስፖራ ቅርጫት — በእቅድ ላይ ያለ፣ ገና ያልተጀመረ — ለቤተሰብዎ እውነተኛ እቃዎችን ከአካባቢ ሱቅ እንዲያዙ ያስችላል።',
-      om: "ZAYA tajaajila maallaqa erguu MITI. Kuusaan diyaaspooraa — karoora irra kan jiru, amma hin jiru — maatii keessaniif meeshaalee dhugaa suuqii naannoo irraa ajajuu isin dandeessisa.",
-      ti: 'ዛያ ኣገልግሎት ምስዳድ ገንዘብ ኣይኮነን። ናይ ዲያስፖራ ዘንቢል — ኣብ መደብ ዘሎ፣ ገና ዘይተጀመረ — ንስድራኹም ካብ ከባቢ ድኳን ኣቑሑ ክትእዝዙ የኽእለኩም።',
+      en: 'ZAYA is NOT a money-transfer service. The diaspora basket is PLANNED — none of it is built — and would let you order real goods for your family from a local shop, delivered with proof. No cash is sent.',
+      am: 'ዛያ የገንዘብ ማስተላለፊያ አገልግሎት አይደለም። የዲያስፖራ ቅርጫት በእቅድ ላይ ነው — ገና ምንም አልተገነባም — ለቤተሰብዎ እውነተኛ እቃዎችን ከአካባቢ ሱቅ እንዲያዙ ያስችላል።',
+      om: "ZAYA tajaajila maallaqa erguu MITI. Kuusaan diyaaspooraa KAROORA irra jira — homtuu hin ijaaramne — maatii keessaniif meeshaalee dhugaa suuqii naannoo irraa ajajuu isin dandeessisa.",
+      ti: 'ዛያ ኣገልግሎት ምስዳድ ገንዘብ ኣይኮነን። ናይ ዲያስፖራ ዘንቢል ኣብ መደብ እዩ — ገና ሓንቲ እውን ኣይተሰርሐን — ንስድራኹም ካብ ከባቢ ድኳን ኣቑሑ ክትእዝዙ የኽእለኩም።',
     },
   },
   {
     id: 'join-pilot',
-    status: 'live',
+    status: 'fact',
     keywords: ['join', 'sign up', 'register', 'merchant', 'shop owner', 'pilot area', 'nifas silk', 'lafto', 'jemo', 'haile garment', 'become', 'how do i', 'መቀላቀል', 'መመዝገብ', 'galmaa\'uu'],
     answers: {
-      en: 'Shop owners in Nifas Silk Lafto (Addis Ababa) can join the pilot now. Reach the team through the contact section below — they will get you set up.',
-      am: 'በንፋስ ስልክ ላፍቶ (አዲስ አበባ) ያሉ የሱቅ ባለቤቶች አሁን ሙከራውን መቀላቀል ይችላሉ። ከታች ባለው የመገናኛ ክፍል በኩል ቡድኑን ያግኙ።',
-      om: "Abbootiin suuqii Nifas Silk Lafto (Finfinnee) keessa jiran amma piilotii seenuun ni danda'u. Kutaa qunnamtii gadii tiin garee keenya qunnamaa.",
-      ti: 'ኣብ ንፋስ ስልክ ላፍቶ (ኣዲስ ኣበባ) ዘለዉ ወነንቲ ድኳን ሕጂ ነቲ ፓይለት ክጽንበሩ ይኽእሉ። በቲ ክፍሊ ርክብ ርኸቡና።',
+      en: 'The merchant pilot is OPENING in Nifas Silk Lafto (Addis Ababa) — it has not started, and no shop is on ZAYA yet. Shop owners there can request early access through the contact section below, and the team will be in touch before it starts.',
+      am: 'የነጋዴ ሙከራው (ፓይለት) በንፋስ ስልክ ላፍቶ (አዲስ አበባ) ሊጀመር ነው — ገና አልተጀመረም፣ ማንም ሱቅ በዛያ ላይ የለም። እዚያ ያሉ የሱቅ ባለቤቶች ከታች ባለው የመገናኛ ክፍል በኩል ቀድመው መጠየቅ ይችላሉ።',
+      om: "Piilotiin daldaltootaa Nifas Silk Lafto (Finfinnee) keessatti ni BANAMA — ammatti hin jalqabne, suuqiin tokko iyyuu ZAYA irra hin jiru. Abbootiin suuqii achi jiran kutaa qunnamtii gadii tiin duraan dursanii gaafachuu ni danda'u.",
+      ti: 'ናይ ነጋዶ ፓይለት ኣብ ንፋስ ስልክ ላፍቶ (ኣዲስ ኣበባ) ክኽፈት እዩ — ገና ኣይተጀመረን፣ ሓንቲ ድኳን እውን ኣብ ዛያ የላን። ኣብኡ ዘለዉ ወነንቲ ድኳን በቲ ኣብ ታሕቲ ዘሎ ክፍሊ ርክብ ኣቐዲሞም ክሓቱ ይኽእሉ።',
     },
   },
   {
     id: 'delivery',
-    status: 'roadmap',
-    keywords: ['delivery', 'deliver', 'rider', 'shipping', 'order online', 'bring', 'ማድረስ', 'ዴሊቨሪ', 'geejjiba'],
+    status: 'built',
+    keywords: ['delivery', 'deliver', 'rider', 'shipping', 'order online', 'bring', 'cod', 'cash on delivery', 'settlement', 'ማድረስ', 'ዴሊቨሪ', 'geejjiba'],
     answers: {
-      en: 'Delivery is on the roadmap — coming with the customer app, not available yet. In the pilot, merchants run their business on ZAYA today; ordering and shop-managed delivery arrive next.',
-      am: 'ማድረስ (ዴሊቨሪ) በእቅድ ላይ ነው — ከደንበኛ አፕ ጋር ይመጣል፣ ገና አልተጀመረም።',
-      om: 'Geejjibni (delivery) karoora irra jira — appii maamilaa waliin dhufa, amma hin jiru.',
-      ti: 'ምብጻሕ (ዴሊቨሪ) ኣብ መደብ እዩ — ምስ ናይ ዓሚል ኣፕ ይመጽእ፣ ገና ኣይተጀመረን።',
+      en: 'Delivery is BUILT and in device testing — not in pilot, not live. A confirmed order is assigned to the shop\'s own deliverer and delivered with the cash collected, or closed with an honest reason; each order settles exactly once, for the shop\'s own order total. Delivery is shop-managed — there is no ZAYA rider product.',
+      am: 'ማድረስ (ዴሊቨሪ) ተገንብቷል — አሁን በመሣሪያዎች ላይ በሙከራ ላይ ነው፤ በሙከራው (ፓይለት) ውስጥም በሥራ ላይም አይደለም። የተረጋገጠ ትዕዛዝ ለሱቁ ራሱ አድራሽ ይሰጣል፣ ገንዘቡ ተሰብስቦ ይደርሳል፣ ወይም በግልጽ ምክንያት ይዘጋል፤ እያንዳንዱ ትዕዛዝ አንድ ጊዜ ብቻ ይወራረዳል። ማድረስ በሱቁ ይመራል — የዛያ አሽከርካሪ ምርት የለም።',
+      om: "Geejjibni IJAARAMEERA, amma meeshaalee irratti qoratamaa jira — piilotii keessa hin jiru, hojii irras hin oolle. Ajajni mirkanaa'e nama geejjibaa suuqichaa mataasaatiif kennama, maallaqni funaanamee ni geeffama, yookaan sababii ifa ta'een ni cufama; ajajni tokko al tokko qofa ni xumurama. Geejjibni suuqichaan bulfama — oomishni konkolaachisaa ZAYA hin jiru.",
+      ti: 'ምብጻሕ (ዴሊቨሪ) ተሰሪሑ — ሕጂ ኣብ መሳርሒታት ይፍተን ኣሎ፤ ኣብ ፓይለት እውን ኣብ ስራሕ እውን ኣይኮነን። ዝተረጋገጸ ትእዛዝ ናብ ናይታ ድኳን ኣብጻሒ ይምደብ፣ ገንዘብ ተኣኪቡ ይብጻሕ፣ ወይ ብቕኑዕ ምኽንያት ይዕጾ፤ ነፍሲ ወከፍ ትእዛዝ ሓንሳብ ጥራይ ይውዳእ። ምብጻሕ ብድኳን ይምራሕ — ናይ ዛያ ኣብጻሒ ፍርያት የለን።',
     },
   },
   {
     id: 'smart-tools',
-    status: 'roadmap',
-    keywords: ['ai', 'smart', 'voice', 'recommendation', 'artificial intelligence', 'assistant features'],
+    status: 'planned',
+    keywords: ['ai', 'smart', 'voice', 'recommendation', 'artificial intelligence', 'assistant features', 'barcode'],
     answers: {
-      en: "Smart tools (like voice features and recommendations) are on ZAYA's roadmap — not available in the pilot. Today's pilot is the essentials done well: sales, stock, credit book and the dashboard.",
-      am: 'ብልጥ መሣሪያዎች በእቅድ ላይ ናቸው — በሙከራው ውስጥ ገና የሉም። የዛሬው ሙከራ መሠረታዊዎቹ ናቸው፦ ሽያጭ፣ ክምችት፣ የብድር ደብተር።',
-      om: "Meeshaaleen ismaartii karoora ZAYA irra jiru — piilotii keessa amma hin jiran.",
-      ti: 'ብልሓታዊ መሳርሒታት ኣብ መደብ እዮም — ኣብቲ ፓይለት ገና የለዉን።',
+      en: "Smart tools — voice features, recommendations and barcode scanning — are PLANNED, not built. What is built and in device testing is the essentials: sales, stock, the credit book, browsing and ordering, and delivery with COD settlement.",
+      am: 'ብልጥ መሣሪያዎች — ድምጽ፣ ምክረ ሐሳብና የባርኮድ ንባብ — በእቅድ ላይ ናቸው፤ ገና አልተገነቡም። የተገነቡትና በሙከራ ላይ ያሉት መሠረታዊዎቹ ናቸው፦ ሽያጭ፣ ክምችት፣ የብድር ደብተር፣ ማሰስና ማዘዝ፣ እንዲሁም ማድረስ።',
+      om: "Meeshaaleen ismaartii — sagalee, gorsaa fi baarkoodii dubbisuu — KAROORA irra jiru, hin ijaaramne. Kan ijaarame fi qoratamaa jiru waan bu'uuraa ti: gurgurtaa, kuusaa, galmee liqii, sakatta'uu fi ajajuu, akkasumas geejjiba.",
+      ti: 'ብልሓታዊ መሳርሒታት — ድምጺ፣ ለበዋን ባርኮድ ምንባብን — ኣብ መደብ እዮም፣ ኣይተሰርሑን። ዝተሰርሑን ዝፍተኑን ዘለዉ እቶም መሰረታውያን እዮም፦ መሸጣ፣ ክምችት፣ መዝገብ ልቓሕ፣ ምድላይን ምእዛዝን፣ ከምኡውን ምብጻሕ።',
     },
   },
   {
     id: 'other-verticals',
-    status: 'roadmap',
+    status: 'planned',
     keywords: ['ride', 'taxi', 'school', 'cctv', 'checkout', 'transport', 'expansion', 'other services'],
     answers: {
-      en: 'Ideas like rides or school services are registered future explorations only — nothing beyond local commerce is offered or promised today. The pilot focus is shops and their customers.',
+      en: 'Ideas like rides or school services are registered future explorations only — nothing beyond local commerce is offered or promised today. The focus is shops and their customers.',
       am: 'እንደ መጓጓዣ ያሉ ሀሳቦች ለወደፊት የተመዘገቡ ብቻ ናቸው — ዛሬ ከአካባቢ ንግድ ውጭ ምንም አገልግሎት የለም።',
       om: "Yaadonni akka geejjibaa gara fuulduraatiif galmaa'an qofa — har'a tajaajilli daldala naannoo ala hin jiru.",
       ti: 'ከም መጓዓዝያ ዝኣመሰሉ ሓሳባት ንመጻኢ ዝተመዝገቡ ጥራይ እዮም — ሎሚ ካብ ንግዲ ከባቢ ወጻኢ ኣገልግሎት የለን።',
+    },
+  },
+  {
+    // R4 (2026-08-23): the honest answer to "does it find shops near me?".
+    // Browse is AREA-anchored (an area the user picks, sent as a query
+    // parameter); the platform holds no shop coordinates at all, so nothing can
+    // be sorted by distance and the assistant must never imply otherwise.
+    id: 'area-not-proximity',
+    status: 'fact',
+    keywords: ['near me', 'close to me', 'my location', 'gps', 'distance', 'how far', 'closest', 'area', 'neighbourhood', 'neighborhood', 'አካባቢ', 'naannoo', 'ከባቢ'],
+    answers: {
+      en: 'ZAYA works by AREA, not by your location. You choose your area and see the shops in it. ZAYA does not read your position and does not hold shop coordinates, so it never sorts shops by how far away they are — sorting by distance is planned, not built.',
+      am: 'ዛያ በአካባቢ ይሠራል እንጂ በአካባቢዎ መገኛ (ሎኬሽን) አይደለም። አካባቢዎን ይመርጣሉ፣ በዚያ ውስጥ ያሉ ሱቆችን ያያሉ። ዛያ ያሉበትን ቦታ አያነብም፣ የሱቆችንም መጋጠሚያ አይይዝም፤ ስለዚህ በርቀት አያስቀምጥም — በርቀት መደርደር በእቅድ ላይ ነው።',
+      om: "ZAYA NAANNOO irratti hundaa'ee hojjeta malee bakka ati jirtu irratti miti. Naannoo kee filattee suuqota achi jiran ilaalta. ZAYA bakka ati jirtu hin dubbisu, teessoo suuqiis hin qabu; kanaaf fageenyaan hin tartiibessu — fageenyaan tartiibessuun karoora irra jira.",
+      ti: 'ዛያ ብኸባቢ እዩ ዝሰርሕ እምበር ብቦታኻ ኣይኮነን። ከባቢኻ ትመርጽ፣ ኣብኡ ዘለዋ ድኳናት ትርኢ። ዛያ ዘለኻዮ ቦታ ኣየንብብን፣ መወከሲ ቦታ ድኳናት እውን ኣይሕዝን፤ ስለዚ ብርሕቀት ኣይሰርዕን — ብርሕቀት ምስራዕ ኣብ መደብ እዩ።',
     },
   },
   {
@@ -179,13 +213,13 @@ export const ENTRIES = [
   },
   {
     id: 'merchant-features',
-    status: 'live',
+    status: 'built',
     keywords: ['features', 'sales', 'stock', 'inventory', 'credit book', 'dashboard', 'record', 'what can', 'ደብተር', 'ሽያጭ', 'gurgurtaa'],
     answers: {
-      en: 'In the pilot today, a merchant on ZAYA records every sale, tracks stock, keeps a simple credit book, and (on bigger plans) gets low-stock alerts, daily summaries, barcode scan and a live supermarket dashboard.',
-      am: 'ዛሬ በሙከራው፣ ነጋዴ በዛያ እያንዳንዱን ሽያጭ ይመዘግባል፣ ክምችት ይከታተላል፣ ቀላል የብድር ደብተር ይይዛል።',
-      om: "Har'a piilotii keessatti, daldalaan ZAYA irratti gurgurtaa hunda galmeessa, kuusaa hordofa, galmee liqii salphaa qabata.",
-      ti: 'ሎሚ ኣብቲ ፓይለት፣ ነጋዳይ ኣብ ዛያ ነፍሲ ወከፍ መሸጣ ይምዝግብ፣ ክምችት ይከታተል፣ ቀሊል መዝገብ ልቓሕ ይሕዝ።',
+      en: 'The merchant tools are BUILT and in device testing: record every sale, track stock, keep a simple credit book, take incoming orders, and assign a delivery and settle its cash once. No shop is running on them yet — nothing is in pilot or live.',
+      am: 'የነጋዴ መሣሪያዎች ተገንብተዋል፤ አሁን በመሣሪያዎች ላይ በሙከራ ላይ ናቸው፦ እያንዳንዱን ሽያጭ መመዝገብ፣ ክምችት መከታተል፣ ቀላል የብድር ደብተር መያዝ፣ የሚገቡ ትዕዛዞችን መቀበል፣ ማድረስ መመደብና ገንዘቡን አንድ ጊዜ ማወራረድ። ገና ማንም ሱቅ በእነሱ ላይ አይሠራም።',
+      om: "Meeshaaleen daldalaa IJAARAMANIIRU, amma meeshaalee irratti qoratamaa jiru: gurgurtaa hunda galmeessuu, kuusaa hordofuu, galmee liqii salphaa qabachuu, ajaja seenu fudhachuu, geejjiba ramaduu fi maallaqa isaa al tokko xumuruu. Suuqiin tokko iyyuu ammatti isaan irratti hin hojjetu.",
+      ti: 'መሳርሒታት ነጋዶ ተሰሪሖም፣ ሕጂ ኣብ መሳርሒታት ይፍተኑ ኣለዉ፦ ነፍሲ ወከፍ መሸጣ ምምዝጋብ፣ ክምችት ምክትታል፣ ቀሊል መዝገብ ልቓሕ ምሓዝ፣ ዝኣትዉ ትእዛዛት ምቕባል፣ ምብጻሕ ምምዳብን ገንዘቡ ሓንሳብ ምውዳእን። ገና ሓንቲ ድኳን እውን ኣይትጥቀመሎምን።',
     },
   },
 ];
@@ -199,5 +233,6 @@ export const TOPIC_WORDS = [
   'diaspora', 'ethiopia', 'addis', 'lafto', 'jemo', 'join', 'register', 'sign',
   'contact', 'language', 'amharic', 'oromo', 'tigrinya', 'birr', 'etb', 'dashboard',
   'supermarket', 'kiosk', 'rider', 'supplier', 'order', 'buy', 'sell',
+  'area', 'location', 'distance', 'settlement',
   'ዛያ', 'ሱቅ', 'ነጋዴ', 'ሽያጭ', 'ዋጋ', 'suuqii', 'daldala', 'gatii', 'ድኳን', 'ንግድ',
 ];

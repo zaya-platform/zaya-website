@@ -42,7 +42,7 @@ const { token } = Astro.props;
 <div id="zassist" data-endpoint="/api/assistant" data-auth={token}>
   <button id="zassist-invite" type="button" data-open-assistant>
     <span aria-hidden="true">&#10022;</span>
-    <span><b>Ask ZAYA AI</b><small>Pilot, plans &amp; product status</small></span>
+    <span><b>Ask ZAYA AI</b><small>Pilot, plans &amp; build status</small></span>
   </button>
   <button id="zassist-fab" type="button" aria-label="Open the ZAYA assistant" aria-expanded="false">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -77,10 +77,10 @@ const { token } = Astro.props;
     <div id="zassist-log" aria-live="polite"></div>
 
     <div class="zassist-chips" id="zassist-chips">
-      <button type="button" data-q="Which merchant tools are live in the pilot?"><span aria-hidden="true">01</span> Live merchant tools</button>
+      <button type="button" data-q="Is ZAYA live yet?"><span aria-hidden="true">01</span> Is ZAYA live yet?</button>
       <button type="button" data-q="What does ZAYA cost for merchants?"><span aria-hidden="true">02</span> Merchant plans</button>
       <button type="button" data-q="How do I join the ZAYA pilot?"><span aria-hidden="true">03</span> Join the pilot</button>
-      <button type="button" data-q="What is on the ZAYA roadmap?"><span aria-hidden="true">04</span> Product roadmap</button>
+      <button type="button" data-q="What smart and voice tools are planned?"><span aria-hidden="true">04</span> What is planned</button>
     </div>
 
     <form id="zassist-form" autocomplete="off">
@@ -202,21 +202,21 @@ const { token } = Astro.props;
   const chips = document.getElementById('zassist-chips');
 
   const GREETINGS = {
-    en: "Selam! I'm the ZAYA assistant. I can help you understand what is live in the pilot, compare merchant plans, or explore what is coming next.",
+    en: "Selam! I'm the ZAYA assistant. I can help you understand what is built, what is planned, and what the merchant plans are. Nothing ZAYA has is in pilot or live yet.",
     am: 'ሰላም! የዛያ ረዳት ነኝ። ስለ ዛያ ወይም ስለ ሙከራው ይጠይቁኝ።',
     om: "Akkam! Ani gargaaraa ZAYA ti. Waa'ee ZAYA na gaafadhaa.",
     ti: 'ሰላም! ናይ ዛያ ሓጋዚ እየ። ብዛዕባ ዛያ ሕተቱኒ።',
   };
   const QUICK = {
     en: [
-      ['Live merchant tools','Which merchant tools are live in the pilot?'],
+      ['Is ZAYA live yet?','Is ZAYA live yet?'],
       ['Merchant plans','What does ZAYA cost for merchants?'],
       ['Join the pilot','How do I join the ZAYA pilot?'],
-      ['Product roadmap','What is on the ZAYA roadmap?'],
+      ['What is planned','What smart and voice tools are planned?'],
     ],
-    am: [['ዛያ ምንድን ነው?','What is ZAYA?'],['የነጋዴ ዋጋ','What does ZAYA cost for merchants?'],['ሙከራውን ይቀላቀሉ','How do I join the ZAYA pilot?'],['የምርት እቅድ','What is on the ZAYA roadmap?']],
-    om: [['ZAYA maali?','What is ZAYA?'],['Gatii daldalaa','What does ZAYA cost for merchants?'],['Pilotitti makamuu','How do I join the ZAYA pilot?'],['Karoora oomishaa','What is on the ZAYA roadmap?']],
-    ti: [['ዛያ እንታይ እዩ?','What is ZAYA?'],['ዋጋ ነጋዳይ','What does ZAYA cost for merchants?'],['ኣብ ፈተነ ተጸንበሩ','How do I join the ZAYA pilot?'],['መደብ ፍርያት','What is on the ZAYA roadmap?']],
+    am: [['ዛያ ምንድን ነው?','What is ZAYA?'],['የነጋዴ ዋጋ','What does ZAYA cost for merchants?'],['ሙከራውን ይቀላቀሉ','How do I join the ZAYA pilot?'],['በእቅድ ላይ ያሉት','What smart and voice tools are planned?']],
+    om: [['ZAYA maali?','What is ZAYA?'],['Gatii daldalaa','What does ZAYA cost for merchants?'],['Pilotitti makamuu','How do I join the ZAYA pilot?'],['Kan karoorfaman','What smart and voice tools are planned?']],
+    ti: [['ዛያ እንታይ እዩ?','What is ZAYA?'],['ዋጋ ነጋዳይ','What does ZAYA cost for merchants?'],['ኣብ ፈተነ ተጸንበሩ','How do I join the ZAYA pilot?'],['ኣብ መደብ ዘለዉ','What smart and voice tools are planned?']],
   };
   const SOURCE_LABELS = { kb: 'Verified ZAYA knowledge', rule: 'ZAYA guidance', model: 'AI · grounded answer', handoff: 'Human follow-up recommended' };
 

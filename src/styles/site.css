@@ -75,8 +75,10 @@
   .drop a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;font-size:var(--fs-ui);font-weight:500;color:var(--ink)}
   .drop a:hover{background:var(--cloud)}
   .drop a .st{font-size:var(--fs-ui-2xs);font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:var(--pill);white-space:nowrap}
-  .st.live{color:var(--status-live);background:#E4F5F4} .st.launch{color:var(--status-launching);background:#FFF1E8}
-  .st.road{color:var(--status-roadmap);background:#EEEBFB} .st.soon{color:var(--status-future);background:#F1F3F5}
+  /* ONE LABELLING AXIS: Planned -> Built (in device testing) -> In pilot -> Live.
+     Colour/ground pairs are the previously-verified ones, re-pointed by name. */
+  .st.live{color:var(--status-live);background:#E4F5F4} .st.pilot{color:var(--status-pilot);background:#FFF1E8}
+  .st.built{color:var(--status-built);background:#EEEBFB} .st.planned{color:var(--status-planned);background:#F1F3F5}
   .nav .cta{margin-left:6px}
   /* hamburger (mobile/tablet only) */
   .burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;flex:none;
@@ -87,8 +89,22 @@
   .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   .btn{display:inline-flex;align-items:center;gap:9px;font-family:inherit;font-weight:650;font-size:var(--fs-ui);border-radius:var(--pill);
     padding:11px 20px;border:1.5px solid transparent;cursor:pointer;transition:.2s;white-space:nowrap}
-  .btn-primary{background:var(--coral);color:#fff;box-shadow:0 8px 20px -6px rgba(255,122,69,.5)}
-  .btn-primary:hover{background:var(--coral-deep);transform:translateY(-2px);box-shadow:0 12px 26px -6px rgba(255,122,69,.55)}
+  /* P1b-1 CONTRAST, 2026-08-23. The label was #fff on --coral: MEASURED 2.59:1
+     against the AA bar of 4.5:1 for normal text, at 14px/650 which is nowhere
+     near the 18.66px-bold large-text allowance. Fixed by changing the ROLE of
+     the two colours, not by inventing a colour: the ground stays EXACTLY the
+     brand --coral the founder signed, and the ink becomes --navy, which is
+     already a brand token and already the page's body ink. MEASURED 5.47:1.
+     No new hex enters the palette.
+     WHY THE HOVER NO LONGER DARKENS: it used to swap the ground to
+     --coral-deep. With a dark label that darkening cuts the ratio to a
+     MEASURED 4.40:1 — under the bar. A dark label wants a LIGHTER hover and
+     there is no lighter coral token, so the hover keeps the same ground and
+     is carried by the lift and the deeper shadow it already had. The state is
+     still obvious; it is no longer obvious at the cost of the label.
+     --coral-deep is untouched and still used elsewhere. */
+  .btn-primary{background:var(--coral);color:var(--navy);box-shadow:0 8px 20px -6px rgba(255,122,69,.5)}
+  .btn-primary:hover{background:var(--coral);transform:translateY(-2px);box-shadow:0 14px 30px -8px rgba(240,99,47,.62)}
   .btn-ghost{background:#fff;color:var(--navy);border-color:var(--line)}
   .btn-ghost:hover{border-color:var(--teal);color:var(--teal-deep)}
   .btn .ar{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2}
@@ -199,7 +215,9 @@
 .fstep{flex:1;min-width:138px;max-width:200px;text-align:center;padding:8px}
 .fstep .fn{width:58px;height:58px;border-radius:18px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--teal),var(--teal-deep));box-shadow:0 10px 22px -8px rgba(11,139,138,.5);position:relative}
 .fstep .fn svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.8}
-.fstep .fn .num{position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;background:var(--coral);color:#fff;font-size:var(--fs-ui-xs);font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+/* Same white-on-coral defect as the primary button, same MEASURED 2.59:1, same
+   fix: the numeral takes --navy on the unchanged brand coral. 5.47:1. */
+.fstep .fn .num{position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;background:var(--coral);color:var(--navy);font-size:var(--fs-ui-xs);font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
 /* BESPOKE (.fstep p): the flow captions sit in the narrowest text column on the
    site, and the row reads as a balanced sequence of equal-height steps. The
    next step up the chrome ramp tips the first caption onto an extra line while
@@ -236,12 +254,25 @@
 .foot .fcol a:hover{color:#fff}
 .foot .fabout p{font-size:var(--fs-ui);margin-top:14px;max-width:34ch;color:rgba(255,255,255,.6)}
 .foot-base{border-top:1px solid rgba(255,255,255,.12);margin-top:38px;padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:var(--fs-ui-sm)}
+/* Footer legend for the ONE labelling axis. The chip tokens are tuned for pale
+   chip grounds and go dark-on-dark here, so the legend has its own light set —
+   same four rungs, same order, low->high. */
+.foot-base .lg{font-weight:700;white-space:nowrap}
+.foot-base .lg.planned{color:rgba(255,255,255,.62)}
+.foot-base .lg.built{color:#b3a8f2}
+.foot-base .lg.pilot{color:#F4A261}
+.foot-base .lg.live{color:var(--mint)}
+.foot-base .lg-note{color:rgba(255,255,255,.62);font-weight:500}
 @media(max-width:940px){.pain-grid,.contact-cards{grid-template-columns:1fr 1fr}.ben-grid{grid-template-columns:1fr}.love-grid,.foot-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.pain-grid,.contact-cards{grid-template-columns:1fr}}
 
 
 [id]{scroll-margin-top:96px}
 .priceg{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:8px}
+/* The three paid tiers are WITHDRAWN until billing exists (R2). One card left,
+   so the four-column track would strand it in a narrow left-hand column. */
+.priceg.one{grid-template-columns:minmax(0,420px);justify-content:center}
+.paid-line{text-align:center;color:var(--ink-soft);font-size:var(--fs-ui);margin-top:22px}
 .pcard{border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 24px;background:#fff;display:flex;flex-direction:column;position:relative;box-shadow:var(--sh-sm)}
 .pcard.pfeat{border-color:var(--teal);box-shadow:0 0 0 2px rgba(19,183,180,.22),var(--sh-md)}
 .pcard .ptag{position:absolute;top:-11px;left:24px;background:var(--teal-deep);color:#fff;font-size:var(--fs-ui-xs);font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:var(--pill)}
@@ -249,7 +280,7 @@
 /* BESPOKE: the price figure is the single largest thing on a pricing card by
    design — it outranks the card title deliberately. No chrome step is meant to
    be this big, and putting it on a heading step would tie it to page headings. */
-.pcard .pp{font-size:32px;font-weight:800;margin:12px 0 2px;letter-spacing:-.02em;color:var(--navy)}
+.pcard .pp{font-size:32px;font-weight:800;margin:12px 0 2px;letter-spacing:-.02em;color:var(--navy);line-height:1.14;text-wrap:balance}
 .pcard .pp small{font-size:var(--fs-ui-sm);font-weight:500;color:var(--ink-soft)}
 .pcard .pd{font-size:var(--fs-ui);color:var(--ink-soft);margin-bottom:18px;min-height:38px}
 .pcard ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
@@ -261,36 +292,55 @@
 @media(max-width:560px){.priceg{grid-template-columns:1fr}}
 
 
-/* ===== photos ===== */
-.pframe{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-md);margin-top:22px;aspect-ratio:4/3;background:var(--cloud)}
-.pframe img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
-.pframe:hover img{transform:scale(1.05)}
-.pframe::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(16,35,63,.55));pointer-events:none}
-.pframe .cap{position:absolute;left:16px;bottom:13px;z-index:2;color:#fff;font-weight:650;font-size:13.5px;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+/* ===== reference screens (R3, 2026-08-23) =====
+   This block replaces the photo mosaic (.pframe/.shot/.mosaic and its Ken Burns
+   pans) that carried the eight AI photographs. Those rules are DELETED, not left
+   dead: their only markup is gone, and CSS that styles nothing invites someone
+   to re-add the markup to "use" it.
+
+   THE ONE RULE HERE: never scale a screen up. These baselines are 360x800 at
+   DPR 1.0 and there is no 2x asset, so the images are capped at their natural
+   width and centred. `width:100%` with a 360px cap means they only ever shrink,
+   never stretch. No object-fit:cover anywhere near them — a cover crop on a
+   screenshot is exactly the "crop to flatter" this pass refuses. */
 .showcase{background:linear-gradient(180deg,#F6FBFB,#fff)}
-.mosaic{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
-.shot{position:relative;border-radius:var(--r-md);overflow:hidden;box-shadow:var(--sh-sm);aspect-ratio:3/4}
-.shot img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
-.shot:hover img{transform:scale(1.08)}
-.shot::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,rgba(16,35,63,.80))}
-.shot .cap{position:absolute;left:15px;right:12px;bottom:14px;z-index:2;color:#fff;font-weight:650;font-size:var(--fs-ui);line-height:1.25}
-.shot .cap span{display:block;font-size:var(--fs-ui-xs);font-weight:500;color:rgba(255,255,255,.82);margin-top:3px}
-.shot .tagpin{position:absolute;top:11px;left:11px;z-index:2;font-size:var(--fs-ui-2xs);font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 8px;border-radius:var(--pill);background:rgba(255,255,255,.93);color:var(--teal-deep)}
-@media(max-width:860px){.mosaic{grid-template-columns:1fr 1fr}}
-@media(max-width:520px){.mosaic{grid-template-columns:1fr}.shot{aspect-ratio:4/3}}
+/* ONE SCREEN PER ROW, not a tiled wall. Two 360px images side by side plus a
+   caption column needs about 780px; squeezing three cards across a 1200px page
+   would render each baseline at roughly 140px, i.e. 39% of the size it was
+   recorded at, where the type is a texture rather than words. A product proof
+   nobody can read is decoration. Rows are taller; the screens are legible. */
+.screens{list-style:none;margin:30px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:20px}
+.screen{background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:20px;box-shadow:var(--sh-sm);display:grid;grid-template-columns:auto minmax(220px,1fr);gap:30px;align-items:center}
+.screen-pair{display:flex;gap:14px;justify-content:flex-start;align-items:flex-start}
+.screen-pair figure{margin:0;flex:0 1 360px;min-width:0;text-align:center}
+.screen-pair img{display:block;width:100%;max-width:360px;height:auto;margin:0 auto;border-radius:10px;border:1px solid var(--line);background:var(--cloud)}
+.screen-pair figcaption{margin-top:7px;font-size:var(--fs-ui-xs);font-weight:650;color:var(--ink-soft);letter-spacing:.02em}
+.screen-cap b{display:block;font-size:var(--fs-h-2xs);line-height:var(--lh-h-2xs);letter-spacing:var(--ls-h-2xs);color:var(--navy)}
+.screen-cap span{display:block;margin-top:8px;font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.55}
+.screens-scale{margin-top:40px;padding:26px;border:1px solid var(--line);border-radius:var(--r-md);background:#fff}
+.screens-scale h3{font-size:var(--fs-h-2xs);line-height:var(--lh-h-2xs);letter-spacing:var(--ls-h-2xs);color:var(--navy);margin:0}
+.screens-scale>p{margin:8px 0 20px;font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.6;max-width:70ch}
+.screen-pair.four{flex-wrap:wrap;gap:18px;justify-content:center}
+.screen-pair.four figure{flex:1 1 220px;max-width:360px}
+.screens-note{margin-top:34px;padding:24px 26px;border-radius:var(--r-md);background:var(--cloud);border:1px solid var(--line)}
+.screens-note h3{font-size:var(--fs-ui-lg);color:var(--navy);margin:0 0 10px;line-height:1.35}
+.screens-note ol{margin:0 0 14px;padding-left:20px}
+.screens-note li{font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.6;margin-bottom:8px}
+.screens-note li b{color:var(--navy)}
+.screens-note p{font-size:var(--fs-ui);color:var(--ink-soft);line-height:1.6;margin:0 0 8px;max-width:78ch}
+.screens-note code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.screens-lang{margin-bottom:0!important}
+@media(max-width:980px){
+  /* below the width two 360px screens + a caption column need, the caption
+     moves under the pair rather than the screens shrinking to fit it. */
+  .screen{grid-template-columns:1fr;gap:20px}
+  .screen-pair{justify-content:center}
+}
+@media(max-width:520px){
+  .screen-pair figure{flex:1 1 45%}
+  .screens-scale,.screens-note{padding:20px 16px}
+}
 
-
-/* ===== elevated photo interactions ===== */
-@keyframes kb1{0%{transform:scale(1.02) translate(0,0)}100%{transform:scale(1.14) translate(-2.5%,-2%)}}
-@keyframes kb2{0%{transform:scale(1.14) translate(1.5%,1%)}100%{transform:scale(1.02) translate(0,0)}}
-.shot img{animation:kb1 16s ease-in-out infinite alternate}
-.shot:nth-child(2n) img{animation-name:kb2;animation-duration:19s}
-.shot:hover img{transform:none}
-.shot::after{transition:opacity .35s}
-.shot:hover::after{opacity:.88}
-.shot .cap{transition:transform .35s var(--ease)}
-.shot:hover .cap{transform:translateY(-3px)}
-.shot,.pframe{cursor:zoom-in}
 /* Scroll-reveal — enabled ONLY when JS is present (html.js is set inline in
    <head> before first paint). If JS is disabled or the bundle fails to load,
    the class never appears and the full static page renders — no blank space.
@@ -308,16 +358,16 @@ html.js .reveal-seq.in>*:nth-child(5){transition-delay:.20s}
 html.js .reveal-seq.in>*:nth-child(6){transition-delay:.25s}
 html.js .reveal-seq.in>*:nth-child(n+7){transition-delay:.30s}
 /* lightbox */
-.lb{position:fixed;inset:0;z-index:200;background:rgba(11,20,40,.92);display:none;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(6px)}
-.lb.open{display:flex;animation:lbin .3s ease}
-@keyframes lbin{from{opacity:0}to{opacity:1}}
-.lb img{max-width:92vw;max-height:82vh;border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.55)}
-.lb .lbcap{position:absolute;bottom:5%;left:0;right:0;text-align:center;color:#fff;font-weight:600;font-size:var(--fs-ui-lg);text-shadow:0 1px 8px rgba(0,0,0,.5)}
-/* BESPOKE: this is a glyph used as an icon (the lightbox close cross), sized
-   to its 46px hit target, not to any text ramp. */
-.lb .lbx{position:absolute;top:20px;right:26px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;border:0;font-size:24px;line-height:1;cursor:pointer;transition:.2s}
-.lb .lbx:hover{background:rgba(255,255,255,.28)}
-@media(prefers-reduced-motion:reduce){.shot img,.shot:nth-child(2n) img{animation:none!important}html.js .reveal,html.js .reveal-seq>*{opacity:1!important;transform:none!important;transition:none!important}.drop{transition:none}}
+/* The photo LIGHTBOX is removed with the photos it opened (R3, 2026-08-23).
+   .lb/.lbx/.lbcap and the lbin keyframe are deleted along with their markup and
+   their handler in src/scripts/site.js. It was click-only — no keyboard path,
+   no Escape, no focus trap — so this is a small accessibility gain too. */
+/* The Ken Burns pan this used to neutralise (.shot img / .shot:nth-child(2n) img)
+   no longer exists — the photos it panned are gone, so the animation is gone and
+   there is nothing left to switch off. The reveal + dropdown clauses stay, and
+   the reference screens are deliberately given NO motion of any kind, which is
+   the same outcome by construction rather than by override. */
+@media(prefers-reduced-motion:reduce){html.js .reveal,html.js .reveal-seq>*{opacity:1!important;transform:none!important;transition:none!important}.drop{transition:none}}
 
 /* ---- Netlify Forms pilot form ---- */
 .pilot-form{max-width:620px;margin:26px auto 0;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh-sm);display:flex;flex-direction:column;gap:14px}
@@ -351,17 +401,37 @@ html.js .reveal-seq.in>*:nth-child(n+7){transition-delay:.30s}
 ::selection{background:rgba(19,183,180,.22);color:var(--navy)}
 body{overflow-x:hidden;background:#f8fbfb}
 button{font:inherit}
-:where(a,button,input,textarea,select):focus-visible{outline:3px solid rgba(255,122,69,.55);outline-offset:3px}
+/* P1b-2 FOCUS RING, 2026-08-23. The ring was rgba(255,122,69,.55) — a 55%
+   coral wash. Composited over the grounds it is actually painted on, MEASURED
+   from screenshot pixels: 1.72:1 on the near-white header/hero ground, 1.37:1
+   on the --line ground inside the nav dropdown, 2.27:1 on the navy pilot strip.
+   The bar for a focus indicator (WCAG 1.4.11) is 3:1. It failed everywhere —
+   it was not a weak ring, it was an invisible one.
+   FIXED by making it OPAQUE and dark rather than by inventing a colour: the
+   ring is --navy, already a brand token. MEASURED 14.14:1 on white, 13.13:1 on
+   --cloud, 11.48:1 on --line, 5.47:1 where it grazes the coral button.
+   The offset drops 3px -> 2px so the ring reads as attached to its control.
+   THE DARK GROUNDS ARE HANDLED SEPARATELY, because a navy ring on navy is
+   1:1 — exactly the failure being fixed, in the other direction. On the pilot
+   strip and in the footer the same ring is white: MEASURED 14.14:1 on --navy.
+   :where() keeps specificity at zero so any component can still override. */
+:where(a,button,input,textarea,select,summary,[tabindex]):focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.pilot-strip :where(a,button):focus-visible,
+.foot :where(a,button):focus-visible{outline-color:#fff}
+/* The skip link paints itself navy-on-white, so its ring goes white-on-navy for
+   the same reason. It is the FIRST thing a keyboard user reaches; an invisible
+   ring there is an invisible front door. */
+.skip-link:focus-visible{outline-color:#fff;outline-offset:-5px}
 
 .site-header{background:rgba(255,255,255,.9);box-shadow:0 1px 0 rgba(30,42,74,.06);backdrop-filter:blur(18px) saturate(1.35)}
 .pilot-strip{background:linear-gradient(90deg,#14213d,var(--navy) 46%,#123f48);color:#fff;font-size:var(--fs-ui-xs);letter-spacing:.01em}
 .pilot-strip-in{height:34px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .pilot-strip-in>span{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.78)}
-.pilot-strip-in i{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px rgba(93,202,165,.14);animation:pilotPulse 2.2s ease-out infinite}
+/* The pulsing mint "live" dot is GONE with the "Merchant pilot live" claim it
+   decorated — a breathing green dot is a status claim of its own. */
 .pilot-strip-in b{color:#fff;font-weight:700}
 .pilot-strip-in a{color:var(--mint);font-weight:650;transition:color .2s}
 .pilot-strip-in a:hover{color:#fff}
-@keyframes pilotPulse{0%{box-shadow:0 0 0 0 rgba(93,202,165,.42)}70%,100%{box-shadow:0 0 0 8px rgba(93,202,165,0)}}
 
 .nav{height:72px;gap:22px}
 .lock .mk{width:58px;height:58px}
@@ -488,7 +558,10 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .trust-rail-in>div{padding:0 26px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:1px}
 .trust-rail-in>div:first-child{padding-left:0}.trust-rail-in>div:last-child{border-right:0}
 .trust-rail span{font-size:var(--fs-ui-2xs);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);font-weight:650}
-.trust-rail b{font-size:var(--fs-ui-lg);color:var(--navy)}
+.trust-rail b{font-size:var(--fs-ui-lg);color:var(--navy);line-height:1.25}
+/* An axis label is a phrase, not a two-word stat — it needs the chrome size, or
+   it wraps to three lines inside a quarter-width rail cell. */
+.trust-rail b.axis{font-size:var(--fs-ui);font-weight:700;color:var(--status-built)}
 
 .role-section{padding:100px 0;background:linear-gradient(180deg,#fff,#f6fbfb)}
 .role-heading{display:grid;grid-template-columns:1.2fr .8fr;gap:70px;align-items:end;margin-bottom:38px}
@@ -508,10 +581,29 @@ html.js .hero .copy>.hero-proof{animation-delay:.37s}
 .role-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 58%,rgba(15,29,54,.55));pointer-events:none}
 .role-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease)}
 .role-pane:hover .role-media img{transform:scale(1.035)}
-.role-status{position:absolute;z-index:2;top:22px;left:22px;border-radius:var(--pill);padding:7px 11px;font-size:var(--fs-ui-2xs);font-weight:750;text-transform:uppercase;letter-spacing:.08em;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(16,35,63,.14)}
+/* R3(b): the panel now holds a real 360x800 screenshot, not a photograph. Three
+   things the photo treatment did are wrong for a screenshot and are switched
+   off here: object-fit:cover CROPS it, the ::after gradient TINTS it, and the
+   hover scale UPSCALES it. All three would be doctoring. The screen is
+   contained, untinted, unscaled, and never wider than the 360px it was
+   recorded at. */
+.role-media.is-screen{display:grid;place-items:center;padding:28px 20px;background:linear-gradient(180deg,#eef5f6,#f7fbfb)}
+.role-media.is-screen::after{content:none}
+.role-media.is-screen img{width:auto;max-width:min(100%,360px);height:auto;max-height:min(100%,600px);object-fit:contain;border-radius:12px;border:1px solid var(--line);box-shadow:0 18px 44px -26px rgba(16,35,63,.5);transition:none}
+.role-pane:hover .role-media.is-screen img{transform:none}
+/* Nothing of the diaspora basket is built, so there is no screen and the panel
+   says so rather than borrowing a picture of something else. */
+.role-media.is-empty{display:grid;align-content:center;padding:34px 26px;background:repeating-linear-gradient(135deg,#f2f5f7,#f2f5f7 12px,#eef2f5 12px,#eef2f5 24px)}
+.role-media.is-empty::after{content:none}
+.role-empty{margin:0;font-size:var(--fs-ui-lg);font-weight:650;color:var(--navy);line-height:1.4;max-width:32ch}
+.role-empty span{display:block;margin-top:10px;font-size:var(--fs-ui);font-weight:400;color:var(--ink-soft);line-height:1.55}
+/* Not uppercased any more: the axis labels are phrases ("Built — in device
+   testing"), and uppercase + .08em tracking made them overflow the media pill. */
+.role-status{position:absolute;z-index:2;top:22px;left:22px;max-width:calc(100% - 44px);border-radius:var(--pill);padding:7px 11px;font-size:var(--fs-ui-2xs);font-weight:750;letter-spacing:.02em;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(16,35,63,.14)}
 .role-status.live{background:rgba(234,251,247,.94);color:var(--status-live)}
-.role-status.launch{background:rgba(255,241,232,.94);color:var(--status-launching)}
-.role-status.road{background:rgba(238,235,251,.94);color:var(--status-roadmap)}
+.role-status.pilot{background:rgba(255,241,232,.94);color:var(--status-pilot)}
+.role-status.built{background:rgba(238,235,251,.94);color:var(--status-built)}
+.role-status.planned{background:rgba(241,243,245,.94);color:var(--status-planned)}
 .role-copy{padding:clamp(34px,5vw,68px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
 .role-kicker{font-size:var(--fs-ui-xs);font-weight:750;letter-spacing:.11em;text-transform:uppercase;color:var(--teal-deep)}
 .role-copy h3{font-size:var(--fs-h-sm);line-height:1.04;letter-spacing:var(--ls-h-sm);margin-top:13px;max-width:14ch}
@@ -530,8 +622,6 @@ section{padding:88px 0}
 .showcase{background:#fff}
 .sec-head{max-width:700px;margin-bottom:46px}
 .sec-head h2{font-size:var(--fs-h);line-height:1.05;letter-spacing:var(--ls-h)}
-.mosaic{gap:18px}
-.shot{border-radius:22px;box-shadow:0 18px 48px -24px rgba(16,35,63,.36)}
 .cards{gap:18px}
 .card{border-color:rgba(30,42,74,.08);border-radius:22px;box-shadow:0 10px 34px -28px rgba(16,35,63,.45)}
 .card:hover{transform:translateY(-6px);box-shadow:0 26px 60px -32px rgba(11,139,138,.5)}
@@ -604,9 +694,15 @@ section{padding:88px 0}
   .nav{height:66px}
   .menu{top:98px;max-height:calc(100dvh - 98px)}
   .nav>.cta{display:none}
-  /* Compact the mobile hero so the WHOLE ring clears the fold on ~360x640: header +
-     copy + ring must fit one screen. Chips are hidden (roles live in the nav "For you"
-     menu); the sub clamps to 2 lines; the ring is capped against remaining height. */
+  /* Compact the mobile hero on ~360x640: header + copy + ring should sit close
+     to one screen. Chips are hidden (roles live in the nav "For you" menu) and
+     the ring is capped against remaining height.
+     THE SUB NO LONGER CLAMPS — see the .hero .sub rule below. The old note here
+     said "the sub clamps to 2 lines" and that WAS the accessibility defect: the
+     ring clearing the fold was being paid for with the reader's sentence. The
+     ring may now start below the fold on the smallest phones. That is the
+     correct trade: a fold is a layout preference, a truncated value proposition
+     is a WCAG failure. */
   .hero-in{padding:16px 16px 22px;gap:16px}
   /* responsive override, REQUIRED on small phones. Without it the headline takes
      an extra line and the block grows enough to eat the vertical budget the note
@@ -614,7 +710,21 @@ section{padding:88px 0}
      overflow — max-width:20ch cannot overflow its container.
      NO NUMBERS ON PURPOSE: see the note on the override above. */
   .hero h1{font-size:clamp(30px,7.4vw,40px);line-height:1.06;max-width:20ch}
-  .hero .sub{font-size:13.5px;line-height:1.5;max-width:44ch;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  /* P1b-4 REFLOW, 2026-08-23. This rule used to end with
+     `display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+     overflow:hidden`. MEASURED at 390x844: the paragraph needs 4 line boxes and
+     81px, the clamp gave it 41px, and the last two lines — including the words
+     "in one trusted local-commerce network" — were CUT, with no way to reveal
+     them. The same rule fires at 640px and therefore at 200% browser zoom of a
+     1280px window (which is a 640px CSS viewport), so the site's single most
+     important sentence was truncated for anyone who zooms. That is WCAG 1.4.4
+     Resize Text, and it is not fixable by scrolling because the overflow is
+     hidden, not scrollable.
+     The clamp is GONE. The paragraph reflows. The size floor is also raised
+     from 13.5px to 15px: 13.5px was chosen to make two clamped lines hold more
+     words, and with no clamp there is no reason to keep body copy that small on
+     the phones this site is built for. */
+  .hero .sub{font-size:15px;line-height:1.55;max-width:44ch}
   .hero .who{display:none}
   .hero-proof{display:grid;gap:8px}
   .hubwrap{width:min(92vw,42vh)}
@@ -634,7 +744,166 @@ section{padding:88px 0}
   .pilot-form{padding:23px}
 }
 @media(prefers-reduced-motion:reduce){
-  .pilot-strip-in i,.role-pane,.lock .mk,html.js .hero .copy>*{animation:none!important}
+  .role-pane,.lock .mk,html.js .hero .copy>*{animation:none!important}
   .lock .mk .rr{animation:none!important;opacity:0}
   .hubwrap{transition:none!important;transform:none!important}
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE NAME — the ZAYA backronym block (founder request, 2026-08-23)
+   Markup: the `.zmean` section in src/pages/index.astro.
+
+   APPENDED AT THE END OF THE FILE ON PURPOSE. Two separate passes on this
+   stylesheet have now been bitten by the same fault — a later unconditional
+   rule at equal specificity silently beating an earlier one (the dead spacing
+   wiring; the mobile menu link that rendered at 14px while two declarations
+   said 16px). Nothing follows this block, so nothing can beat it.
+
+   ── ZERO JAVASCRIPT, BY CONSTRUCTION ──────────────────────────────────────
+   The letter picker is four native radios (visually hidden) driven by
+   `:checked ~` sibling selectors. There is no script, no island, no `html.js`
+   gate and no `.reveal` class anywhere in this section, so:
+     · with JS disabled it behaves IDENTICALLY — the radios and the sibling
+       selectors are the whole mechanism;
+     · no pillar is ever injected. All four <article>s are in the SSR HTML;
+     · a bundle load/parse failure cannot trap this content hidden, because no
+       bundle is involved.
+   Native radios also give the keyboard behaviour for free and correctly:
+   one tab stop for the group, Arrow keys move AND select with wrap-around,
+   Home/End jump to the ends, and AT announces "radio button, n of 4" against
+   a <fieldset>/<legend> group name. Re-implementing that in JS would be more
+   code doing the same thing worse.
+
+   ── CONTRAST, MEASURED (sRGB, WCAG 2.x formula) ───────────────────────────
+   Ground is `.band-navy`'s gradient. Its three stops have relative luminance
+   #1E2A4A 0.02426 · #16223f 0.01732 · #0e3a3f 0.03478, so #1E2A4A is the
+   LIGHTEST and every ratio below is quoted against it — the worst case. On the
+   other two stops each figure is higher.
+     TEXT (bar 4.5:1 — everything here is small text, so no 3:1 large-text
+     allowance is claimed anywhere):
+       white on the band ......................... 14.14:1   h2, letter glyphs
+       rgba(255,255,255,.82) on the band ......... 10.01:1   lead + closing note
+       --mint on the band ......................... 7.04:1   eyebrow, legend
+       white on an unselected tile (white .08
+         composited over the band = #303B58) ..... 11.10:1   letter glyph
+       rgba(255,255,255,.82) on that same tile .... 8.09:1   pillar word
+       --navy on a selected tile (white) ......... 14.14:1   letter glyph
+       --ink-soft on a selected tile (white) ...... 6.24:1   pillar word
+       --navy on the white panel ................. 14.14:1   panel h3
+       --ink on the white panel .................. 14.14:1   panel sentence
+       --ink-soft on the white panel .............. 6.24:1   evidence line
+       --status-built on its own chip (#EEEBFB) ... 6.07:1   the axis chip
+     NON-TEXT (bar 3:1):
+       selected tile (white) vs the band ......... 14.14:1   THE selection
+                                                             indicator: the
+                                                             tile inverts, so
+                                                             selection is not
+                                                             carried by hue
+       unselected tile border (white .38) vs band . 3.35:1
+       white panel vs the band ................... 14.14:1
+       focus ring (white) vs the band ............ 14.14:1
+   DELIBERATELY NOT USED: --teal-deep as label ink (4.14:1 on white) and white
+   on --teal-deep (4.14:1). Both are on tokens.css's KNOWINGLY STILL FAILING
+   list; this section adds no new instance of either. --coral appears only as
+   the .eyebrow's decorative dot, which carries no information.
+
+   THE FOCUS RING. The site ring is `outline:3px solid var(--navy)`, which is
+   1:1 on this band — the exact failure the P1b ring fix was written to end,
+   in the other direction. It goes white here, the same treatment
+   .pilot-strip and .foot already have. The ring is drawn on the LABEL (the
+   radio itself is clipped to nothing), and `outline-offset:3px` keeps a band-
+   coloured gap between tile and ring, so the ring is measured against the
+   band on both sides even when the tile underneath is white.
+
+   TOKENS ONLY — no new colour, no new size. --fs-h-xs gets its first consumer
+   here; tokens.css records that it was still owed one.
+   ══════════════════════════════════════════════════════════════════════════ */
+.zmean{position:relative;overflow:hidden}
+.zmean .sec-head{max-width:760px}
+
+.zmean-x{border:0;padding:0;margin:0;min-inline-size:0;position:relative}
+.zmean-x>legend{display:block;width:100%;padding:0;margin:0 0 16px;text-align:center;
+  font-size:var(--fs-ui-xs);font-weight:750;letter-spacing:.11em;text-transform:uppercase;color:var(--mint)}
+
+/* Clipped to nothing, never display:none — a display:none radio is not
+   focusable and the keyboard group would disappear with it. The outline is
+   dropped here ONLY because it is redrawn, larger, on the label below; this is
+   not a bare outline:0. */
+.zmean-radio{position:absolute;top:0;left:0;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.zmean-radio:focus-visible{outline:0}
+
+/* Four columns at every width, so the row keeps reading as the word ZAYA. */
+.zmean-letters{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);max-width:920px;margin:0 auto}
+.zmean-letter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);
+  padding:clamp(14px,2.2vw,26px) var(--sp-2);border-radius:var(--r-md);cursor:pointer;text-align:center;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.38);color:#fff;
+  transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),transform var(--dur-fast) var(--ease)}
+/* A letter glyph is isolated, so the scale's optical negative tracking would
+   only shave its right side bearing. The size comes from the token; the
+   tracking is reset for that reason and no other. */
+.zmean-letter .zl{font-size:var(--fs-h-lg);line-height:var(--lh-h-lg);letter-spacing:0;font-weight:800}
+.zmean-letter .zn{font-size:var(--fs-ui-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.82)}
+.zmean-letter:hover{background:rgba(255,255,255,.16);transform:translateY(-2px)}
+
+#zmean-z:checked~.zmean-letters [for="zmean-z"],
+#zmean-a1:checked~.zmean-letters [for="zmean-a1"],
+#zmean-y:checked~.zmean-letters [for="zmean-y"],
+#zmean-a2:checked~.zmean-letters [for="zmean-a2"]{background:#fff;border-color:#fff;color:var(--navy);transform:none}
+#zmean-z:checked~.zmean-letters [for="zmean-z"] .zn,
+#zmean-a1:checked~.zmean-letters [for="zmean-a1"] .zn,
+#zmean-y:checked~.zmean-letters [for="zmean-y"] .zn,
+#zmean-a2:checked~.zmean-letters [for="zmean-a2"] .zn{color:var(--ink-soft)}
+
+#zmean-z:focus-visible~.zmean-letters [for="zmean-z"],
+#zmean-a1:focus-visible~.zmean-letters [for="zmean-a1"],
+#zmean-y:focus-visible~.zmean-letters [for="zmean-y"],
+#zmean-a2:focus-visible~.zmean-letters [for="zmean-a2"]{outline:3px solid #fff;outline-offset:3px}
+
+/* All four panels share ONE grid cell, so the stage is always as tall as the
+   tallest pillar and switching letters shifts nothing on the page. Hidden
+   panels use visibility, not display, for the same reason — and visibility
+   also keeps them out of the tab order and out of the a11y tree. */
+.zmean-stage{display:grid;max-width:920px;margin:var(--sp-5) auto 0}
+.zmean-panel{grid-area:1/1;background:#fff;color:var(--ink);border-radius:var(--r-lg);
+  padding:clamp(22px,3vw,34px);box-shadow:var(--sh-sm);
+  opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility 0s linear var(--dur)}
+#zmean-z:checked~.zmean-stage [data-zmean="z"],
+#zmean-a1:checked~.zmean-stage [data-zmean="a1"],
+#zmean-y:checked~.zmean-stage [data-zmean="y"],
+#zmean-a2:checked~.zmean-stage [data-zmean="a2"]{opacity:1;visibility:visible;transform:none;
+  transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),visibility 0s}
+.zmean-panel h3{font-size:var(--fs-h-xs);line-height:var(--lh-h-xs);letter-spacing:var(--ls-h-xs);color:var(--navy)}
+.zmean-panel p{font-size:var(--fs-body);line-height:var(--lh-body);color:var(--ink);margin-top:var(--sp-3);max-width:58ch}
+.zmean-panel .zmean-ev{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);
+  margin-top:var(--sp-4);font-size:var(--fs-ui);color:var(--ink-soft);max-width:none}
+/* The axis chip has no shared base rule in this file — each context sizes its
+   own — so this one states its box. Colour and ground come from .st.built. */
+.zmean-panel .zmean-ev .st{font-size:var(--fs-ui-2xs);font-weight:700;letter-spacing:.03em;
+  padding:3px 9px;border-radius:var(--pill);white-space:nowrap}
+
+.zmean-note{max-width:920px;margin:var(--sp-4) auto 0;text-align:center;
+  font-size:var(--fs-ui);color:rgba(255,255,255,.82)}
+
+@media(max-width:640px){
+  .zmean-letters{gap:6px}
+  .zmean-letter{padding:12px 4px;border-radius:var(--r-sm);gap:4px}
+  .zmean-letter .zl{font-size:var(--fs-h-sub);line-height:var(--lh-h-sub)}
+  .zmean-letter .zn{font-size:var(--fs-ui-2xs);letter-spacing:.04em}
+}
+
+/* Same content, no motion. The hover lift and the panel cross-fade are the
+   only motion in the section; both stop, and the panel's 8px entry offset is
+   pinned out so a switch is an instant swap rather than a shortened slide. */
+@media(prefers-reduced-motion:reduce){
+  .zmean-letter,.zmean-panel{transition:none!important}
+  .zmean-letter:hover{transform:none}
+  .zmean-panel{transform:none!important}
+}
+
+/* On paper there is no picker, so print every pillar. */
+@media print{
+  .zmean-stage{display:block}
+  .zmean-panel{opacity:1!important;visibility:visible!important;transform:none!important;
+    box-shadow:none;border:1px solid var(--line);margin-bottom:10px}
 }

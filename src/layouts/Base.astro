@@ -9,7 +9,7 @@ import { assistantState } from '../config/assistant-state.mjs';
 interface Props { title?: string; description?: string; }
 const {
   title = `${site.brandName} — ${site.tagline}`,
-  description = "Ethiopia's local commerce, connected — helping neighbourhood shops sell and customers find what's near them. Merchant pilot live in Addis Ababa.",
+  description = "Ethiopia's local commerce, connected — helping neighbourhood shops sell and customers find what's in their area. Merchant pilot opening in Nifas Silk Lafto, Addis Ababa.",
 } = Astro.props;
 
 // F4 BINDING honesty gate: until real Privacy/Terms exist and site.published is
@@ -60,7 +60,21 @@ const socialImage = new URL('/og.png', Astro.site).href;
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <main id="main"><slot /></main>
+    {/* P1b-3 LANDMARKS. This used to be `<main id="main"><slot /></main>`, and
+        the homepage's own <header> and <footer> went inside the slot — so the
+        document had ONE landmark: a <main> wrapping everything, including the
+        site header and the footer. A <header>/<footer> nested inside <main> is
+        NOT a banner/contentinfo landmark (HTML-AAM scopes both to the body),
+        so the page exposed zero banner and zero contentinfo, and "Skip to
+        content" jumped to an element that STARTS ABOVE the header — it skipped
+        nothing.
+        The page chrome now goes in NAMED slots so it lands as a direct child of
+        <body>, and <main> contains only the content between them. Pages with no
+        chrome of their own (privacy, terms) fill the default slot and get the
+        <main> alone, which is correct for them. */}
+    <slot name="header" />
+    <main id="main" tabindex="-1"><slot /></main>
+    <slot name="footer" />
     {/* Website AI Assistant — founder-access preview (CR-027/ADR-024, FDR-019 W-D4a).
         MOUNTED ONLY WHEN ITS OWN GATE IS OPEN (never by site.published). Off by
         default: W-D4b (public launch) is the founder's gate and stays his.

@@ -34,7 +34,9 @@ console.log('audience toggle — honest set (Customer + Merchant + Diaspora-as-v
   check('Rider tab is dropped (not a ZAYA product — delivery is shop-managed)', !set.has('rider'));
   check('no Rider pane remains', !paneRoles.includes('rider'));
   check('no hero chip jumps to a removed role', jumpRoles.every((r) => set.has(r)), `jumps: ${jumpRoles.join(',')}`);
-  check('Diaspora is labelled as vision, not a live product', /data-role-pane="diaspora"[\s\S]*?Our vision/.test(index) && /role-pane-diaspora[\s\S]*?not live yet/.test(index));
+  // R1: the diaspora pane sits on the ONE axis now — "Planned", not the
+  // retired parallel wording ("Our vision" / "on the roadmap, not live yet").
+  check('Diaspora is labelled Planned, not a built or live product', /data-role-pane="diaspora"[\s\S]*?class="role-status planned">Planned</.test(index) && /role-pane-diaspora[\s\S]*?Planned — nothing of it is built yet/.test(index));
 }
 
 console.log('\ntab ↔ pane bijection (what the toggle relies on) + single-active simulation:');
@@ -76,7 +78,7 @@ console.log('\nhero hub-and-spoke (unclipped, interactive, HONEST, ZAYA-brand on
   check('old canvas chrome removed (no .badge / .stage / hero-web)', !/class="badge"/.test(index) && !/class="stage"/.test(index) && !/hero-web/.test(index));
   check('the hero is a labelled figure with a decorative canvas layer', /class="hero-visual" role="img"/.test(index) && /<canvas id="eco" aria-hidden/.test(index));
   // HONEST set: six nodes only — three participants + three live/launching capabilities.
-  check('exactly the six honest node labels', ['Customers', 'Merchants', 'Shops', 'Browse nearby', 'Compare prices', 'Credit book'].every((l) => index.includes(`label: '${l}'`)));
+  check('exactly the six honest node labels', ['Customers', 'Merchants', 'Shops', 'Shops in your area', 'Compare prices', 'Credit book'].every((l) => index.includes(`label: '${l}'`)));
   check('no unbuilt vertical shown as a live node (no rider/supplier/delivery/diaspora label)', !/label: '[^']*(Rider|Suppl|Deliver|Diaspora)/i.test(index));
   // ZAYA brand only — never the reference graphic's purple, never a Claude/Fable/Anthropic mark.
   check('brand only: no purple hex, no Claude/Fable/Anthropic mark', !/#7c3aed|#8b5cf6|#a855f7|#9333ea|#6d28d9|rebeccapurple/i.test(css + index) && !/\b(Claude|Fable|Anthropic)\b/.test(index));
@@ -161,22 +163,41 @@ console.log('\nfull-page honesty reconciliation (Rider/Supplier are not live ZAY
   check('no in-page copy names riders/suppliers as a live audience', !/riders, suppliers|customers, merchants, riders/.test(index));
   check('meta description reconciled (Base.astro)', !/riders, suppliers/.test(base));
   check('FAQ + CMS home content reconciled', !/riders|suppliers/i.test(faq) && !/"riders"|"suppliers"/.test(home));
-  check('the diaspora is one clearly-labelled vision section (#diaspora → Our vision)', /id="diaspora"[\s\S]*?Our vision/.test(index));
+  check('the diaspora is one clearly-labelled Planned section (#diaspora → Planned)', /id="diaspora"[\s\S]*?Planned — for the diaspora/.test(index));
   check('the restored #eco canvas is honest (present, but no rider/supplier nodes)', /getElementById\('eco'\)/.test(siteJs) && !/'Riders'|'Suppliers'/.test(siteJs));
   // The only legitimate "supplier" left is the merchant's own supplier invoice (OCR feature).
   check('remaining "supplier" mention is the OCR merchant-invoice feature only', ((index.match(/supplier/gi) || []).length === 1) && /supplier invoice/i.test(index));
   check('the assistant KB answer no longer names riders/suppliers as a live audience', !/customers, riders, suppliers|riders, suppliers|dhiyeessitootaa fi/.test(kb));
   check('footer honest-labels legend dropped the orphan "Future" tier', !/Roadmap<\/b> · Future/.test(index));
-  check('home.json residue reconciled (no orphaned cinematic block; diaspora eyebrow = vision)', !/"cinematic"/.test(home) && /Our vision — for the diaspora/.test(home));
-  check('meta/OG/Twitter description reworked to the real merchant-pilot model', /Merchant pilot live in Addis/.test(base) && !/riders|suppliers/.test(base));
-  check('FAQ diaspora answers are labelled roadmap, not present-tense', /diaspora basket is on our roadmap/.test(faq) && /Support for diaspora families is on our roadmap/.test(faq));
-  check('customer-app feature cards (Find shops / Compare prices) now carry a status pill', /Find shops nearby <span class="st launch"/.test(index) && /Compare fair prices <span class="st launch"/.test(index));
+  check('home.json residue reconciled (no orphaned cinematic block; diaspora eyebrow = vision)', !/"cinematic"/.test(home) && /Planned — for the diaspora/.test(home));
+  check('meta/OG/Twitter description reworked to the real merchant-pilot model', /Merchant pilot opening in Nifas Silk Lafto, Addis Ababa/.test(base) && !/riders|suppliers/.test(base));
+  check('FAQ diaspora answers are labelled Planned, not present-tense', /this diaspora basket is planned, and none of it is built yet/.test(faq) && /Support for diaspora families is planned/.test(faq));
+  check('customer-app feature cards (area browse / Compare prices) carry the BUILT rung', /Shops in your area <span class="st built"/.test(index) && /Compare fair prices <span class="st built"/.test(index));
 }
 
 console.log('\na11y landmarks + reduced-motion completeness + one-story narrative:');
 {
-  check('a <main id="main"> landmark wraps the page + a skip-to-content link exists', /<main id="main">/.test(base) && /skip-link/.test(base) && /\.skip-link\{/.test(css));
-  check('reduced-motion also stops the even-photo Ken Burns (!important + nth-child)', /\.shot img,\.shot:nth-child\(2n\) img\{animation:none!important\}/.test(css));
+  // P1b-3, 2026-08-23. THIS CHECK USED TO ENCODE THE DEFECT. It asserted
+  // `<main id="main">` exists — which was true, and useless, because that
+  // <main> wrapped the ENTIRE document including the site header and the
+  // footer. A <header>/<footer> nested inside <main> is not a banner/
+  // contentinfo landmark, so the page shipped zero of each, and "Skip to
+  // content" targeted an element that begins ABOVE the header. The check now
+  // asserts the structure that makes the landmark true.
+  check('<main id="main"> is a SIBLING of the chrome, not its wrapper (named slots)',
+    /<slot name="header" \/>\s*<main id="main"[^>]*>\s*<slot \/>\s*<\/main>\s*<slot name="footer" \/>/.test(base));
+  check('the homepage puts its header and footer in those slots (=> real banner + contentinfo)',
+    /<header class="site-header" slot="header">/.test(index) && /<footer class="foot" slot="footer">/.test(index));
+  check('the skip link exists, is styled, and targets a focusable #main',
+    /skip-link/.test(base) && /\.skip-link\{/.test(css) && /href="#main"/.test(base) && /<main id="main" tabindex="-1">/.test(base));
+  // The Ken Burns pan this used to guard belonged to the AI photo mosaic
+  // (.shot). Photos, markup, animation and override are all gone together
+  // (R3) — so the honest assertion is that none of it came back.
+  check('the AI photo mosaic and its Ken Burns pan are gone, not just hidden',
+    !/\.shot\{/.test(css) && !/@keyframes kb1/.test(css) && !/class="shot/.test(index)
+    // the IMPORT, not the word: the frontmatter comment explains at length why
+    // src/assets/photos is now empty, and that explanation must stay legal.
+    && !/from '\.\.\/assets\/photos/.test(index));
   check('narrative order: pain -> how ZAYA solves it (solve) -> the honest audiences (toggle)',
     index.indexOf('id="problems"') > 0
     && index.indexOf('id="problems"') < index.indexOf('id="solutions"')
@@ -198,14 +219,14 @@ console.log('\nheader feature dropdowns (help users select what they need):');
   check('two nav dropdown menus exist (Features + For you)', (index.match(/class="drop"/g) || []).length === 2);
   check('triggers are keyboard-openable (aria-haspopup + CSS :focus-within)', /aria-haspopup="true"/.test(index) && /\.menu>\.item:focus-within \.drop/.test(css));
   check('the "For you" menu SELECTS the toggle pane (data-role-jump merchant/customer/diaspora)', /class="drop"[\s\S]*?data-role-jump="merchant"[\s\S]*?data-role-jump="customer"[\s\S]*?data-role-jump="diaspora"/.test(index));
-  check('dropdown items carry honest status pills', /class="drop"[^>]*>[\s\S]*?class="st (live|launch|road)"/.test(index));
+  check('dropdown items carry honest status pills', /class="drop"[^>]*>[\s\S]*?class="st (live|pilot|built|planned)"/.test(index));
   check('every dropdown trigger is also a real section link (degrades with no JS)', /href="#solutions" aria-haspopup/.test(index) && /href="#experience" aria-haspopup/.test(index));
   check('JS reflects open state (aria-expanded) + closes on Escape', /a\[aria-haspopup\]/.test(siteJs) && /aria-expanded/.test(siteJs) && /Escape/.test(siteJs));
 }
 
 console.log('\nvisual polish (tokens + honest banding):');
 {
-  check('status colors routed through the design tokens (one colour per status)', /\.st\.launch\{color:var\(--status-launching\)/.test(css) && /\.role-status\.launch\{[^}]*color:var\(--status-launching\)/.test(css));
+  check('status colors routed through the design tokens (one colour per rung)', /\.st\.built\{color:var\(--status-built\)/.test(css) && /\.role-status\.built\{[^}]*color:var\(--status-built\)/.test(css));
   check('section banding restored (band sections tinted, not one flat wash)', /\.band\{background:#F4FBFB;border-top/.test(css) && !/\.showcase,\.solve,\.band\{background:transparent\}/.test(css));
   check('problem grid is 3 columns after the Riders cut', /\.pain-grid\{display:grid;grid-template-columns:repeat\(3,1fr\)/.test(css));
 }

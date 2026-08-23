@@ -1,12 +1,73 @@
 ---
 import Base from '../layouts/Base.astro';
-import storefront from '../assets/photos/storefront.jpg';
-import counterSale from '../assets/photos/counter-sale.jpg';
-import supermarket from '../assets/photos/supermarket.jpg';
-import stockCheck from '../assets/photos/stock-check.jpg';
-import creditBook from '../assets/photos/credit-book.jpg';
-import customerApp from '../assets/photos/customer-app.jpg';
-import diasporaFamily from '../assets/photos/diaspora-family.jpg';
+
+// ── R3, 2026-08-23 — WHAT USED TO BE IMPORTED HERE ──────────────────────────
+// Eight AI-generated photographs (src/assets/photos/*.jpg). All eight are gone,
+// files and all. Two separate reasons, and neither is fixed by a caption:
+//
+//  (a) customer-app.jpg was a FABRICATED APP INTERFACE. It showed a woman in a
+//      shop aisle holding a phone whose screen displayed an invented UI that has
+//      never existed in any ZAYA build — no ZAYA layout, no ZAYA palette — and it
+//      sat in the CUSTOMER role pane under the pill "Built — in device testing"
+//      with the alt text "A customer comparing local choices with ZAYA". A
+//      generated picture of a product that does not look like that, presented as
+//      evidence that the product exists, is the single worst thing that was on
+//      this page. Removed unconditionally; not relabelled, not kept as
+//      "illustration".
+//
+//  (b) The other seven were AI lifestyle photography carrying VISIBLE
+//      THIRD-PARTY TRADEMARKS. The repo's own src/assets/photos/_rights.json
+//      said so in its "decision" field, verbatim: "Trademark exposure
+//      (Coca-Cola cooler in storefront hero; Nestlé 'Nido' in customer-app.jpg)
+//      reviewed and ACCEPTED by the founder 2026-07-08". An "Illustration"
+//      label answers "is this a photograph?" — it does not answer "may we
+//      publish Coca-Cola's and Nestlé's marks in our advertising?". Relabelling
+//      leaves the actual exposure exactly where it was, so relabelling is not
+//      the fix. storefront.jpg additionally invents a lit "ZAYA MINI MARKET"
+//      shopfront that does not exist.
+//
+//  STANDING OPTION, RECORDED AND NOT IMPLEMENTED: if the founder later wants any
+//  of them back, they return with a visible "Illustration" label AND the
+//  trademark question goes to him as a separate decision. That is his call, not
+//  this pass's. The files are recoverable from git history at 5d923d2.
+//
+// ── WHAT REPLACES THEM ──────────────────────────────────────────────────────
+// The real thing: the platform's own S9-T12 golden baselines — the reference
+// screens the founder reviewed and approved — copied byte-for-byte, unretouched.
+// Full provenance in src/assets/screens/PROVENANCE.md + _provenance.json.
+import s1en from '../assets/screens/screen1_en_1_25x.png';
+import s1am from '../assets/screens/screen1_am_1_25x.png';
+import s2en from '../assets/screens/screen2_en_1_25x.png';
+import s2am from '../assets/screens/screen2_am_1_25x.png';
+import s2enLarge from '../assets/screens/screen2_en_1_5625x.png';
+import s2amLarge from '../assets/screens/screen2_am_1_5625x.png';
+import s3en from '../assets/screens/screen3_en_1_25x.png';
+import s3am from '../assets/screens/screen3_am_1_25x.png';
+import s5en from '../assets/screens/screen5_en_1_25x.png';
+import s5am from '../assets/screens/screen5_am_1_25x.png';
+import s6en from '../assets/screens/screen6_en_1_25x.png';
+import s6am from '../assets/screens/screen6_am_1_25x.png';
+import s7en from '../assets/screens/screen7_en_1_25x.png';
+import s7am from '../assets/screens/screen7_am_1_25x.png';
+import s9en from '../assets/screens/screen9_en_1_25x.png';
+import s9am from '../assets/screens/screen9_am_1_25x.png';
+
+// The gallery, in the platform's own screen order. `n` is the platform's screen
+// number — screens 4 and 8 are ABSENT and the gap is deliberate: both render
+// distances ("350 m · Bole", "850 m · Gerji") and screen 8 also renders the word
+// "nearby" twice. This site bans proximity claims (scripts/test-claims.mjs
+// ratchets A and C) because the platform has no shop lat/lng at all. A claim the
+// copy pass withdrew must not walk back in as a picture, where a word-count
+// ratchet cannot see it. See src/assets/screens/PROVENANCE.md.
+const SCREENS = [
+  { n: 1, title: 'Brand surface',            en: s1en, am: s1am, note: 'The opening moment, on real bundled type.' },
+  { n: 2, title: 'Merchant cockpit',         en: s2en, am: s2am, note: 'The shop owner’s day: sales, orders, credit outstanding, low stock.' },
+  { n: 3, title: 'Orders',                   en: s3en, am: s3am, note: 'Incoming orders with their state and cash-on-delivery totals.' },
+  { n: 5, title: 'Quick Sale',               en: s5en, am: s5am, note: 'The point-of-sale grid — tap to add, tap the minus to remove.' },
+  { n: 6, title: 'Order status',             en: s6en, am: s6am, note: 'What the customer sees: waiting → confirmed → out for delivery → delivered.' },
+  { n: 7, title: 'Empty · error · offline', en: s7en, am: s7am, note: 'The states most product shots leave out.' },
+  { n: 9, title: 'Record credit',            en: s9en, am: s9am, note: 'Writing a debt down — including the screen you get when the write fails.' },
+];
 // CMS-managed content (admin edits these JSON files via Decap /admin)
 import pricing from '../content/data/pricing.json';
 import contact from '../content/data/contact.json';
@@ -22,18 +83,23 @@ const telHref = (p) => 'tel:' + p.replace(/\s/g, '');
 // controls and a promise the page could not keep. They are gated with it.
 const assistant = assistantState();
 
-// Hero hub-and-spoke — the HONEST live ZAYA network. Six nodes only (fewer,
-// truer): the three participants + the three live/launching capabilities. No
-// unbuilt verticals here. Delivery + the diaspora basket are vision, so they are
-// NOT shown as live equals (offered separately as clearly-dimmed "coming" nodes
-// only on request). Positions are computed on an even ring so the canvas spokes
-// (drawn client-side) always meet the SSR-rendered cards. Icons are ZAYA's own
-// line set — never the reference graphic's icons or its non-brand palette.
+// Hero hub-and-spoke — the ZAYA network as it actually stands. Six nodes only
+// (fewer, truer): the three participants + three BUILT capabilities. No unbuilt
+// vertical appears here. Positions are computed on an even ring so the canvas
+// spokes (drawn client-side) always meet the SSR-rendered cards. Icons are
+// ZAYA's own line set — never the reference graphic's icons or its non-brand
+// palette.
+//
+// R4 (2026-08-23): the 'nearby' node is now 'area'. The product does area
+// SELECTION — browse is anchored to an area the customer picks (a query param);
+// the platform has NO shop lat/lng at all, so a proximity claim has nothing
+// behind it. Its MAP-PIN icon went with the word: a dropped pin is a
+// geolocation claim drawn instead of written.
 const HUB = [
   { key: 'customers', label: 'Customers',      tone: 'teal',  a: -90,
     d: 'M9 11a3 3 0 100-6 3 3 0 000 6zM3.5 20a5.5 5.5 0 0111 0M16 5.4a3 3 0 010 5.2M20.5 20a5.5 5.5 0 00-3-4.9' },
-  { key: 'nearby',    label: 'Browse nearby',  tone: 'navy',  a: -30,
-    d: 'M12 21s-6-5.2-6-10a6 6 0 0112 0c0 4.8-6 10-6 10zM12 13a2.2 2.2 0 100-4.4 2.2 2.2 0 000 4.4z' },
+  { key: 'area',      label: 'Shops in your area', tone: 'navy',  a: -30,
+    d: 'M4 6h7v5H4zM13 6h7v5h-7zM4 13h7v5H4zM13 13h7v5h-7z' },
   { key: 'compare',   label: 'Compare prices', tone: 'coral', a: 30,
     d: 'M12 4v16M7 20h10M7 8h10M7 8l-3 5.2a3 3 0 006 0zM17 8l-3 5.2a3 3 0 006 0z' },
   { key: 'merchants', label: 'Merchants',      tone: 'teal',  a: 90,
@@ -48,11 +114,14 @@ const HUB = [
 });
 ---
 <Base>
-<header class="site-header">
+{/* P1b-3: the page chrome goes into Base's NAMED slots so it renders as a direct
+    child of <body> and therefore actually EXPOSES a banner landmark. Inside the
+    old <main> wrapper it exposed none. Same for the footer below. */}
+<header class="site-header" slot="header">
   <div class="pilot-strip">
     <div class="wrap pilot-strip-in">
-      <span><i aria-hidden="true"></i><b>Merchant pilot live</b> in Addis Ababa</span>
-      <a href="#contact">Request pilot access <span aria-hidden="true">&rarr;</span></a>
+      <span><b>Merchant pilot opening</b> in Nifas Silk Lafto</span>
+      <a href="#contact">Request early access <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
   <div class="wrap nav">
@@ -78,19 +147,19 @@ const HUB = [
       <div class="item">
         <a href="#solutions" aria-haspopup="true" aria-expanded="false">Features <svg class="ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
         <div class="drop" aria-label="ZAYA features">
-          <a href="#solutions">Sales &amp; inventory <span class="st live">Live</span></a>
-          <a href="#solutions">The credit book <span class="st live">Live</span></a>
-          <a href="#solutions">Find &amp; compare shops <span class="st launch">Launching</span></a>
-          <a href="#solutions">Local delivery <span class="st road">Roadmap</span></a>
-          <a href="#diaspora">The diaspora basket <span class="st road">Our vision</span></a>
+          <a href="#solutions">Sales &amp; inventory <span class="st built">Built — in device testing</span></a>
+          <a href="#solutions">The credit book <span class="st built">Built — in device testing</span></a>
+          <a href="#solutions">Find &amp; compare shops <span class="st built">Built — in device testing</span></a>
+          <a href="#solutions">Delivery &amp; COD settlement <span class="st built">Built — in device testing</span></a>
+          <a href="#diaspora">The diaspora basket <span class="st planned">Planned</span></a>
         </div>
       </div>
       <div class="item">
         <a href="#experience" aria-haspopup="true" aria-expanded="false">For you <svg class="ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
         <div class="drop" aria-label="Choose your role">
-          <a href="#experience" data-role-jump="merchant">Merchants <span class="st live">Live</span></a>
-          <a href="#experience" data-role-jump="customer">Customers <span class="st launch">Launching</span></a>
-          <a href="#experience" data-role-jump="diaspora">Diaspora <span class="st road">Our vision</span></a>
+          <a href="#experience" data-role-jump="merchant">Merchants <span class="st built">Built — in device testing</span></a>
+          <a href="#experience" data-role-jump="customer">Customers <span class="st built">Built — in device testing</span></a>
+          <a href="#experience" data-role-jump="diaspora">Diaspora <span class="st planned">Planned</span></a>
         </div>
       </div>
       <div class="item"><a href="#pricing">Pricing</a></div>
@@ -109,7 +178,7 @@ const HUB = [
     <div class="copy">
       <span class="eyebrow">Built in Ethiopia &middot; Made for every neighbourhood</span>
       <h1>Your neighbourhood, <span class="g">within reach.</span></h1>
-      <p class="sub">ZAYA connects nearby shops and their customers in one trusted local-commerce network &mdash; so every search and sale starts closer to home.</p>
+      <p class="sub">ZAYA connects the shops in your area and their customers in one trusted local-commerce network &mdash; so every search and sale starts in your own neighbourhood.</p>
       <div class="who">
         <a class="chip" href="#experience" data-role-jump="merchant">For <b>merchants</b></a>
         <a class="chip" href="#experience" data-role-jump="customer">For <b>customers</b></a>
@@ -120,7 +189,7 @@ const HUB = [
         <a class="btn btn-ghost" href="#experience">See how it works</a>
       </div>
     </div>
-    <div class="hero-visual" role="img" aria-label="The ZAYA network: a central hub linked to six parts — customers, merchants and nearby shops, plus browsing nearby, comparing prices and the credit book.">
+    <div class="hero-visual" role="img" aria-label="The ZAYA network: a central hub linked to six parts — customers, merchants and shops, plus browsing the shops in a chosen area, comparing prices and the credit book.">
       <div class="hubwrap">
         <canvas id="eco" aria-hidden="true"></canvas>
         <div class="hub-core" aria-hidden="true">
@@ -146,12 +215,87 @@ const HUB = [
 
 <div class="trust-rail" aria-label="ZAYA at a glance">
   <div class="wrap trust-rail-in">
-    <div><span>Pilot focus</span><b>Addis Ababa</b></div>
-    <div><span>Merchant tools</span><b>Live now</b></div>
-    <div><span>Customer app</span><b>Launching</b></div>
-    <div><span>One promise</span><b>Honest progress</b></div>
+    <div><span>Pilot area</span><b>Nifas Silk Lafto</b></div>
+    <div><span>Merchant tools</span><b class="axis">Built — in device testing</b></div>
+    <div><span>Customer browse &amp; order</span><b class="axis">Built — in device testing</b></div>
+    <div><span>Delivery &amp; COD settlement</span><b class="axis">Built — in device testing</b></div>
   </div>
 </div>
+
+{/* ── THE NAME (founder request, 2026-08-23) ─────────────────────────────────
+    Decision D-018 makes the brand identity — the backronym included — a binding
+    architectural artifact, so the NAME and the four PILLAR NAMES below are
+    quoted verbatim from docs/ZEPO/06_reference/ZAYA_Current_State_Summary_v3.0.md
+    §6, as is the one-sentence summary in the lead. Nothing else here is.
+
+    WHAT IS DELIBERATELY *NOT* COPIED, AND WHY. The brand book's pillar
+    paragraphs describe a product that does not exist: GPS listing "within a
+    configurable radius (default 5 km)", a map view, geo-filters (distance,
+    rating, open-now), price comparison across twenty shops at once, expiry
+    alerts, payment unification across Telebirr/M-Pesa, and voice-first
+    interaction. Reproducing them here would put the exact over-claiming the
+    NO-GO review condemned onto the most prominent part of the page, and the
+    radius/20-shops language would walk straight through the R4 proximity ban
+    that scripts/test-claims.mjs ratchets A and C now guard.
+    So this section says WHAT THE NAME MEANS, not what the app does. Each
+    letter's explanatory line is written for this site and describes intent;
+    the capability claim is quarantined in the evidence line beneath it, where
+    it carries the one labelling axis (R1) and names a specific built thing.
+
+    NO JAVASCRIPT AT ALL. The reveal is four native radios plus :checked sibling
+    selectors, so it behaves identically with JS on and off — there is no
+    bundle to fail, nothing is injected, and every pillar is in the HTML. See
+    the "THE NAME" block in site.css for the a11y measurements. */}
+<section class="band-navy zmean" id="meaning">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">What the name means</span>
+      <h2>ZAYA is an acronym. Every letter is a promise we can keep.</h2>
+      <p>Zonal &middot; Availability &middot; Yours &middot; Access &mdash; your neighbourhood market, visible, yours, and open to everyone.</p>
+    </div>
+
+    <fieldset class="zmean-x">
+      <legend>Choose a letter to read what it stands for</legend>
+
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-z" checked />
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-a1" />
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-y" />
+      <input class="zmean-radio" type="radio" name="zmean" id="zmean-a2" />
+
+      <div class="zmean-letters">
+        <label class="zmean-letter" for="zmean-z"><span class="zl">Z</span><span class="zn">Zonal</span></label>
+        <label class="zmean-letter" for="zmean-a1"><span class="zl">A</span><span class="zn">Availability</span></label>
+        <label class="zmean-letter" for="zmean-y"><span class="zl">Y</span><span class="zn">Yours</span></label>
+        <label class="zmean-letter" for="zmean-a2"><span class="zl">A</span><span class="zn">Access</span></label>
+      </div>
+
+      <div class="zmean-stage" aria-live="polite">
+        <article class="zmean-panel" data-zmean="z">
+          <h3>Z &mdash; Zonal</h3>
+          <p>You pick the area; ZAYA shows the shops in it. The zone is your choice, never a guess made for you.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>Choosing an area, and browsing the shops in it.</span></p>
+        </article>
+        <article class="zmean-panel" data-zmean="a1">
+          <h3>A &mdash; Availability</h3>
+          <p>Know before you go &mdash; real stock and real prices, straight from the shop&rsquo;s own book.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>Stock and prices kept in the shop&rsquo;s own book.</span></p>
+        </article>
+        <article class="zmean-panel" data-zmean="y">
+          <h3>Y &mdash; Yours</h3>
+          <p>Your shop, your book, your customers. The shopkeeper&rsquo;s call on credit and price comes before anything ZAYA suggests.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>The merchant cockpit and the digital credit ledger.</span></p>
+        </article>
+        <article class="zmean-panel" data-zmean="a2">
+          <h3>A &mdash; Access</h3>
+          <p>Nobody locked out &mdash; four languages, cash on delivery, and the low-end Android phones people actually own.</p>
+          <p class="zmean-ev"><span class="st built">Built — in device testing</span> <span>Cash-on-delivery settlement; four languages rendering in the app.</span></p>
+        </article>
+      </div>
+    </fieldset>
+
+    <p class="zmean-note">This says what the name means &mdash; it is not a feature list. Everything ZAYA can actually do is labelled where it is claimed, further down this page.</p>
+  </div>
+</section>
 
 <section class="band"><div class="wrap">
   <div class="sec-head">
@@ -162,7 +306,7 @@ const HUB = [
     <div class="pain">
       <h3><span class="d"></span>Customers</h3>
       <ul>
-        <li>Hard to find the right shops nearby.</li>
+        <li>Hard to find the right shops in your own area.</li>
         <li>No way to know prices before you go.</li>
         <li>Long trips across Addis for small errands.</li>
         <li>Delivery is slow, informal, or unavailable.</li>
@@ -194,18 +338,19 @@ const HUB = [
     <div class="sec-head">
       <span class="eyebrow" id="solutions">How ZAYA helps</span>
       <h2>One platform that removes the everyday friction of local commerce.</h2>
-      <p>Real tools for real problems — honestly labelled by what's live today and what's on the way.</p>
+      <p>Real tools for real problems — on one labelling axis: <b>Built — in device testing</b>, <b>In pilot</b>, <b>Live</b>, <b>Planned</b>. Nothing below is in pilot or live yet.</p>
     </div>
     <div class="cards">
-      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div><h3>Find shops nearby <span class="st launch">Launching</span></h3><p>Search the shops and services around you and see who has what, close to home.</p></div>
-      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 8h12M6 14h12"/></svg></div><h3>Compare fair prices <span class="st launch">Launching</span></h3><p>Check prices across nearby shops before you spend a single Birr.</p></div>
-      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h3>Manage inventory <span class="st live">Live</span></h3><p>Track stock in one phone and get told before you run out.</p></div>
-      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 10h16"/></svg></div><h3>Digital credit ledger <span class="st live">Live</span></h3><p>Every debt written down and kept honest — never half-remembered.</p></div>
-      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM9 12l2 2 4-4"/></svg></div><h3>Smart search <span class="st road">Roadmap</span></h3><p>Ask in plain words and let ZAYA find the right shop and item.</p></div>
-      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v11M9 6l3-3 3 3M6 14v5h12v-5"/></svg></div><h3>Voice support <span class="st road">Roadmap</span></h3><p>Run your shop by voice, in Amharic, Afaan Oromoo, Tigrinya or English.</p></div>
-      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5zM9 9h6M9 13h6"/></svg></div><h3>OCR invoice scanning <span class="st road">Roadmap</span></h3><p>Snap a supplier invoice and let ZAYA add the stock for you.</p></div>
-      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M3 5h3l2 10h9l2-7H7"/></svg></div><h3>Local delivery <span class="st road">Roadmap</span></h3><p>Orders fulfilled by the shop and delivered by someone local.</p></div>
-      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>Provide for family <span class="st road">Roadmap</span></h3><p>Order real goods to a trusted neighbourhood shop — delivered, with proof.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div><h3>Shops in your area <span class="st built">Built — in device testing</span></h3><p>Choose your area and see the shops in it, and who has what.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M6 8h12M6 14h12"/></svg></div><h3>Compare fair prices <span class="st built">Built — in device testing</span></h3><p>Check prices across the shops in your area before you spend a single Birr.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div><h3>Manage inventory <span class="st built">Built — in device testing</span></h3><p>Track stock in one phone and get told before you run out.</p></div>
+      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 10h16"/></svg></div><h3>Digital credit ledger <span class="st built">Built — in device testing</span></h3><p>Every debt written down and kept honest — never half-remembered.</p></div>
+      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M3 5h3l2 10h9l2-7H7"/></svg></div><h3>Delivery &amp; COD settlement <span class="st built">Built — in device testing</span></h3><p>A confirmed order is assigned to the shop's own deliverer, then delivered with the cash collected — or closed with an honest reason. Each order settles once, and the amount is the shop's own total, never a number typed at the door.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM9 12l2 2 4-4"/></svg></div><h3>Smart search <span class="st planned">Planned</span></h3><p>Ask in plain words and let ZAYA find the right shop and item.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v11M9 6l3-3 3 3M6 14v5h12v-5"/></svg></div><h3>Voice support <span class="st planned">Planned</span></h3><p>Run your shop by voice, in Amharic, Afaan Oromoo, Tigrinya or English.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5zM9 9h6M9 13h6"/></svg></div><h3>OCR invoice scanning <span class="st planned">Planned</span></h3><p>Snap a supplier invoice and let ZAYA add the stock for you.</p></div>
+      <div class="card"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h3v10H4zM9 7h1.5v10H9zM12.5 7h2v10h-2zM16.5 7H18v10h-1.5zM20 7h1v10h-1z"/></svg></div><h3>Barcode scanning <span class="st planned">Planned</span></h3><p>Scan a product barcode to find it in your stock instead of typing it.</p></div>
+      <div class="card co"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 8h16l-1.2 11H5.2L4 8zM8.5 8V6a3.5 3.5 0 017 0v2M9 12h6"/></svg></div><h3>Provide for family <span class="st planned">Planned</span></h3><p>Order real goods to a trusted neighbourhood shop — delivered, with proof.</p></div>
     </div>
   </div>
 </section>
@@ -214,7 +359,7 @@ const HUB = [
   <div class="wrap">
     <div class="role-heading">
       <div><span class="eyebrow">Choose your ZAYA</span><h2>One platform. A different win for everyone.</h2></div>
-      <p>Pick your role to see how ZAYA fits into your day &mdash; and what is live now versus coming next.</p>
+      <p>Pick your role to see how ZAYA fits into your day &mdash; and what is built and in device testing versus planned.</p>
     </div>
     <div class="role-explorer" data-role-explorer>
       <div class="role-tabs" role="tablist" aria-label="Choose how you use ZAYA">
@@ -224,31 +369,71 @@ const HUB = [
       </div>
 
       <article class="role-pane is-active" role="tabpanel" id="role-pane-merchant" aria-labelledby="role-tab-merchant" data-role-pane="merchant">
-        <div class="role-media"><img loading="lazy" src={creditBook.src} alt="A shop owner managing the digital credit book with ZAYA" /><span class="role-status live">Live &middot; pilot</span></div>
-        <div class="role-copy"><span class="role-kicker">Run the whole shop from one phone</span><h3>Sell faster. Know your stock. Keep every credit clear.</h3><p>ZAYA gives neighbourhood merchants the everyday tools that matter first&mdash;sales, inventory, credit and a clear view of the day.</p><ul><li>Fast point-of-sale flow</li><li>Live stock tracking</li><li>Digital customer credit book</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Join as a merchant</a></div></div>
+        <div class="role-media is-screen"><img loading="lazy" width={s2en.width} height={s2en.height} src={s2en.src} alt="Reference screen 2, Merchant cockpit: a Welcome heading, a fixed reference date, four shortcuts (Sale, Products, Orders, Credit) and a Today panel showing sales ETB 2,075.00, 4 orders, ETB 770.00 credit outstanding and 3 low-stock items." /><span class="role-status built">Built — in device testing</span></div>
+        <div class="role-copy"><span class="role-kicker">Run the whole shop from one phone</span><h3>Sell faster. Know your stock. Keep every credit clear.</h3><p>ZAYA gives neighbourhood merchants the everyday tools that matter first&mdash;sales, inventory, credit, incoming orders and a clear view of the day.</p><ul><li>Fast point-of-sale flow</li><li>Stock tracking as you sell</li><li>Digital customer credit book</li><li>Assign a delivery, settle the cash once</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Join as a merchant</a></div></div>
       </article>
 
       <article class="role-pane" role="tabpanel" id="role-pane-customer" aria-labelledby="role-tab-customer" data-role-pane="customer" hidden>
-        <div class="role-media"><img loading="lazy" src={customerApp.src} alt="A customer comparing local choices with ZAYA" /><span class="role-status launch">Launching</span></div>
-        <div class="role-copy"><span class="role-kicker">Find what you need closer to home</span><h3>Nearby shops, clearer choices and fewer wasted trips.</h3><p>The customer experience is being prepared to help people discover real local stock and compare prices before leaving home.</p><ul><li>Nearby shop discovery</li><li>Price comparison in Birr</li><li>Simple local ordering</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Get launch updates</a></div></div>
+        <div class="role-media is-screen"><img loading="lazy" width={s6en.width} height={s6en.height} src={s6en.src} alt="Reference screen 6, Order status: order ZA-1042 marked Out for delivery, with a four-step timeline — waiting for the shop, confirmed, out for delivery, delivered — and the order record beneath it." /><span class="role-status built">Built — in device testing</span></div>
+        <div class="role-copy"><span class="role-kicker">Find what you need in your area</span><h3>Shops in your area, clearer choices and fewer wasted trips.</h3><p>The customer app is built and being tested on real devices: choose your area, see what the shops in it actually have, and compare prices before you leave home.</p><ul><li>Choose your area, then browse its shops</li><li>Price comparison in Birr</li><li>Simple local ordering</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Get launch updates</a></div></div>
       </article>
 
       <article class="role-pane" role="tabpanel" id="role-pane-diaspora" aria-labelledby="role-tab-diaspora" data-role-pane="diaspora" hidden>
-        <div class="role-media"><img loading="lazy" src={diasporaFamily.src} alt="A family receiving essential goods at home" /><span class="role-status road">Our vision</span></div>
-        <div class="role-copy"><span class="role-kicker">Our vision for the diaspora</span><h3>Choose the basket. Trust the local shop. See proof it arrived.</h3><p>Where we want to take ZAYA next: choose real goods&mdash;not send money&mdash;through a trusted neighbourhood shop, delivered with proof. On the roadmap, not live yet.</p><ul><li>Choose essential goods</li><li>One clear shelf-price flow</li><li>Local delivery with proof</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Follow the roadmap</a></div></div>
+        {/* NO IMAGE, ON PURPOSE. Nothing of the diaspora basket is built, so no
+            reference screen of it exists. The generated photograph that used to
+            sit here showed a family receiving goods that no ZAYA build can
+            deliver — a picture of a feature standing in for the feature. The
+            panel now says what it is instead of illustrating what it is not. */}
+        <div class="role-media is-empty"><span class="role-status planned">Planned</span><p class="role-empty">No screen to show — none of this is built yet.<span>Every other panel on this page shows a real reference screen. This one cannot, and will not until there is one.</span></p></div>
+        <div class="role-copy"><span class="role-kicker">Planned — for the diaspora</span><h3>Choose the basket. Trust the local shop. See proof it arrived.</h3><p>Where we want to take ZAYA next: choose real goods&mdash;not send money&mdash;through a trusted neighbourhood shop, delivered with proof. Planned — nothing of it is built yet.</p><ul><li>Choose essential goods</li><li>One clear shelf-price flow</li><li>Local delivery with proof</li></ul><div class="role-actions"><a class="btn btn-primary" href="#contact">Follow what we are building</a></div></div>
       </article>
     </div>
   </div>
 </section>
 
-<section class="showcase">
+{/* R3(b). This section used to be four AI-generated shop photographs under the
+    heading "In real Ethiopian shops" — a claim about shops that are not yet
+    running ZAYA, illustrated with shops that do not exist. It now shows the
+    thing that IS real and was buried: the approved reference screens, straight
+    out of the platform's golden baselines, unretouched. */}
+<section class="showcase" id="screens">
   <div class="wrap">
-    <div class="sec-head"><span class="eyebrow">In real Ethiopian shops</span><h2>Built with the shops that run the neighbourhood.</h2><p>From the corner mini-market to the supermarket — this is where ZAYA works.</p></div>
-    <div class="mosaic">
-      <div class="shot reveal"><span class="tagpin">Live · pilot</span><img loading="lazy" src={storefront.src} alt="A ZAYA-powered neighbourhood mini market at dusk"><div class="cap">A modern mini market<span>Stocked, lit, and online</span></div></div>
-      <div class="shot reveal"><span class="tagpin">A sale in ~5s</span><img loading="lazy" src={counterSale.src} alt="A shop owner serving a customer at the counter"><div class="cap">Serve, ring up, done<span>The whole counter, in one phone</span></div></div>
-      <div class="shot reveal"><img loading="lazy" src={supermarket.src} alt="A modern Ethiopian supermarket aisle"><div class="cap">Shop to supermarket<span>One platform, any size</span></div></div>
-      <div class="shot reveal"><img loading="lazy" src={stockCheck.src} alt="A shop owner checking stock on the shelves with a phone"><div class="cap">Stock, always in hand<span>Know before you run out</span></div></div>
+    <div class="sec-head"><span class="eyebrow">The screens themselves</span>
+      <h2>This is the product, unretouched.</h2>
+      <p>Seven of the nine reference screens the founder reviewed and approved, copied byte-for-byte out of the app repository&rsquo;s golden baselines &mdash; the images the build itself is tested against. Not mock-ups, not renders, not photographs of a phone.</p>
+    </div>
+
+    <ul class="screens">
+      {SCREENS.map((s) => (
+        <li class="screen reveal">
+          <div class="screen-pair">
+            <figure><img loading="lazy" width={s.en.width} height={s.en.height} src={s.en.src} alt={`Reference screen ${s.n}, ${s.title}, in English.`} /><figcaption>English</figcaption></figure>
+            <figure><img loading="lazy" width={s.am.width} height={s.am.height} src={s.am.src} alt={`Reference screen ${s.n}, ${s.title}, in Amharic.`} /><figcaption lang="am">አማርኛ</figcaption></figure>
+          </div>
+          <div class="screen-cap"><b>{s.title}</b><span>{s.note}</span></div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="screens-scale">
+      <h3>Every screen also has a large-text baseline.</h3>
+      <p>The app ships at a 1.25&times; text scale, and is tested again at 1.5625&times; &mdash; that same baseline under a 1.25&times; operating-system large-text setting. The merchant cockpit at both scales, in both languages:</p>
+      <div class="screen-pair four">
+        <figure><img loading="lazy" width={s2en.width} height={s2en.height} src={s2en.src} alt="Merchant cockpit in English at the shipped 1.25 times text scale." /><figcaption>English &middot; 1.25&times;</figcaption></figure>
+        <figure><img loading="lazy" width={s2enLarge.width} height={s2enLarge.height} src={s2enLarge.src} alt="The same English merchant cockpit at 1.5625 times text scale: the same content, larger type, more wrapping." /><figcaption>English &middot; 1.5625&times;</figcaption></figure>
+        <figure><img loading="lazy" width={s2am.width} height={s2am.height} src={s2am.src} alt="Merchant cockpit in Amharic at the shipped 1.25 times text scale." /><figcaption lang="am">አማርኛ</figcaption><figcaption>1.25&times;</figcaption></figure>
+        <figure><img loading="lazy" width={s2amLarge.width} height={s2amLarge.height} src={s2amLarge.src} alt="The same Amharic merchant cockpit at 1.5625 times text scale." /><figcaption lang="am">አማርኛ</figcaption><figcaption>1.5625&times;</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="screens-note">
+      <h3>Two things in these pictures are not the product &mdash; read them before you judge them</h3>
+      <ol>
+        <li><b>The pill row along the bottom edge</b> (EN / <span lang="am">አማ</span> / OM / <span lang="ti">ትግ</span>, and <span lang="am">መደበኛ</span>/Standard / <span lang="am">ካልቅ</span>/Large) is the reference gallery&rsquo;s own language and text-size switcher, not an app control. The baselines were recorded with it mounted because that is the view that was approved. It is left in the frame because cropping it out would be retouching.</li>
+        <li><b>The empty squares where icons should be</b> are an artefact of the recording harness: it loads the three bundled text fonts and not the icon font, so every icon slot rasterises as the missing-glyph box. That is the harness, not the app&rsquo;s iconography.</li>
+      </ol>
+      <p>Recorded 18 Aug 2026 at 360&times;800 CSS pixels, the low-end reference device, from a fixed seed &mdash; the shop names, prices and order numbers are test data, not pilot data. Two of the nine approved screens are <b>not</b> shown here: both display distances between shops, and this platform has no shop coordinates, so those two say something the product cannot do. Full record: <code>src/assets/screens/PROVENANCE.md</code>.</p>
+      <p class="screens-lang"><b>Every <span lang="am">አማርኛ</span> screen carries a DRAFT badge, and it is telling the truth.</b> <span lang="am">ረቂቅ &mdash; የአፍ መፍቻ ቋንቋ ተናጋሪ ግምገማ በመጠበቅ ላይ</span> means &ldquo;draft &mdash; pending native review&rdquo;. The Amharic copy is machine-authored and has not yet been through a native reviewer; the app says so on its own screens rather than letting the translation pass as finished, and we are not going to crop that off. English is the authoring language and carries no badge. Afaan Oromoo and <span lang="ti">ትግርኛ</span> render in the app but are staged post-pilot with no approved look frozen, so there is no baseline of them to show at all.</p>
     </div>
   </div>
 </section>
@@ -257,9 +442,9 @@ const HUB = [
 
 <section class="band" id="diaspora">
   <div class="wrap">
-    <div class="sec-head"><span class="eyebrow">Our vision — for the diaspora</span>
+    <div class="sec-head"><span class="eyebrow">Planned — for the diaspora</span>
       <h2>Provide for your family — real goods, not cash into the dark.</h2>
-      <p>A trusted neighbourhood shop, delivered locally, with proof it arrived. <b style="color:#5648B0">On the roadmap.</b> ZAYA is not a money-transfer service.</p></div>
+      <p>A trusted neighbourhood shop, delivered locally, with proof it arrived. <b style="color:var(--status-planned)">Planned — none of it is built.</b> ZAYA is not a money-transfer service.</p></div>
     <div class="flow reveal-seq">
       <div class="fstep"><div class="fn"><span class="num">1</span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div><h3>You order from abroad</h3><p>Choose your family's trusted neighbourhood shop.</p></div>
       <div class="farr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
@@ -288,7 +473,7 @@ const HUB = [
 <section class="ask-band">
   <div class="wrap ask-band-in reveal-seq">
     <div class="ask-orb" aria-hidden="true">&#10022;</div>
-    <div><span class="eyebrow">Need a quick answer?</span><h2>Ask ZAYA before you scroll another step.</h2><p>Get a grounded answer about the pilot, merchant plans, product status or the roadmap.</p></div>
+    <div><span class="eyebrow">Need a quick answer?</span><h2>Ask ZAYA before you scroll another step.</h2><p>Get a grounded answer about the pilot, merchant plans, what is built and what is planned.</p></div>
     <button class="btn btn-primary" type="button" data-open-assistant>Start a conversation <span aria-hidden="true">&rarr;</span></button>
   </div>
 </section>
@@ -297,19 +482,22 @@ const HUB = [
 
 <section class="band">
   <div class="wrap">
-    <div class="sec-head"><span class="eyebrow" id="pricing">Pricing</span><h2>Simple plans. No hidden fees.</h2><p>Customers use ZAYA free. Merchants start free — forever — and upgrade only when it helps.</p></div>
-    <div class="priceg">
+    <div class="sec-head"><span class="eyebrow" id="pricing">Pricing</span><h2>Simple plans. No hidden fees.</h2><p>Customers use ZAYA free. Merchants start free — forever.</p></div>
+    <div class="priceg one">
       {pricing.tiers.map((t) => (
-        <div class={t.highlight ? 'pcard pfeat' : 'pcard'}>
-          {t.highlight && <span class="ptag">Most popular</span>}
+        <div class="pcard">
           <div class="pn">{t.name}</div>
-          <div class="pp">{t.from ? 'from ' : ''}{t.price} {pricing.currency} <small>/ {t.from ? 'mo + branch' : (t.period === 'forever' ? 'forever' : 'month')}</small></div>
+          {/* R2: the Free tier's headline is rendered VERBATIM from one string —
+              never re-composed from name/price/period, which is how "0 ETB /
+              forever" drifted away from the words the founder signed. */}
+          <div class="pp">{t.headline}</div>
           <div class="pd">{t.blurb}</div>
           <ul>{t.features.map((f) => (<li>{f}</li>))}</ul>
-          <a class={t.highlight ? 'btn btn-primary' : 'btn btn-ghost'} href="#contact">{t.cta}</a>
+          <a class="btn btn-primary" href="#contact">{t.cta}</a>
         </div>
       ))}
     </div>
+    <p class="paid-line">{pricing.paidLine}</p>
     <p class="price-note">{pricing.note}</p>
   </div>
 </section>
@@ -339,8 +527,13 @@ const HUB = [
   </div>
 </section>
 
-<div class="lb" id="lb"><button class="lbx" aria-label="Close">&times;</button><img alt=""><div class="lbcap"></div></div>
-<footer class="foot">
+{/* The photo lightbox is GONE with the photos it opened. It bound clicks to
+    .shot / .pframe — .shot was the AI mosaic (removed) and .pframe has had no
+    markup for some time. It was also a click-only overlay with no keyboard
+    path and no focus trap, so removing it is a small a11y gain rather than a
+    loss. The reference screens are shown at their true 360px width and there
+    is nothing honest to zoom them to: there is no 2x asset. */}
+<footer class="foot" slot="footer">
   <div class="wrap">
     <div class="foot-grid">
       <div class="fabout">
@@ -348,13 +541,20 @@ const HUB = [
           <svg class="mk" viewBox="0 0 512 512" aria-hidden="true" style="animation:none"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13B7B4"/><stop offset="1" stop-color="#0B8B8A"/></linearGradient><clipPath id="fc"><rect width="512" height="512" rx="115"/></clipPath></defs><g clip-path="url(#fc)"><rect width="512" height="512" fill="url(#fg)"/></g><path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#fff"/><circle cx="256" cy="200" r="56" fill="#FF7A45"/><polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#fff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="txt"><span class="wm">ZAYA <b>App</b></span><span class="tl">Everything near you.</span></span>
         </span>
-        <p>The trusted digital front door to Ethiopia's commerce — for neighbourhood shops and their customers, with support for diaspora families on our roadmap.</p>
+        <p>The trusted digital front door to Ethiopia's commerce — for neighbourhood shops and their customers, with support for diaspora families planned.</p>
       </div>
       <div class="fcol"><h4>Solutions</h4><a href="#experience">Merchants</a><a href="#experience">Customers</a><a href="#diaspora">Diaspora</a><a href="#pricing">Pricing</a></div>
-      <div class="fcol"><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#contact">Contact</a></div>
+      {/* P1b-5: "About" and "Careers" were href="#" — links that go nowhere.
+          There is no /about page and the careers content collection
+          (src/content/careers) is EMPTY, so there is nothing to link to.
+          They are REMOVED rather than pointed at a page invented to justify
+          the link: a footer that offers a company story and open roles that
+          do not exist is the same over-claim as the rest of this pass.
+          Add them back the day the pages exist. */}
+      <div class="fcol"><h4>Company</h4><a href="#contact">Contact</a></div>
       <div class="fcol"><h4>Legal</h4><a href="/terms">Terms &amp; Conditions</a><a href="/privacy">Privacy Policy</a><a href="/terms">User Agreement</a></div>
     </div>
-    <div class="foot-base"><span>© 2026 ZAYA App PLC · Addis Ababa, Ethiopia</span><span>Honestly labelled: <b style="color:var(--mint)">Live</b> · <b style="color:#F4A261">Launching</b> · <b style="color:#9c8ff0">Roadmap</b></span></div>
+    <div class="foot-base"><span>© 2026 ZAYA App PLC · Addis Ababa, Ethiopia</span><span>One labelling axis: <b class="lg planned">Planned</b> · <b class="lg built">Built — in device testing</b> · <b class="lg pilot">In pilot</b> · <b class="lg live">Live</b> <span class="lg-note">— nothing on this site is in pilot or live yet.</span></span></div>
   </div>
 </footer>
 </Base>

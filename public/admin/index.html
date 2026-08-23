@@ -12,7 +12,35 @@
        Netlify Identity). It reads the SAME config.yml. Editors sign in with the
        separate website-editing GitHub account configured in config.yml — entirely
        distinct from ZAYA platform user auth.
-       Pin the version at deploy (e.g. @sveltia/cms@0.x.y) for a stable admin UI. -->
-  <script src="https://cdn.jsdelivr.net/npm/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
+
+       PINNED + SRI (2026-08-23). This page runs in a session holding a GitHub token
+       with write access to this repo, so the bundle it loads is not allowed to be a
+       moving target. It was floating on the unversioned `@sveltia/cms` tag: every
+       page load fetched whatever jsDelivr served at that moment, with nothing
+       checking what came back. Now:
+         - the version is exact (0.196.0), so a new upstream release cannot land in
+           the editor unannounced;
+         - `integrity` is the sha384 of that exact file — the browser refuses to run
+           anything else, so a tampered or substituted CDN response is dead on arrival;
+         - `crossorigin` is required for the browser to check the hash at all.
+       The hash below was computed from the real asset (1,967,464 bytes), verified
+       byte-identical from jsDelivr and from unpkg independently.
+
+       TO UPGRADE — never edit the version alone, the hash must move with it:
+         curl -sSL https://cdn.jsdelivr.net/npm/@sveltia/cms@<NEW>/dist/sveltia-cms.js -o /tmp/cms.js
+         node -e "const c=require('crypto'),f=require('fs');console.log('sha384-'+c.createHash('sha384').update(f.readFileSync('/tmp/cms.js')).digest('base64'))"
+       If the hash and the version ever disagree, the editor simply will not load
+       (fail-closed) — that is the intended failure, not a bug. See docs/12 §D.
+
+       KNOWN LIMIT: SRI covers THIS file only. Once running, the bundle itself
+       dynamically imports optional extras (syntax highlighting, PDF preview) from
+       unpkg.com — version-pinned upstream, but not hash-checked, and not something
+       this page can pin. See docs/12 §D for the residue. -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@sveltia/cms@0.196.0/dist/sveltia-cms.js"
+    type="module"
+    integrity="sha384-CAkV2ok/JoSJwP/CCrXGYho2VRacSfJ93JUAftvaq7ACeWeVxXpnFrSGE2hpNeKC"
+    crossorigin="anonymous"
+  ></script>
 </body>
 </html>

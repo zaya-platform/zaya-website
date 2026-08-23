@@ -5,13 +5,14 @@
     "headlineTeal": "connected",
     "headlineMid": "in one",
     "headlineCoral": "intelligent app",
-    "sub": "ZAYA links the shops, customers and families of your neighbourhood — so you can find what's near you, sell smarter, and provide for the people you love.",
+    "sub": "ZAYA links the shops, customers and families of your neighbourhood — so you can find what's in your area, sell smarter, and provide for the people you love.",
     "audiences": ["customers", "merchants", "the diaspora"],
     "ctaPrimary": "Join the pilot",
     "ctaSecondary": "See how it works",
-    "statusLive": "Sales, stock & the credit book for shops — plus the supermarket dashboard.",
-    "statusLaunching": "The customer app — search & order nearby.",
-    "statusRoadmap": "Delivery, smart tools & voice, the diaspora basket."
+    "statusBuilt": "Merchant tools, customer browse & order, and delivery with COD settlement — all built and in device testing.",
+    "statusInPilot": "Nothing yet — the merchant pilot is opening in Nifas Silk Lafto.",
+    "statusLive": "Nothing yet.",
+    "statusPlanned": "Barcode scanning, smart tools & voice, sorting by your location, the diaspora basket."
   },
   "showcase": {
     "eyebrow": "In real Ethiopian shops",
@@ -21,17 +22,17 @@
   "solutions": {
     "eyebrow": "How ZAYA helps",
     "heading": "One platform that removes the everyday friction of local commerce.",
-    "sub": "Real tools for real problems — honestly labelled by what's live today and what's on the way."
+    "sub": "Real tools for real problems — on one labelling axis: Built — in device testing, In pilot, Live, Planned. Nothing is in pilot or live yet."
   },
   "diaspora": {
-    "eyebrow": "Our vision — for the diaspora",
+    "eyebrow": "Planned — for the diaspora",
     "heading": "Provide for your family — real goods, not cash into the dark.",
-    "sub": "A trusted neighbourhood shop, delivered locally, with proof it arrived. ZAYA is not a money-transfer service."
+    "sub": "A trusted neighbourhood shop, delivered locally, with proof it arrived. Planned — none of it is built. ZAYA is not a money-transfer service."
   },
   "pricing": {
     "eyebrow": "Pricing",
     "heading": "Simple plans. No hidden fees.",
-    "sub": "Customers use ZAYA free. Merchants start free — forever — and upgrade only when it helps."
+    "sub": "Customers use ZAYA free. Merchants start free — forever."
   },
   "contact": {
     "eyebrow": "Contact us",
