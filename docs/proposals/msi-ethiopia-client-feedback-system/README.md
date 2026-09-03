@@ -13,6 +13,7 @@ other MSI country programmes.
 |---|---|---|
 | [`01-business-requirements.md`](./01-business-requirements.md) | Business Requirements Document: context, objectives, scope, personas, functional and non-functional requirements, safeguarding/ethics, phasing, acceptance criteria, open questions | MSIE leadership, MEL, Quality, Safeguarding, Client Experience, MSI Global |
 | [`02-technical-design.md`](./02-technical-design.md) | Technical design: architecture, client apps and offline sync, backend and data model, multilingual approach, AI agent design, analytics, security, hosting on MSIE infrastructure, delivery plan | MSIE IT/Digital, MSI Global Digital, implementation team |
+| [`03-admin-module.md`](./03-admin-module.md) | Administration module: admin roles and permission matrix, admin console layout, configuration features for every area (organisation, access, forms, languages, analysis rules, escalation, display, devices, integrations, data & privacy, audit, platform), key workflows, admin security, acceptance criteria | MSIE IT/Digital, MEL, Quality, Client Experience, MSI Global |
 
 ## What the system does, in one paragraph
 

@@ -222,6 +222,8 @@ The AI layer is a set of **bounded agents** with explicit inputs, outputs, tools
 
 ### 5.8 Administration and configuration (FR-ADM)
 
+> Summary only. The full administration specification — roles and permission matrix, console layout, per-area features (FR-ADM-10 onward), workflows, admin security and acceptance criteria — is in [`03-admin-module.md`](./03-admin-module.md).
+
 | ID | Requirement | Pri |
 |---|---|---|
 | FR-ADM-1 | **Tenant management**: create tenant (country programme), default language, working languages, time zone, calendar, branding, data-residency setting, AI provider setting, retention policy. | M |
