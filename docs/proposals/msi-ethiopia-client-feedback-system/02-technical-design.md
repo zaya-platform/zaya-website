@@ -356,6 +356,36 @@ Per text item on `claude-opus-5` with a cached ~3,000-token prefix and ~500 toke
 - **Charts**: lightweight (uPlot / Chart.js) with accessible tables behind every chart; consistent colour palette with MSI brand.
 - **Reports**: HTML templates rendered by headless Chromium to PDF; `exceljs` for Excel; `pptxgenjs` for PowerPoint; AI narrative sections inserted from the Insight agent draft, marked "AI draft" until published.
 
+### 7.1 Power BI integration (FR-DASH-9, FR-INT-8)
+
+MSIE already uses Power BI for management reporting, so CFS must be a first-class Power BI source rather than a competing dashboard silo. The in-app dashboards remain (they carry live updates, suppression and case workflows); Power BI is where CFS indicators sit **next to** service statistics, finance and HR data.
+
+**Reporting schema.** A dedicated PostgreSQL schema `bi` exposes a documented star model, refreshed by the analytics worker (every 15 min; nightly full rebuild):
+
+| Table | Grain | Key columns |
+|---|---|---|
+| `bi.fact_feedback` | one row per feedback item | item_key, date_key, site_key, service_line_key, channel_key, language_key, form_key, rating_1_5, recommend_0_10, sentiment, severity, is_critical, is_identified, assisted |
+| `bi.fact_feedback_theme` | item × category | item_key, category_key, sentiment |
+| `bi.fact_case` | one row per case | case_key, item_key, site_key, category_key, severity, sensitivity, opened/ack/resolved dates, ack_minutes, resolve_hours, sla_met |
+| `bi.fact_alert` | one row per alert delivery | alert_key, case_key, tier, channel, sent/delivered/acked timestamps |
+| `bi.fact_service_stats` | site × service × month | visits (denominator) |
+| `bi.dim_date` (Gregorian + Ethiopian calendar columns), `bi.dim_site` (hierarchy), `bi.dim_service_line`, `bi.dim_channel`, `bi.dim_language`, `bi.dim_category` (taxonomy version), `bi.dim_form` | dimensions | |
+
+Rules: **no free text, no audio references, no identifiers** in `bi.*`; restricted/safeguarding cases appear only as counts with category masked; the suppression threshold is applied in Power BI measures using the `n` columns so small cells show blank.
+
+**Connectivity options** (MSIE chooses in discovery):
+1. **On-premises data gateway → PostgreSQL** (recommended for the MSIE-hosted server): a read-only DB role `bi_reader` limited to `bi.*`; Power BI **import** mode with scheduled refresh (8×/day on Pro) or **DirectQuery** for near-real-time pages. TLS to the database; gateway runs on an MSIE Windows host.
+2. **REST/OData feed**: `GET /bi/odata/*` from the CFS API (same schema) for environments without a gateway; token-authenticated.
+3. **Scheduled extract** to a SharePoint/OneDrive folder (Parquet/CSV) for lightweight use.
+
+**Row-level security.** Power BI RLS roles mirror CFS scopes: a `dim_user_scope` table (user principal name → site keys, exported from role bindings) drives `USERPRINCIPALNAME()` filters so a Centre Manager sees only their sites in Power BI as they do in CFS.
+
+**Starter template.** A `.pbit` shipped with the release with pages: Overview (volume, response rate, satisfaction, recommend score), Themes (category frequency × sentiment, trend), Sites (comparison with confidence bands, management-only), Critical & Cases (counts, time-to-acknowledge, SLA compliance), Languages & Channels (equity view), Data Quality (AI agreement, verification backlog). Measures are written once in DAX and documented so MSIE analysts can extend them and merge the pages into the existing management reports.
+
+**Embedding.** Two directions, both optional: (a) an existing MSIE Power BI report embedded in the CFS manager app via Power BI Embedded / "embed for your organisation" (requires Pro/PPU licences for viewers and Entra ID single sign-on, which Keycloak federation already provides); (b) CFS in-app visuals opened from a Power BI page by deep link. Neither replaces the in-app dashboards for operational use.
+
+**Governance.** The `bi.*` schema is versioned with the release; breaking changes are announced with one release of overlap; the semantic-layer views in §7 and the `bi.*` tables use the same metric definitions so figures match between CFS and Power BI.
+
 ---
 
 ## 8. Security and privacy controls
@@ -442,4 +472,4 @@ Per text item on `claude-opus-5` with a cached ~3,000-token prefix and ~500 toke
 4. SMS gateway provider and short code; Telegram bot ownership.
 5. Kiosk/TV hardware standard (Android tablet model, Android TV box vs. Chromium device).
 6. Backup destination (second site, MSI Global cloud) and DR expectations.
-7. Whether Power BI/Excel access to the warehouse views is required for MEL in Phase 1.
+7. Power BI: gateway host and workspace, import vs DirectQuery, which existing reports the CFS pages join, and licensing for embedding (§7.1).

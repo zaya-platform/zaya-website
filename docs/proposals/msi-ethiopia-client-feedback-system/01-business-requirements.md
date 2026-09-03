@@ -198,7 +198,7 @@ The AI layer is a set of **bounded agents** with explicit inputs, outputs, tools
 | FR-DASH-6 | **Near-real-time**: new items and status changes appear within 30 s on open dashboards when online; the dashboard also works from the last synced snapshot offline (read-only). | M |
 | FR-DASH-7 | Site-comparison league views are **restricted to management roles** and show confidence intervals; not shown on public displays. | S |
 | FR-DASH-8 | Export of any view to CSV/Excel/PNG; scheduled e-mail of a dashboard snapshot. | M |
-| FR-DASH-9 | Optional connector for Power BI / Excel (read-only warehouse views) for MEL. | S |
+| FR-DASH-9 | **Power BI integration** (MSIE already reports through Power BI): a documented, read-only, row-level-secured reporting schema that Power BI can connect to (import or DirectQuery through the on-premises data gateway), a starter Power BI template (`.pbit`) reproducing the core CFS pages, and the option to embed existing MSIE Power BI reports inside the manager app; Excel connects to the same schema. Detail in the technical design §7.1. | M |
 
 ### 5.6 Reports and insights (FR-REP)
 
@@ -246,6 +246,7 @@ The AI layer is a set of **bounded agents** with explicit inputs, outputs, tools
 | FR-INT-4 | Identity: OpenID Connect to Microsoft Entra ID; SCIM or CSV user provisioning. | M |
 | FR-INT-5 | Service statistics import (monthly visits per site/service) from the clinic information system or DHIS2 export (CSV/API) as denominators. **No clinical data is imported.** | S |
 | FR-INT-6 | Outbound webhooks and a read-only REST API for MSI global aggregation and BI tools. | S |
+| FR-INT-8 | Power BI reporting schema + gateway connection + starter template (see FR-DASH-9); CFS indicators can be combined in Power BI with MSIE's existing service-statistics reports. | M |
 | FR-INT-7 | Referral link to MSI incident/safeguarding tools (deep link + reference number; no automatic data push unless MSI approves). | S |
 
 ---
@@ -379,6 +380,7 @@ Tenant · Site · Service line · Form (versioned) · Question · Feedback item 
 8. Branding and tone-of-voice guidelines; client charter text in each language.
 9. Retention periods MSIE/MSI Global require for feedback, identified data and audio.
 10. Which MSI global client-voice indicators must be reported, and in which format/frequency.
+11. Power BI: which workspace and gateway MSIE uses, who owns the existing management reports, which pages/measures the client-voice indicators should sit next to, and whether Power BI Pro/Premium licensing allows embedding those reports inside the CFS manager app.
 
 ---
 
