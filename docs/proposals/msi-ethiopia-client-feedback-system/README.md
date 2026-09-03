@@ -11,6 +11,7 @@ other MSI country programmes.
 
 | Document | Purpose | Audience |
 |---|---|---|
+| [`00-management-brief.md`](./00-management-brief.md) | Four-page brief for the Senior Management Team: what the system does, what management and clients get, how it is run, roadmap, decisions requested | MSIE Senior Management Team |
 | [`01-business-requirements.md`](./01-business-requirements.md) | Business Requirements Document: context, objectives, scope, personas, functional and non-functional requirements, safeguarding/ethics, phasing, acceptance criteria, open questions | MSIE leadership, MEL, Quality, Safeguarding, Client Experience, MSI Global |
 | [`02-technical-design.md`](./02-technical-design.md) | Technical design: architecture, client apps and offline sync, backend and data model, multilingual approach, AI agent design, analytics, security, hosting on MSIE infrastructure, delivery plan | MSIE IT/Digital, MSI Global Digital, implementation team |
 | [`03-admin-module.md`](./03-admin-module.md) | Administration module: admin roles and permission matrix, admin console layout, configuration features for every area (organisation, access, forms, languages, analysis rules, escalation, display, devices, integrations, data & privacy, audit, platform), key workflows, admin security, acceptance criteria | MSIE IT/Digital, MEL, Quality, Client Experience, MSI Global |
@@ -28,6 +29,13 @@ centres get a TV "client voice wall" showing aggregated satisfaction and "You sa
 did" actions. The platform is multi-tenant, hosted on MSI Ethiopia's own domain and server
 (with cloud options), and configurable for other MSI country programmes without code
 changes.
+
+## Word edition for management
+
+[`MSI-Ethiopia-Client-Feedback-System.docx`](./MSI-Ethiopia-Client-Feedback-System.docx) compiles the four documents into one
+Word file (cover, contents, Part A brief, Part B requirements, Part C technical design,
+Part D administration). It is generated from the markdown; edit the markdown and rebuild
+rather than editing the Word file directly.
 
 ## Status
 
