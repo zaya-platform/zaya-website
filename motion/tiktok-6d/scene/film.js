@@ -292,7 +292,7 @@ export class Film {
     tl.set(this.pkg, { visible: true }, 25.0); const pkgState = this.pkgState = { k: 0 }; tl.to(pkgState, { k: 1, duration: 4.4, ease: 'power1.inOut' }, 25.1);
     tl.set(this.door, { visible: true }, 24.0); tl.to(this.doorLight, { intensity: 4, duration: 1.0 }, 27.5);
     tl.to(this.doorWoman.state, { opacity: 1, duration: 0.8 }, 27.6);
-    this.orderPanel.position.set(7.6, 2.6, -5.6); this.orderPanel.rotation.set(-0.35, 0.35, 0); this.orderPanel.scale.setScalar(0.5);
+    this.orderPanel.position.set(7.6, 2.6, -5.6); this.orderPanel.rotation.set(-0.35, 0.35, 0); this.orderPanel.scale.setScalar(0.85);
     glassIn(this.orderPanel, 25.3, 0.8); this.uiO.state = { step: 0 };
     tl.to(this.uiO.state, { step: 1, duration: 0.5, ease: 'back.out(2)' }, 26.0); tl.to(this.uiO.state, { step: 2, duration: 0.5, ease: 'back.out(2)' }, 27.5); tl.to(this.uiO.state, { step: 3, duration: 0.6, ease: 'back.out(2)' }, 29.55);
     // the camera is a crane locked to the package (see applyCamera); then it lets go for the pull-back
@@ -378,7 +378,7 @@ export class Film {
     // route draw + package travel
     if (this.routeState) { const n = Math.floor(this.route.geometry.index.count * this.routeState.k); this.route.geometry.setDrawRange(0, n); this.routeGlow.geometry.setDrawRange(0, Math.floor(this.routeGlow.geometry.index.count * this.routeState.k)); }
     if (this.pkgState && this.pkg.visible) { const k = clamp(this.pkgState.k); const pt = this.routeCurve.getPoint(k), tn = this.routeCurve.getTangent(Math.min(0.999, k)); this.pkg.position.copy(pt); this.pkg.position.y += 0.04 + Math.abs(Math.sin(t * 6)) * 0.05; this.pkg.rotation.y = Math.atan2(tn.x, tn.z); this.pkg.rotation.z = Math.sin(t * 6) * 0.06; this.pkgLight.position.copy(this.pkg.position).add(V3(0, 0.8, 0)); this.pkgLight.intensity = 5; this.pkgHalo.scale.setScalar(1 + 0.3 * Math.sin(t * 4)); if (k >= 1) { const w = clamp((this.tl.time() - 29.5) / 0.6); this.pkg.position.lerp(V3(-3.25, 1.05, 9.0), w); } }
-    if (this.cam.follow > 0.5 && this.pkg.visible) { const p = this.pkg.position; this.orderPanel.position.set(p.x - 1.9, p.y + 1.4, p.z - 0.6); this.orderPanel.lookAt(this.camera.position); this.icons.ride.position.lerp(V3(p.x + 1.2, p.y + 3.4, p.z - 1.0), 0.9); }
+    if (this.cam.follow > 0.5 && this.pkg.visible) { const p = this.pkg.position; this.orderPanel.position.set(p.x - 2.5, p.y + 1.8, p.z - 1.2); this.orderPanel.lookAt(this.camera.position); this.icons.ride.position.lerp(V3(p.x + 1.2, p.y + 3.4, p.z - 1.0), 0.9); }
     if (this.wordmark.visible) this.wordmark.rotation.y = Math.sin(t * 0.5) * 0.06;
     this.cap.update(this.camera);
   }
