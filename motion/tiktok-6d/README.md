@@ -25,7 +25,7 @@ motion/tiktok-6d/
 ```bash
 cd motion/tiktok-6d && npm install            # three + gsap (playwright is preinstalled globally)
 pip3 install imageio-ffmpeg pillow numpy       # static ffmpeg with libx264 + contact sheets
-node render.mjs --out out/frames --fps 60      # ~3.2 s/frame on 4 vCPU SwiftShader (≈2.4 h); --fps 30 halves it
+node render.mjs --out out/frames --fps 60      # ~2.5–3.2 s/frame on 4 vCPU SwiftShader (≈2.4 h); --fps 30 halves it (the delivered master is 30 fps)
 node encode.mjs --frames out/frames --fps 60 --out deliverables
 node verify.mjs deliverables/ZAYA_6D_45s_1080x1920.mp4
 ```

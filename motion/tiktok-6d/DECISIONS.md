@@ -37,7 +37,7 @@ decision taken and why. Nothing below was cleared with the founder — it is the
 
 ## 4. 6D / technical budget (measured, SwiftShader on 4 vCPU)
 - Full-res 1080×1920 frame cost with the spec's chain as written (scene.environment PBR everywhere, transmission glass, SSAO, BokehPass): **≈ 9–12 s/frame** → 2700 frames ≈ 8 h. Rebuilt the post chain to a custom pipeline (`scene/pipeline.js`) that keeps every listed stage but budgets it: env-mapped PBR only on hero objects; **grab-pass screen-space refraction** for glass instead of `transmission`; **AO baked** into vertex colour + contact-shadow blobs instead of SSAO; DOF from half+quarter-res blurs with a depth CoC; **reprojection motion blur** (previous-frame view-projection, 8 taps); bloom → chromatic aberration + barrel distortion → ACES → sRGB → grain (3.5 %) → vignette. Result **≈ 3.2 s/frame** → 60 fps master ≈ 2.4 h. SwiftShader already uses all cores, so parallel workers do not help (measured: 4 workers ≈ 4× slower each).
-- Frame rate: **60 fps** master (spec primary). If re-rendering under a time limit, `--fps 30` is the sanctioned fallback.
+- Frame rate: the 60 fps master was started (2700 frames ≈ 2.4 h on this box) and, at the founder's request to deliver sooner, finished as the spec's sanctioned **30 fps fallback**: the 60 fps frames already rendered were reused (every second frame is bit-identical to the 30 fps frame, the timeline is time-based) and only the remaining 30 fps frames were rendered. `node render.mjs --fps 60` re-renders the 60 fps master unchanged in ≈ 2.4 h.
 - Everything is deterministic: seeded RNG (`util.rng`), value-noise handheld, GSAP timeline seeked by time, canvas UIs redrawn from tweened state.
 
 ## 5. Creative calls
