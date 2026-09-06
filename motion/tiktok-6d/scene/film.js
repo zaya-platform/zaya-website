@@ -120,7 +120,7 @@ export class Film {
     this.caps.segR.follow = this.icons.ride; this.caps.segR.followOffset = V3(0, 1.2, 0);
     this.caps.segD.follow = this.icons.diaspora; this.caps.segD.followOffset = V3(0, 1.2, 0);
     // ---- camera rig state (tweened) ----
-    this.cam = { x: 0, y: 4, z: 30, tx: 0, ty: 3, tz: 0, fov: 40, roll: 0, shake: 0, hand: 1, follow: 0, ox: 3, oy: 6, oz: 5, focus: 24, range: 10, maxBlur: 0.55, mblur: 0.7, bloom: 0.3, exposure: 0.82, fog: 0.028, lift: 0 };
+    this.cam = { x: 0, y: 4, z: 30, tx: 0, ty: 3, tz: 0, fov: 40, roll: 0, shake: 0, hand: 1, follow: 0, ox: 3, oy: 6, oz: 5, focus: 24, range: 10, maxBlur: 0.25, mblur: 0.3, bloom: 0.2, exposure: 0.86, fog: 0.028, lift: 0 };
     this.fx = { keyI: 2.2, rimI: 40, fillI: 30, rimAngle: 0, partI: 1, shaftI: 1, lightPulse: 1 };
   }
 
@@ -355,8 +355,8 @@ export class Film {
   }
   applyState(t) {
     const c = this.cam, fx = this.fx, p = this.pipeline.params;
-    p.focus = c.follow > 0.5 && this.followFocus ? this.followFocus : c.focus; p.range = c.follow > 0.5 ? 3.0 : c.range; p.maxBlur = c.maxBlur; p.mblur = c.mblur; p.bloom = c.bloom; p.exposure = c.exposure;
-    this.world.fog.density = c.fog; this.ground.uniforms.fogDensity.value = c.fog; this.skyU.uTime.value = t; this.skyU.uLift.value = c.lift;
+    p.focus = c.follow > 0.5 && this.followFocus ? this.followFocus : c.focus; p.range = c.follow > 0.5 ? 5.0 : c.range; p.maxBlur = c.maxBlur; p.mblur = c.mblur; p.bloom = c.bloom; p.exposure = c.exposure;
+    this.world.fog.density = c.fog; this.ground.uniforms.fogDensity.value = c.fog; p.grain = 0.018; p.caAmount = 0.0018; p.distort = 0.02; p.vignette = 0.42; this.skyU.uTime.value = t; this.skyU.uLift.value = c.lift;
     // beat-synced light pulse (120 BPM) on the rim/fill lights and the glass edges
     const beat = 0.5 + 0.5 * Math.pow(Math.max(0, Math.cos((t % 0.5) / 0.5 * Math.PI * 2)), 3) ; const pulse = 1 + 0.18 * beat;
     this.key.intensity = fx.keyI * 0.6; const ka = 0.9 + fx.rimAngle * 0.5; this.key.position.set(Math.cos(ka) * 12, 14, Math.sin(ka) * 12).add(this.camera.position.clone().multiplyScalar(0.3)); this.key.target.position.copy(V3(c.tx, c.ty, c.tz)); this.key.target.updateMatrixWorld();
@@ -369,15 +369,16 @@ export class Film {
     if (this.uiC.state) this.uiC.draw(this.uiC.state); if (this.uiM.state) this.uiM.draw(this.uiM.state); if (this.uiO.state) this.uiO.draw(this.uiO.state); if (this.uiD.state) this.uiD.draw(this.uiD.state);
     [this.panel, this.orderPanel, this.basketPanel].forEach((g) => { g.userData.uniforms.uTime.value = t; });
     // orbiting pins around the customer (3D orbit, tilted)
-    this.orbit.rotation.y = t * 0.9; this.orbit.rotation.x = 0.35; this.orbitPins.forEach((pn, i) => { const a = i / this.orbitPins.length * Math.PI * 2; pn.position.set(Math.cos(a) * 1.55, 0.3 + Math.sin(a * 2 + t) * 0.25, Math.sin(a) * 1.55); pn.rotation.y = -t * 0.9; });
+    this.orbit.rotation.y = t * 0.9; this.orbit.rotation.x = 0.35; this.orbitPins.forEach((pn, i) => { const a = i / this.orbitPins.length * Math.PI * 2; pn.position.set(Math.cos(a) * 1.55, 0.3 + Math.sin(a * 2 + t) * 0.25, Math.sin(a) * 1.55); pn.rotation.y = -t * 0.9; pn.children[1].scale.setScalar(1 + 0.25 * Math.max(0, Math.sin(t * 4 + i * 1.3))); });
+    this.chips.forEach((c, i) => { if (c.visible) c.position.y += Math.sin(t * 2.2 + i) * 0.004; });
     // icons: idle float + slow turn
-    Object.values(this.icons).forEach((ic, i) => { if (!ic.visible) return; ic.userData.tubes.rotation.y = Math.sin(t * 0.7 + i) * 0.25; ic.userData.tubes.position.y = Math.sin(t * 1.3 + i * 1.7) * 0.06; ic.userData.shadow.position.y = -ic.position.y + 0.02 - (ic.userData.tubes.position.y * 0.2); ic.userData.shadow.scale.setScalar(1 - ic.userData.tubes.position.y * 0.6); });
+    Object.values(this.icons).forEach((ic, i) => { if (!ic.visible) return; ic.userData.tubes.rotation.y = Math.sin(t * 0.9 + i) * 0.5; ic.userData.tubes.rotation.x = Math.sin(t * 0.6 + i * 2.1) * 0.12; ic.userData.tubes.position.y = Math.sin(t * 1.6 + i * 1.7) * 0.08; ic.userData.halo.scale.setScalar(1 + 0.08 * Math.sin(t * 6.283 * 2 + i)); ic.userData.shadow.position.y = -ic.position.y + 0.02 - (ic.userData.tubes.position.y * 0.2); ic.userData.shadow.scale.setScalar(1 - ic.userData.tubes.position.y * 0.6); });
     this.logo.userData.rings.children.forEach((r, i) => { const k = ((t * 0.33 + i / 3) % 1); r.scale.setScalar(0.12 + 0.88 * k); r.material.opacity = 0.55 * Math.sin(k * Math.PI) * (this.logo.visible ? 1 : 0) * 0.5; });
     this.logo.userData.disc.scale.setScalar(1 + 0.04 * Math.sin(t * 2.1));
     // route draw + package travel
     if (this.routeState) { const n = Math.floor(this.route.geometry.index.count * this.routeState.k); this.route.geometry.setDrawRange(0, n); this.routeGlow.geometry.setDrawRange(0, Math.floor(this.routeGlow.geometry.index.count * this.routeState.k)); }
     if (this.pkgState && this.pkg.visible) { const k = clamp(this.pkgState.k); const pt = this.routeCurve.getPoint(k), tn = this.routeCurve.getTangent(Math.min(0.999, k)); this.pkg.position.copy(pt); this.pkg.position.y += 0.04 + Math.abs(Math.sin(t * 6)) * 0.05; this.pkg.rotation.y = Math.atan2(tn.x, tn.z); this.pkg.rotation.z = Math.sin(t * 6) * 0.06; this.pkgLight.position.copy(this.pkg.position).add(V3(0, 0.8, 0)); this.pkgLight.intensity = 5; this.pkgHalo.scale.setScalar(1 + 0.3 * Math.sin(t * 4)); if (k >= 1) { const w = clamp((this.tl.time() - 29.5) / 0.6); this.pkg.position.lerp(V3(-3.25, 1.05, 9.0), w); } }
-    if (this.cam.follow > 0.5 && this.pkg.visible) { const p = this.pkg.position; this.orderPanel.position.set(p.x - 1.5, p.y + 3.0, p.z + 0.6); this.orderPanel.lookAt(this.camera.position); this.icons.ride.position.lerp(V3(p.x + 1.2, p.y + 3.4, p.z - 1.0), 0.9); }
+    if (this.cam.follow > 0.5 && this.pkg.visible) { const p = this.pkg.position; this.orderPanel.position.set(p.x - 1.9, p.y + 1.4, p.z - 0.6); this.orderPanel.lookAt(this.camera.position); this.icons.ride.position.lerp(V3(p.x + 1.2, p.y + 3.4, p.z - 1.0), 0.9); }
     if (this.wordmark.visible) this.wordmark.rotation.y = Math.sin(t * 0.5) * 0.06;
     this.cap.update(this.camera);
   }

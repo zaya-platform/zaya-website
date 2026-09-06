@@ -41,7 +41,7 @@ export class Pipeline {
       float viewZ(float d){ float z = d * 2.0 - 1.0; return (2.0 * near * far) / (far + near - z * (far - near)); }
       void main(){
         float vz = viewZ(texture2D(tDepth, vUv).x);
-        float dz = abs(vz - focus); float coc = smoothstep(0.0, 1.0, (dz - range * 0.5) / max(range * 1.6, 0.001)) * maxBlur;
+        float dz = abs(vz - focus); float coc = smoothstep(0.0, 1.0, (dz - range) / max(range * 2.5, 0.001)) * maxBlur;
         vec4 s = texture2D(tScene, vUv); vec4 h = texture2D(tHalf, vUv); vec4 q = texture2D(tQuarter, vUv);
         vec4 c = coc < 0.5 ? mix(s, h, coc * 2.0) : mix(h, q, (coc - 0.5) * 2.0);
         gl_FragColor = c; }`,
@@ -57,9 +57,9 @@ export class Pipeline {
         vec4 c = vec4(0.0); const int N = 8;
         for (int i = 0; i < N; i++) { float f = (float(i) / float(N - 1)) - 0.5; c += texture2D(tColor, vUv + vel * f); }
         gl_FragColor = c / float(N); }`,
-      { tColor: { value: null }, tDepth: { value: null }, invVP: { value: new THREE.Matrix4() }, prevVP: { value: new THREE.Matrix4() }, strength: { value: 0.6 }, maxVel: { value: 0.03 } });
+      { tColor: { value: null }, tDepth: { value: null }, invVP: { value: new THREE.Matrix4() }, prevVP: { value: new THREE.Matrix4() }, strength: { value: 0.6 }, maxVel: { value: 0.014 } });
     this.capM = mat(/* glsl */`uniform sampler2D tColor, tCap; varying vec2 vUv; void main(){ vec4 c = texture2D(tColor, vUv); vec4 k = texture2D(tCap, vUv); gl_FragColor = vec4(c.rgb * (1.0 - k.a) + k.rgb, 1.0); }`, { tColor: { value: null }, tCap: { value: null } });
-    this.finalM = mat(/* glsl */`uniform sampler2D t; uniform float time, grain, vignette, distort, caAmount, exposure; uniform vec2 res; uniform float guides; varying vec2 vUv;
+    this.finalM = mat(/* glsl */`uniform sampler2D t; uniform float time, grain, vignette, distort, caAmount, exposure, sharpen; uniform vec2 res; uniform float guides; varying vec2 vUv;
       vec3 aces(vec3 x){ const float a=2.51, b=0.03, c=2.43, d=0.59, e=0.14; return clamp((x*(a*x+b))/(x*(c*x+d)+e), 0.0, 1.0); }
       float hash(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
       void main(){
@@ -67,6 +67,8 @@ export class Pipeline {
         vec2 uv = vUv + (vUv - 0.5) * r2 * distort;               // barrel distortion
         vec2 dir = (uv - 0.5) * r2 * caAmount;                      // radial chromatic aberration
         vec3 c; c.r = texture2D(t, uv + dir).r; c.g = texture2D(t, uv).g; c.b = texture2D(t, uv - dir).b;
+        vec2 px = 1.0 / res; vec3 blur = (texture2D(t, uv + vec2(px.x, 0.0)).rgb + texture2D(t, uv - vec2(px.x, 0.0)).rgb + texture2D(t, uv + vec2(0.0, px.y)).rgb + texture2D(t, uv - vec2(0.0, px.y)).rgb) * 0.25;
+        c = max(c + (c - blur) * sharpen, 0.0);                     // unsharp mask for a crisp phone-screen read
         c *= exposure;
         c = aces(c);                                                  // filmic, never clips above 1
         c = mix(c * 12.92, 1.055 * pow(c, vec3(1.0/2.4)) - 0.055, step(0.0031308, c)); // linear -> sRGB
@@ -79,10 +81,10 @@ export class Pipeline {
           if (p.y < 320.0) c = mix(c, vec3(1.0, 0.0, 0.0), 0.15);
         }
         gl_FragColor = vec4(c, 1.0); }`,
-      { t: { value: null }, time: { value: 0 }, grain: { value: 0.035 }, vignette: { value: 0.5 }, distort: { value: 0.045 }, caAmount: { value: 0.004 }, exposure: { value: 1.0 }, res: { value: new THREE.Vector2(W, H) }, guides: { value: 0 } });
+      { t: { value: null }, time: { value: 0 }, grain: { value: 0.035 }, vignette: { value: 0.5 }, distort: { value: 0.045 }, caAmount: { value: 0.004 }, exposure: { value: 1.0 }, sharpen: { value: 0.45 }, res: { value: new THREE.Vector2(W, H) }, guides: { value: 0 } });
 
     this.bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.2, 0.5, 1.12);
-    this.params = { focus: 10, range: 6, maxBlur: 1, mblur: 0.6, bloom: 0.55, exposure: 1.0, grain: 0.035, caAmount: 0.004, distort: 0.045, vignette: 0.5 };
+    this.params = { focus: 10, range: 6, maxBlur: 0.25, mblur: 0.3, bloom: 0.2, exposure: 1.0, grain: 0.018, caAmount: 0.0018, distort: 0.02, vignette: 0.42 };
     this.prevVP = new THREE.Matrix4(); this.hasPrev = false;
     this.tmp = new THREE.Matrix4();
   }
@@ -121,7 +123,7 @@ export class Pipeline {
     // 6. bloom (composites additively into rtA)
     this.bloom.strength = p.bloom; this.bloom.render(r, null, this.rtA, 0, false);
     // 7. final grade to screen
-    const f = this.finalM.uniforms; f.t.value = this.rtA.texture; f.time.value = time; f.grain.value = p.grain; f.vignette.value = p.vignette; f.distort.value = p.distort; f.caAmount.value = p.caAmount; f.exposure.value = p.exposure;
+    const f = this.finalM.uniforms; f.t.value = this.rtA.texture; f.time.value = time; f.grain.value = p.grain; f.vignette.value = p.vignette; f.distort.value = p.distort; f.caAmount.value = p.caAmount; f.exposure.value = p.exposure; f.vignette.value = p.vignette;
     this.blit(this.finalM, null);
   }
 }
