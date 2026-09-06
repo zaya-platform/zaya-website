@@ -15,7 +15,7 @@ export function buildCity(scene, seed = 7) {
     const n = 1 + Math.floor(R() * 3);
     for (let k = 0; k < n; k++) {
       const w = 1.0 + R() * 1.6, d = 1.0 + R() * 1.6;
-      const h = 0.7 + R() * R() * (dist < 4 ? 5.5 : 3.2) + (R() < 0.08 ? 4 : 0);
+      const nearRoute = (Math.abs(bz) <= 1 && bx >= -1 && bx <= 2) || (bx === 1 || bx === 2) && bz >= -2 && bz <= 1; const h = 0.7 + R() * R() * (nearRoute ? 2.6 : dist < 4 ? 5.0 : 3.2) + (R() < 0.08 && !nearRoute ? 4 : 0);
       const x = cx + (R() - 0.5) * (BLOCK - w), z = cz + (R() - 0.5) * (BLOCK - d);
       const g = new THREE.BoxGeometry(w, h, d); g.translate(x, h / 2, z);
       // baked AO in vertex colour: darker at the base; plus per-building tint variance
@@ -33,7 +33,7 @@ export function buildCity(scene, seed = 7) {
   const inject = (shader) => {
     shader.uniforms.uAssembly = uniforms.uAssembly; shader.uniforms.uTime = uniforms.uTime;
     shader.vertexShader = shader.vertexShader.replace('#include <common>', `#include <common>\nattribute float aDelay; uniform float uAssembly;`)
-      .replace('#include <begin_vertex>', `#include <begin_vertex>\n float k0 = clamp((uAssembly - aDelay) / 0.32, 0.0, 1.0); float k = 1.0 - pow(1.0 - k0, 3.0);\n transformed.y *= k; transformed.z += (1.0 - k) * -60.0; transformed.y += (1.0 - k) * 8.0;`);
+      .replace('#include <begin_vertex>', `#include <begin_vertex>\n float k0 = clamp((uAssembly - aDelay) / 0.32, 0.0, 1.0); float k = 1.0 - pow(1.0 - k0, 3.0);\n transformed.y *= k; transformed.z += (1.0 - k) * -40.0; transformed.y -= (1.0 - k) * 30.0;`);
   };
   const mat = new THREE.MeshLambertMaterial({ color: 0x2a3a4a, vertexColors: true, emissive: 0x06090c });
   mat.onBeforeCompile = inject;
@@ -55,7 +55,7 @@ export function buildCity(scene, seed = 7) {
   const mergedEdges = BGU.mergeGeometries(edgeGeos, false);
   const wireMat = new THREE.LineBasicMaterial({ color: C.tealBright, transparent: true, opacity: 0.9 });
   wireMat.onBeforeCompile = (sh) => { sh.uniforms.uAssembly = uniforms.uAssembly; sh.uniforms.uWire = uniforms.uWire;
-    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aDelay; uniform float uAssembly; varying float vK;').replace('#include <begin_vertex>', '#include <begin_vertex>\n float k0 = clamp((uAssembly - aDelay) / 0.32, 0.0, 1.0); float k = 1.0 - pow(1.0 - k0, 3.0); vK = k0; transformed.y *= k; transformed.z += (1.0 - k) * -60.0; transformed.y += (1.0 - k) * 8.0;');
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aDelay; uniform float uAssembly; varying float vK;').replace('#include <begin_vertex>', '#include <begin_vertex>\n float k0 = clamp((uAssembly - aDelay) / 0.32, 0.0, 1.0); float k = 1.0 - pow(1.0 - k0, 3.0); vK = k0; transformed.y *= k; transformed.z += (1.0 - k) * -40.0; transformed.y -= (1.0 - k) * 30.0;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uWire; varying float vK;').replace('vec4 diffuseColor = vec4( diffuse, opacity );', 'vec4 diffuseColor = vec4( diffuse, opacity * uWire * smoothstep(0.0, 0.15, vK) );'); };
   const wire = new THREE.LineSegments(mergedEdges, wireMat); wire.frustumCulled = false; scene.add(wire);
   return { mesh, wire, wins, uniforms, buildings, PITCH, N };
@@ -78,7 +78,8 @@ export function buildGround(scene) {
         float r = length(vW.xz); float ring = exp(-pow((r - uShock) / uShockW, 2.0) * 3.0); float inside = smoothstep(uShock - uShockW * 2.5, uShock, r);
         base += vec3(0.08, 0.64, 0.64) * ring * uShockI * 1.6 + vec3(0.03, 0.2, 0.2) * (1.0 - inside) * step(0.0, uShock) * uShockI * 0.25;
         float fogF = 1.0 - exp(-fogDensity * fogDensity * vFogDepth * vFogDepth);
-        gl_FragColor = vec4(mix(base, fogColor, fogF), 1.0); }` });
+        base = mix(vec3(0.0), base, smoothstep(0.0, 0.6, uAssembly));
+        gl_FragColor = vec4(mix(base, fogColor * smoothstep(0.0, 0.7, uAssembly), fogF), 1.0); }` });
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), mat); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.01; scene.add(ground);
   return { ground, uniforms };
 }
@@ -89,17 +90,18 @@ export function buildPins(scene, buildings, seed = 11) {
   const n = pins.length;
   const geo = BGU.mergeGeometries([new THREE.ConeGeometry(0.16, 0.42, 14).translate(0, 0.21, 0).rotateX(Math.PI), new THREE.SphereGeometry(0.19, 16, 12).translate(0, 0.32, 0)]);
   const mat = new THREE.MeshLambertMaterial({ color: 0x8a929c, emissive: 0x111111 });
+  const state = { shock: -1, flicker: 1, allOn: 0, uAssembly: { value: 1 } };
   const aOn = new THREE.InstancedBufferAttribute(new Float32Array(n), 1); geo.setAttribute('aOn', aOn);
   mat.onBeforeCompile = (sh) => {
     sh.uniforms.uTime = { value: 0 }; mat.userData.sh = sh;
-    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aOn; varying float vOn;').replace('#include <begin_vertex>', '#include <begin_vertex>\n vOn = aOn; float pop = 1.0 + 0.35 * sin(clamp(aOn, 0.0, 1.0) * 3.14159); transformed *= pop;');
+    sh.uniforms.uAssembly = state.uAssembly;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aOn; varying float vOn; uniform float uAssembly;').replace('#include <begin_vertex>', '#include <begin_vertex>\n vOn = aOn; float pop = 1.0 + 0.35 * sin(clamp(aOn, 0.0, 1.0) * 3.14159); transformed *= pop * smoothstep(0.85, 1.0, uAssembly);');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vOn;').replace('vec4 diffuseColor = vec4( diffuse, opacity );', 'vec4 diffuseColor = vec4( mix(diffuse, vec3(0.6, 1.0, 1.0), clamp(vOn, 0.0, 1.0)), opacity );').replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n totalEmissiveRadiance = mix(vec3(0.02), vec3(0.09, 0.8, 0.8) * 0.9, clamp(vOn, 0.0, 1.0));');
   };
   const mesh = new THREE.InstancedMesh(geo, mat, n); mesh.frustumCulled = false;
   const m4 = new THREE.Matrix4();
   pins.forEach((p, i) => { m4.makeTranslation(p.x, p.y, p.z); mesh.setMatrixAt(i, m4); });
   scene.add(mesh);
-  const state = { shock: -1, flicker: 1, allOn: 0 };
   function update(t) {
     for (let i = 0; i < n; i++) { const p = pins[i]; let on = 0; if (state.shock > p.r) on = clamp((state.shock - p.r) / 2.5); on = Math.max(on, state.allOn);
       const fl = 0.5 + 0.5 * Math.sin(t * 9 + p.ph * 3.1) * Math.sin(t * 2.3 + p.ph); aOn.array[i] = on > 0 ? on : -0.6 + 0.6 * fl * state.flicker; }

@@ -33,22 +33,23 @@ export class Film {
     this.hemi = new THREE.HemisphereLight(0x1a3a44, 0x05080a, 0.35); world.add(this.hemi);
     this.jac = new THREE.PointLight(C.plum, 12, 14, 1.8); this.jac.position.set(-4, 3, 6); world.add(this.jac); // jacaranda-hour violet
     // ---- world layers ----
-    this.city = buildCity(world); this.ground = buildGround(world); this.pins = buildPins(world, this.city.buildings);
+    this.city = buildCity(world); this.ground = buildGround(world); this.pins = buildPins(world, this.city.buildings); this.pins.state.uAssembly.value = 0; this.pins.state.uAssembly = this.city.uniforms.uAssembly; this.ground.uniforms.uAssembly = this.city.uniforms.uAssembly;
     this.particles = buildParticles(world); this.shafts = buildShafts(world); this.buses = buildMinibuses(world, this.city.PITCH); this.signs = buildSigns(world, this.city.buildings);
     // sky volume (gradient + slow nebula) — the far depth layer
-    const skyU = this.skyU = { uTime: { value: 0 }, uLift: { value: 0 } };
+    const skyU = this.skyU = { uTime: { value: 0 }, uLift: { value: 0 }, uAssembly: this.city.uniforms.uAssembly };
     const sky = new THREE.Mesh(new THREE.SphereGeometry(240, 32, 16), new THREE.ShaderMaterial({ uniforms: skyU, side: THREE.BackSide, depthWrite: false, vertexShader: `varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-      fragmentShader: `uniform float uTime, uLift; varying vec3 vP; float n(vec3 p){ return fract(sin(dot(p, vec3(12.99, 78.23, 37.71))) * 43758.5); } float sn(vec3 p){ vec3 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f); return mix(mix(mix(n(i), n(i+vec3(1,0,0)), f.x), mix(n(i+vec3(0,1,0)), n(i+vec3(1,1,0)), f.x), f.y), mix(mix(n(i+vec3(0,0,1)), n(i+vec3(1,0,1)), f.x), mix(n(i+vec3(0,1,1)), n(i+vec3(1,1,1)), f.x), f.y), f.z); }
-      void main(){ float h = clamp(vP.y, 0.0, 1.0); vec3 fogc = vec3(0.039, 0.059, 0.07); vec3 c = mix(fogc, vec3(0.012, 0.04, 0.055), smoothstep(0.0, 0.5, h)); float neb = sn(vP * 3.0 + uTime * 0.02) * 0.6 + sn(vP * 7.0 - uTime * 0.03) * 0.4; c += vec3(0.02, 0.07, 0.08) * pow(neb, 2.4) * (0.5 + uLift) * smoothstep(0.05, 0.6, h); c += vec3(0.08, 0.035, 0.015) * pow(sn(vP * 2.0 + 5.0), 3.0) * smoothstep(0.1, 0.7, h) * 0.5; gl_FragColor = vec4(c, 1.0); }` }));
+      fragmentShader: `uniform float uTime, uLift, uAssembly; varying vec3 vP; float n(vec3 p){ return fract(sin(dot(p, vec3(12.99, 78.23, 37.71))) * 43758.5); } float sn(vec3 p){ vec3 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f); return mix(mix(mix(n(i), n(i+vec3(1,0,0)), f.x), mix(n(i+vec3(0,1,0)), n(i+vec3(1,1,0)), f.x), f.y), mix(mix(n(i+vec3(0,0,1)), n(i+vec3(1,0,1)), f.x), mix(n(i+vec3(0,1,1)), n(i+vec3(1,1,1)), f.x), f.y), f.z); }
+      void main(){ float h = clamp(vP.y, 0.0, 1.0); vec3 fogc = vec3(0.039, 0.059, 0.07); vec3 c = mix(fogc, vec3(0.012, 0.04, 0.055), smoothstep(0.0, 0.5, h)); float neb = sn(vP * 3.0 + uTime * 0.02) * 0.6 + sn(vP * 7.0 - uTime * 0.03) * 0.4; c += vec3(0.02, 0.07, 0.08) * pow(neb, 2.4) * (0.5 + uLift) * smoothstep(0.05, 0.6, h); c += vec3(0.08, 0.035, 0.015) * pow(sn(vP * 2.0 + 5.0), 3.0) * smoothstep(0.1, 0.7, h) * 0.5; c *= smoothstep(0.0, 0.7, uAssembly); gl_FragColor = vec4(c, 1.0); }` }));
     world.add(sky);
     // ---- hero: logo, shards, streak ----
     this.logo = buildLogo({ env, size: 2.2 }); this.logo.position.set(0, 6, 0); world.add(this.logo);
     this.shards = buildShards(this.logo, { env });
     const streakMat = new THREE.MeshBasicMaterial({ color: 0xbfffff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
-    this.streak = new THREE.Mesh(new THREE.CapsuleGeometry(0.08, 1, 4, 12), streakMat); this.streak.rotation.z = Math.PI / 2; world.add(this.streak);
+    this.streak = new THREE.Mesh(new THREE.CapsuleGeometry(0.16, 1, 4, 12), streakMat); this.streak.rotation.z = -0.91; world.add(this.streak);
     this.streakLight = new THREE.PointLight(C.tealBright, 0, 40, 1.5); world.add(this.streakLight);
     const flareTex = (() => { const { ctx, tex } = canvasTex(256, 256); const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.15, 'rgba(190,255,250,0.8)'); g.addColorStop(0.5, 'rgba(14,165,164,0.18)'); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 256); tex.needsUpdate = true; return tex; })();
     this.flash = new THREE.Sprite(new THREE.SpriteMaterial({ map: flareTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false })); world.add(this.flash);
+    this.streakGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: flareTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false })); world.add(this.streakGlow);
     const streakTex = (() => { const { ctx, tex } = canvasTex(512, 64); const g = ctx.createLinearGradient(0, 0, 512, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,220,190,0.9)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.fillRect(0, 24, 512, 16); tex.needsUpdate = true; return tex; })();
     this.anamorphic = new THREE.Sprite(new THREE.SpriteMaterial({ map: streakTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false })); world.add(this.anamorphic);
     // ---- segment icons ----
@@ -184,12 +185,13 @@ export class Film {
     // ===== 0.0–3.0 HOOK =====
     cu.uAssembly.value = 0; cu.uWire.value = 0; this.logo.visible = false; this.logo.scale.setScalar(0.001);
     tl.set(cam, { x: 0, y: 4.2, z: 32, tx: 0, ty: 3.5, tz: 0, fov: 40, focus: 26, range: 12, hand: 0.6, exposure: 0.82 }, 0);
-    tl.set(fx, { keyI: 0.3, rimI: 4, fillI: 4, partI: 0.35, shaftI: 0 }, 0);
+    tl.set(fx, { keyI: 0.3, rimI: 4, fillI: 4, partI: 0.0, shaftI: 0 }, 0);
     // streak rips through frame (bottom-left -> logo point)
-    this.streak.position.set(-16, -6, 14); this.streak.scale.set(1, 1, 1);
-    tl.set(this.streak.material, { opacity: 1 }, 0.0); tl.set(this.streakLight, { intensity: 40 }, 0.0);
-    tl.to(this.streak.position, { x: 0, y: 6, z: 0, duration: 0.7, ease: 'power4.in' }, 0.0);
-    tl.to(this.streak.scale, { x: 14, duration: 0.5, ease: 'power3.in' }, 0.1); tl.to(this.streak.scale, { x: 0.2, duration: 0.15, ease: 'power4.out' }, 0.65);
+    this.streak.position.set(-9, -1, 10); this.streak.scale.set(1, 1, 1);
+    tl.set(this.streak.material, { opacity: 1 }, 0.0); tl.set(this.streakLight, { intensity: 60 }, 0.0); this.streakLight.position.set(-11, 0.5, 12); tl.to(this.streakLight.position, { x: 0, y: 6, z: 0, duration: 0.68, ease: 'power2.in' }, 0.0);
+    tl.to(this.streak.position, { x: 0, y: 6, z: 0, duration: 0.68, ease: 'power2.in' }, 0.0);
+    tl.to(this.streak.scale, { y: 10, x: 1.4, z: 1.4, duration: 0.5, ease: 'power2.in' }, 0.05); tl.to(this.streak.scale, { y: 0.2, duration: 0.15, ease: 'power4.out' }, 0.65);
+    this.streakGlow.position.copy(this.streak.position); tl.set(this.streakGlow.material, { opacity: 0.9 }, 0); tl.to(this.streakGlow.position, { x: 0, y: 6, z: 0, duration: 0.68, ease: 'power2.in' }, 0.0); tl.fromTo(this.streakGlow.scale, { x: 1.5, y: 1.5 }, { x: 5, y: 5, duration: 0.68, ease: 'power2.in' }, 0); tl.to(this.streakGlow.material, { opacity: 0, duration: 0.2 }, 0.7);
     tl.to(this.streak.material, { opacity: 0, duration: 0.2 }, 0.72); tl.set(this.streakLight, { intensity: 0 }, 0.9);
     tl.to(fx, { partI: 1, duration: 0.6 }, 0.6);
     // impact flash + explosion into the wireframe city assembling in Z
@@ -212,7 +214,7 @@ export class Film {
     capIn(caps.prob1, 3.75, 0.6, 1.35); capIn(caps.prob2, 5.35, 0.6, 1.25);
     tl.to(this.logo.position, { x: 0, y: 6, z: 0, duration: 0.1 }, 3.0);
     // ===== 7.0–8.0 THE SWITCH: the mark ignites; teal shockwave snaps every pin online =====
-    tl.to(cam, { x: 6.2, y: 2.4, z: 4.2, tx: 0, ty: 5.6, tz: 0, fov: 42, focus: 9, range: 6, duration: 1.0, ease: 'power3.inOut' }, 6.45);
+    tl.to(cam, { x: 9.0, y: 2.6, z: 3.2, tx: 0, ty: 5.8, tz: 0, fov: 42, focus: 10, range: 6, duration: 1.0, ease: 'power3.inOut' }, 6.45);
     const disc = this.logo.userData.disc.material, whiteM = this.logo.userData.white;
     tl.to(disc, { emissiveIntensity: 4.5, duration: 0.18, ease: 'expo.out' }, 7.0); tl.to(disc, { emissiveIntensity: 0.6, duration: 1.0 }, 7.2);
     tl.fromTo(whiteM, { emissiveIntensity: 0 }, { emissiveIntensity: 1.2, duration: 0.15 }, 7.0); tl.to(whiteM, { emissiveIntensity: 0.1, duration: 0.9 }, 7.15);
@@ -278,7 +280,7 @@ export class Film {
     // ===== 24.0–32.0 DELIVERY (Planned): shelves fold into the road; route draws; package travels =====
     tl.to(this.merchant.state, { opacity: 0, duration: 0.5 }, 23.3); tl.to(this.panel.userData.uniforms.uReveal, { value: 0, duration: 0.45, ease: 'power3.in' }, 23.3); tl.set(this.panel, { visible: false }, 23.8);
     this.chips.forEach((c, i) => { tl.to(c.position, { y: 0.2, x: 9, z: -7.4 + i * 0.3, duration: 0.6, ease: 'power3.in' }, 23.3 + i * 0.08); tl.set(c, { visible: false }, 23.95 + i * 0.08); });
-    tl.set(cam, { ox: 3.4, oy: 12.0, oz: 5.2 }, 23.4); tl.to(cam, { follow: 1, duration: 1.4, ease: 'power3.inOut' }, 23.6); tl.to(cam, { ox: 2.7, oy: 9.6, oz: 4.4, duration: 5.0, ease: 'sine.inOut' }, 25.4); tl.to(cam, { follow: 0, duration: 1.4, ease: 'power3.inOut' }, 31.3);
+    tl.set(cam, { ox: 3.0, oy: 13.5, oz: 4.5 }, 23.4); tl.to(cam, { follow: 1, duration: 1.4, ease: 'power3.inOut' }, 23.6); tl.to(cam, { ox: 2.2, oy: 12.0, oz: 3.6, duration: 5.0, ease: 'sine.inOut' }, 25.4); tl.to(cam, { follow: 0, duration: 1.4, ease: 'power3.inOut' }, 31.3);
     this.inv.blocks.forEach((b, i) => { const p = this.routeCurve.getPoint(clamp(i / this.inv.blocks.length)); tl.to(b.position, { x: p.x - this.inv.group.position.x, y: 0.2, z: p.z - this.inv.group.position.z, duration: 0.7, ease: 'power3.in' }, 23.4 + i * 0.03); tl.to(b.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 0.25, ease: 'power3.in' }, 24.1 + i * 0.03); });
     tl.to(this.inv.shelf.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 0.4, ease: 'power3.in' }, 23.8);
     tl.to(this.icons.merchants.position, { x: 4, y: 7.5, z: -10, duration: 1.2, ease: 'power3.inOut' }, 23.4); tl.to(this.icons.merchants.scale, { x: 0.35, y: 0.35, z: 0.35, duration: 1.0 }, 23.5);
@@ -332,7 +334,7 @@ export class Film {
     this.flash.position.set(0, 28.2, 0.6); tl.set(this.flash.material, { opacity: 0.6 }, 41.2); tl.set(this.flash.scale, { x: 1, y: 1 }, 41.2); tl.to(this.flash.scale, { x: 10, y: 10, duration: 0.7, ease: 'expo.out' }, 41.2); tl.to(this.flash.material, { opacity: 0, duration: 0.7 }, 41.3);
     const diamond = { customers: V3(0, 30.4, 0.3), merchants: V3(2.55, 27.9, 0.3), ride: V3(0, 25.7, 0.3), diaspora: V3(-2.55, 27.9, 0.3) };
     Object.entries(diamond).forEach(([k, p], i) => { const ic = this.icons[k]; tl.to(ic.position, { x: p.x, y: p.y, z: p.z, duration: 1.4, ease: 'power3.inOut' }, 40.0 + i * 0.1); tl.to(ic.scale, { x: 0.5, y: 0.5, z: 0.5, duration: 1.2, ease: 'back.out(1.5)' }, 40.4 + i * 0.1); tl.to(ic.rotation, { y: Math.PI * 2, duration: 1.4, ease: 'power2.inOut' }, 40.0 + i * 0.1); tl.to(ic.userData.halo.material, { opacity: 0.2, duration: 0.5 }, 41.0); });
-    capIn(caps.tag1, 41.6, 0.7, 1.35); capIn(caps.tag2, 42.9, 0.7, 2.6);
+    capIn(caps.tag1, 41.5, 0.7, 1.1); capIn(caps.tag2, 43.1, 0.7, 2.6);
     // end card: wordmark under the mark, app row, coming soon — hold from 43.8
     this.wordmark.position.set(0, 24.6, 0.6); tl.set(this.wordmark, { visible: true }, 42.3); tl.fromTo(this.wordmark.scale, { x: 0.001, y: 0.001, z: 0.001 }, { x: 0.6, y: 0.6, z: 0.6, duration: 0.9, ease: 'back.out(1.5)' }, 42.3);
     this.endCard.position.set(0, 22.4, 0.6); this.endCard.userData.foot.visible = false; tl.set(this.endCard, { visible: true }, 43.4); tl.fromTo(this.endCard.scale, { x: 0.8, y: 0.8, z: 0.8 }, { x: 0.9, y: 0.9, z: 0.9, duration: 0.8, ease: 'expo.out' }, 43.4); tl.fromTo(this.endCard.userData.row.material, { opacity: 0 }, { opacity: 1, duration: 0.6 }, 43.4);
@@ -363,7 +365,7 @@ export class Film {
     this.fill.position.set(tgt.x - Math.cos(ra + 1.8) * 5, tgt.y + 1.5, tgt.z - Math.sin(ra + 1.8) * 5); this.fill.intensity = fx.fillI * 0.33 * (2 - pulse);
     this.rim.color.setHex(C.coral).lerp(new THREE.Color(C.teal), 0.5 - 0.5 * Math.cos(t * 0.8)); this.fill.color.setHex(C.teal).lerp(new THREE.Color(C.mint), 0.5 + 0.5 * Math.sin(t * 0.6));
     this.city.uniforms.uTime.value = t; this.ground.uniforms.uTime.value = t; this.particles.uniforms.uTime.value = t; this.particles.uniforms.uOpacity.value = fx.partI; this.shafts.uniforms.uTime.value = t; this.shafts.uniforms.uI.value = fx.shaftI;
-    this.pins.update(t); this.shards.update(t); this.buses.update(t); this.woman.update(t); this.doorWoman.update(t); this.merchant.update(t); this.family.update(t); this.inv.update(t); this.globe.update(t);
+    this.pins.update(t); this.shards.update(t); this.buses.update(t); this.buses.group.visible = this.city.uniforms.uAssembly.value > 0.9; this.signs.group.visible = this.city.uniforms.uAssembly.value > 0.6; this.woman.update(t); this.doorWoman.update(t); this.merchant.update(t); this.family.update(t); this.inv.update(t); this.globe.update(t);
     if (this.uiC.state) this.uiC.draw(this.uiC.state); if (this.uiM.state) this.uiM.draw(this.uiM.state); if (this.uiO.state) this.uiO.draw(this.uiO.state); if (this.uiD.state) this.uiD.draw(this.uiD.state);
     [this.panel, this.orderPanel, this.basketPanel].forEach((g) => { g.userData.uniforms.uTime.value = t; });
     // orbiting pins around the customer (3D orbit, tilted)
@@ -375,7 +377,7 @@ export class Film {
     // route draw + package travel
     if (this.routeState) { const n = Math.floor(this.route.geometry.index.count * this.routeState.k); this.route.geometry.setDrawRange(0, n); this.routeGlow.geometry.setDrawRange(0, Math.floor(this.routeGlow.geometry.index.count * this.routeState.k)); }
     if (this.pkgState && this.pkg.visible) { const k = clamp(this.pkgState.k); const pt = this.routeCurve.getPoint(k), tn = this.routeCurve.getTangent(Math.min(0.999, k)); this.pkg.position.copy(pt); this.pkg.position.y += 0.04 + Math.abs(Math.sin(t * 6)) * 0.05; this.pkg.rotation.y = Math.atan2(tn.x, tn.z); this.pkg.rotation.z = Math.sin(t * 6) * 0.06; this.pkgLight.position.copy(this.pkg.position).add(V3(0, 0.8, 0)); this.pkgLight.intensity = 5; this.pkgHalo.scale.setScalar(1 + 0.3 * Math.sin(t * 4)); if (k >= 1) { const w = clamp((this.tl.time() - 29.5) / 0.6); this.pkg.position.lerp(V3(-3.25, 1.05, 9.0), w); } }
-    if (this.cam.follow > 0.5 && this.pkg.visible) { const p = this.pkg.position; this.orderPanel.position.set(p.x - 1.6, p.y + 2.6, p.z + 1.2); this.orderPanel.lookAt(this.camera.position); this.icons.ride.position.lerp(V3(p.x + 1.5, p.y + 3.2, p.z - 0.8), 0.9); }
+    if (this.cam.follow > 0.5 && this.pkg.visible) { const p = this.pkg.position; this.orderPanel.position.set(p.x - 1.5, p.y + 3.0, p.z + 0.6); this.orderPanel.lookAt(this.camera.position); this.icons.ride.position.lerp(V3(p.x + 1.2, p.y + 3.4, p.z - 1.0), 0.9); }
     if (this.wordmark.visible) this.wordmark.rotation.y = Math.sin(t * 0.5) * 0.06;
     this.cap.update(this.camera);
   }
