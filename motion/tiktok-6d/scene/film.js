@@ -211,7 +211,7 @@ export class Film {
     tl.to(cam, { x: 5.4, tx: 12, ty: 1.9, tz: 2.4, duration: 3.4, ease: 'power1.inOut' }, 3.95);
     tl.to(cam, { y: 1.6, duration: 3.4, ease: 'sine.inOut' }, 3.95);
     tl.to(fx, { keyI: 1.1, rimI: 22, fillI: 18, duration: 1.0 }, 3.0);
-    capIn(caps.prob1, 3.75, 0.6, 1.35); capIn(caps.prob2, 5.35, 0.6, 1.25);
+    capIn(caps.prob1, 3.75, 0.6, 1.15); capIn(caps.prob2, 5.45, 0.6, 1.2);
     tl.to(this.logo.position, { x: 0, y: 6, z: 0, duration: 0.1 }, 3.0);
     // ===== 7.0–8.0 THE SWITCH: the mark ignites; teal shockwave snaps every pin online =====
     tl.to(cam, { x: 9.0, y: 2.6, z: 3.2, tx: 0, ty: 5.8, tz: 0, fov: 42, focus: 10, range: 6, duration: 1.0, ease: 'power3.inOut' }, 6.45);
