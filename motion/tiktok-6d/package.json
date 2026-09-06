@@ -1,0 +1,15 @@
+{
+  "name": "zaya-tiktok-6d",
+  "private": true,
+  "type": "module",
+  "description": "ZAYA 45s vertical 3D motion-graphic render pipeline (Three.js + deterministic frame stepping + Playwright capture + ffmpeg). Not part of the Astro site build.",
+  "scripts": {
+    "render": "node render.mjs",
+    "encode": "node encode.mjs",
+    "verify": "node verify.mjs"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "three": "0.185.1"
+  }
+}
