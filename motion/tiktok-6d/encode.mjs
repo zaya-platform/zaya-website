@@ -12,9 +12,9 @@ const ext = fs.existsSync(path.join(FR, 'f00000.jpg')) ? 'jpg' : 'png';
 const main = path.join(OUT, 'ZAYA_6D_45s_1080x1920.mp4');
 run(['-framerate', String(FPS), '-i', path.join(FR, `f%05d.${ext}`), '-vf', 'format=yuv420p', '-r', String(FPS), ...x264, '-an', main]);
 // 15 s cutdown: hook (0–3.25) → customers (8.0–16.0 → trimmed) → resolve (40.0–45) with 0.35 s dissolves
-const seg = (a, b, i) => `[0:v]trim=start=${a}:end=${b},setpts=PTS-STARTPTS[s${i}]`;
+const seg = (a, b, i) => `[0:v]trim=start=${a}:end=${b},setpts=PTS-STARTPTS,fps=${FPS}[s${i}]`;
 const cut = path.join(OUT, 'ZAYA_6D_15s_cutdown_1080x1920.mp4');
-const hook = [0.0, 3.3], cust = [8.6, 16.1], res = [40.3, 45.0]; const X = 0.35;
+const hook = [0.0, 3.3], cust = [8.0, 15.6], res = [40.3, 45.0]; const X = 0.35;
 const d1 = hook[1] - hook[0], d2 = cust[1] - cust[0];
 run(['-i', main, '-filter_complex', `${seg(hook[0], hook[1], 0)};${seg(cust[0], cust[1], 1)};${seg(res[0], res[1], 2)};[s0][s1]xfade=transition=fadeblack:duration=${X}:offset=${(d1 - X).toFixed(3)}[x1];[x1][s2]xfade=transition=fadeblack:duration=${X}:offset=${(d1 + d2 - 2 * X).toFixed(3)}[v]`, '-map', '[v]', '-r', String(FPS), ...x264, '-an', cut]);
 // poster frame (end card lock-up) + 3-frame contact sheet
