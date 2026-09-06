@@ -1,4 +1,13 @@
-# AUDIO BRIEF — ZAYA 45 s "6D" (delivered silent, cut to a 120 BPM grid)
+# AUDIO BRIEF — ZAYA 45 s "6D" (120 BPM grid; original synthesised track included)
+
+> **Update (founder request, 2026-09-06):** the film now ships **with music**. Because no licensed
+> track may be used, `music.py` composes and synthesises an **original** Ethio-electronic score from
+> scratch (numpy only): Tizita-flavoured major pentatonic on D, krar-style Karplus-Strong plucks,
+> kebero-style hand-drum hits, sub bass, detuned pads, bells, whooshes, dotted-eighth ping-pong delay,
+> soft limiter — every hit on the timecodes in the table below. Re-generate with
+> `python3 music.py out/music.wav`; `encode.mjs --audio out/music.wav` muxes it (AAC 192 kbps) into the
+> master and the cutdown (audio is trimmed and cross-faded with the picture). The brief below stays
+> the reference for a produced replacement track.
 
 **Track type.** Modern Ethio-electronic: a warm, mid-tempo (120 BPM, 4/4) hybrid — krar or masinko
 plucks and a soft tizita-flavoured pentatonic motif over deep sub-bass and crisp trap-lite hats,

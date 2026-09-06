@@ -14,6 +14,6 @@
 | three.js 0.185.1 | https://threejs.org | MIT |
 | GSAP 3.15.0 | https://gsap.com | GSAP Standard "No Charge" licence (free for this use; not redistributed in the site) |
 | ffmpeg 7.0.2 static (imageio-ffmpeg wheel) | https://johnvansickle.com/ffmpeg/ (GPL build), used as a tool only | GPL v3 — tool, not distributed |
-| Music / SFX | none used; see AUDIO-BRIEF.md | — |
+| Music / SFX | Original score synthesised by `music.py` (no samples, no licensed material) — see AUDIO-BRIEF.md | Original, ZAYA-owned |
 
 No stock footage, no scraped brand logos, no third-party marks (Telebirr, M-Pesa, Chapa, Apple, Google) appear in the film.

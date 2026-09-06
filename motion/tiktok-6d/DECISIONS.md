@@ -42,6 +42,7 @@ decision taken and why. Nothing below was cleared with the founder — it is the
 
 ## 5. Creative calls
 - One unbroken camera journey; segment changes are morphs: phone → glass panel; panel **folds** (edge-on texture swap) into the merchant dashboard; shelf blocks **fold down into the road** and become the route's waypoints; the route's end **keeps travelling** as the globe arc; globe **collapses into the mark**; four icons converge into the diamond.
+- Music: the brief said silent; the founder asked for Ethiopian-flavoured music. Shipped an **original synthesised score** (`music.py`, Tizita pentatonic, krar/kebero timbres) rather than any licensed or stock track. Founder may replace it with a produced track using AUDIO-BRIEF.md.
 - Beat grid 120 BPM: light pulse on rims/glass edges every 0.5 s; hits (streak impact 0.66 s, ignition 7.0 s, icon lands, chip locks, arc landing 35.5 s, lock-up 41.2 s) sit on the grid — see `AUDIO-BRIEF.md`.
 - Amharic secondary lines are machine-authored (same status as the app's own `am` strings, which the app marks DRAFT pending native review). Spellings used are standard: ሁሉም ነገር በአቅራቢያዎ · በአቅራቢያዎ ያግኙት · ሱቅዎ በመስመር ላይ · ታዘዘ። እየመጣ ነው። ደረሰ። · ወደ ቤት ይላኩ · ለኢትዮጵያ የተሰራ። ለእርስዎ የተሰራ። · በቅርቡ ይመጣል · የታቀደ · ምሳሌያዊ ምስል; shop signs ሱቅ · እንጀራ ቤት · ካፌ · ፋርማሲ · ሚኒ ማርኬት. **Flagged for the same native-speaker pass before publishing.**
 - Globe: a data-globe (graticule + dotted land bands + labelled anchors) rather than a third-party map texture — nothing to license, and it stays on-brand. Anchor cities: Washington DC → Addis Ababa.
