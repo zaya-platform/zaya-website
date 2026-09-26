@@ -1,55 +1,33 @@
 {
-  "verified_at_utc": "2026-09-26T10:40:00.000Z",
+  "verified_at_utc": "2026-09-26T17:05:00.000Z",
   "environment": {
     "machine": "development workstation (transfer target), Node v24.19.0",
-    "npm_ci": "reproducible (allowScripts recorded in package.json for esbuild x2 and sharp)",
-    "astro_check": { "files": 20, "errors": 0, "warnings": 0, "hints": 0 },
-    "unit_tests": { "command": "node --test test/jev-triage.test.mjs test/triage-questions.test.mjs", "pass": 14, "fail": 0, "note": "node --test test/ (directory argument) is unreliable on this Node/Windows combo; pass explicit file paths" },
+    "astro_check": { "files": 24, "errors": 0, "warnings": 0, "hints": 0 },
+    "unit_tests": { "files": ["test/jev-triage.test.mjs", "test/triage-questions.test.mjs", "test/question-match.test.mjs"], "pass": 21, "fail": 0 },
     "production_build": "passed (3 pages; only the known optional-Three.js chunk-size warning)",
     "preview": "http://localhost:4341 HTTP 200"
   },
-  "feature": "Jev common questions (22 chips in 6 groups), suggested-question subtitles, audience/FAQ prefills via #enquiry, zero-credit fallback; Amharic YouTube short as an honest AI-labelled card",
+  "feature": "Instant answers for bank questions (zero network), conservative paraphrase matching, honest labelling (instant = teal/mint published-information; AI review = plum tag per D-022); hero scene pointer tilt clamped <=5 deg, scroll camera drift, calm pulses on all four paths, projected tooltips; calm micro-interactions",
   "browser_checks": {
-    "browser": "Chromium-based in-app browser; reports prefers-reduced-motion: reduce (device otherwise capable). Trusted keyboard injection is unavailable in this environment (also observed 26 Sep morning session); native page-side events were used for behavioural checks, as anticipated by the advisor. Keyboard semantics rely on native <button>/<a> defaults plus programmatic focus()+select(), which were verified working.",
-    "chip_prefill": "merchant chip: textarea filled, subtitle 'Suggested question — Shop owners: …', aria-pressed=true, focus+full selection, status 'Question added — edit it or choose Review my message.'",
-    "chip_targets": "all 22 chips >= 44px at every viewport",
-    "audience_ctas": "delivery CTA verified: hash #enquiry, section in view, textarea prefilled, subtitle shown, focus on textarea; customer/merchant/diaspora CTAs verified present in build and live HTML with correct routes/questions",
-    "faq_ask_links": "5 links; RIDE link verified in-browser: prefilled 'Is ZAYA RIDE the same as shop delivery, or a separate service?' with subtitle group 'Diaspora & RIDE'",
-    "edit_clears_provenance": "editing after prefill hides the subtitle, clears chip aria-pressed, and later failure routes to General with the general fallback note",
-    "zero_credit_fallback_function_absent": {
-      "result": "friendly status 'Smart review is unavailable right now. Nothing has been sent — continue by email below…', fallback panel shown, route from chip provenance (Merchant support), AI-only Priority/Next-step cells hidden, honest note shown, mailto subject 'ZAYA merchant enquiry' with fallback body note",
-      "attempts": "exactly 1 fetch per press, no retries"
-    },
-    "simulated_offline": "fetch overridden to reject: same friendly fallback, general route for free-typed text",
-    "edit_then_failure": "route falls back to 'General ZAYA enquiry' with 'showing the general enquiry route' note; user text carried into mailto body",
-    "viewports": [
-      { "size": "360x740", "horizontal_overflow": false },
-      { "size": "390x844", "horizontal_overflow": false },
-      { "size": "768x1024", "horizontal_overflow": false },
-      { "size": "844x390 landscape", "horizontal_overflow": false },
-      { "size": "720x450 (200% zoom approximation)", "horizontal_overflow": false },
-      { "size": "1280x900", "horizontal_overflow": false }
-    ],
-    "regression": {
-      "explore_dropdown_links": 4,
-      "promo_video_preload": "none; no MP4 bytes before user-initiated play; playback progressed (controls showed 0:01/0:49 after test play)",
-      "promo_entries": "2 (1 video + 1 Amharic YouTube card), existing promo entry unchanged",
-      "tiktok_link": true,
-      "share_metadata": "og:site_name, twitter:card, 1200x630 share image all present"
-    },
+    "browser": "Chromium-based in-app browser; reports prefers-reduced-motion: reduce (device otherwise capable). Trusted keyboard injection unavailable here; native page-side events used as documented.",
+    "chip_shows_answer_directly": "diaspora chip: answer panel visible immediately with label 'Answered from ZAYA's published information', question heading, answer text, mailto subject 'ZAYA diaspora enquiry'; AI panel hidden",
+    "review_press_no_network": "submitting an active bank question with the function absent: answer shown, 0 requests to jev-triage",
+    "typed_paraphrase": "'How can I find nearby shops and compare prices with ZAYA?' matched the customer_order bank entry instantly, 0 network calls",
+    "similar_but_different": "'Can I order groceries online for home delivery in Bahir Dar?' never answered from the bank; went to the review flow (fallback panel locally), exactly 1 attempt",
+    "edit_clears": "editing hides subtitle, answer panel, and chip pressed-state; provenance cleared so fallback routes general",
+    "fallback_and_offline": "function-absent and simulated-offline both produce the friendly status, fallback panel, honest note, intact correctly-addressed mailto; no retries",
+    "scene": "reduced-motion environment keeps the static fallback first-class (no Three.js download); tooltips correctly hidden without the 3D scene; pause/motion controls present and OS-disabled as designed. 3D-only behaviours (tooltips, drift, pulses) are code-verified and could not render in this environment.",
+    "viewports": ["360x740", "390x844", "768x1024", "844x390 landscape", "720x450 (200% zoom approximation)", "1280x900 — no horizontal overflow at any size"],
+    "micro_interactions": "hover lift and FAQ details-content animation defined with transitions fully disabled under prefers-reduced-motion and the site motion-off class",
     "observed_console_errors": 0,
-    "screenshots": "phone 360x740 chip group (active chip visible) and desktop promo section with both entries"
+    "screenshots": "phone 360x740 instant answer panel; desktop promo section with both entries (previous task evidence retained)"
   },
-  "bug_found_and_fixed_during_verification": {
-    "issue": "chip listeners were initially queried via form.querySelectorAll but the chip group sits outside the form (per spec) — zero listeners attached",
-    "fix": "document-level query; rebuilt and fully re-verified",
-    "commit": "included in 85d6ea4"
-  },
+  "page_weight": { "before": "145,590 B (142.2 KB)", "after": "157,109 B (153.4 KB)", "delta": "+11.5 KB", "budget": "~400 KB initial transfer — respected" },
   "not_reverified_in_this_session": {
-    "keyboard_trusted_input": "injected trusted keys unavailable in this browser; native semantics + programmatic focus verified instead",
-    "true_200pct_browser_zoom": "approximated by halving the desktop viewport",
-    "physical_devices": "none available",
-    "amharic_font_rendering": "Ethiopic title renders via system fallback (verified visually); a bundled Ethiopic font remains documented future work"
+    "three_d_scene_visuals": "reduced-motion environment never loads Three.js (correct behaviour); 3D tooltips/drift/pulses are code-verified only",
+    "keyboard_trusted_input": "unavailable in this browser; native button/link semantics plus programmatic focus verified",
+    "true_200pct_browser_zoom": "approximated by halved viewport",
+    "physical_devices": "none available"
   },
   "publication": { "see": "DEPLOYMENT.json (live verification + single approved live Jev POST recorded there, 2026-09-26)" }
 }
