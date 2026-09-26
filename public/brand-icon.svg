@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZAYA app icon">
+  <title>ZAYA app icon</title>
+  <desc>A teal rounded-square app tile with a white location pin, a coral centre disc and a white Z monogram, framed by faint concentric zone rings.</desc>
+  <defs>
+    <linearGradient id="zayaTile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#13B7B4"/>
+      <stop offset="1" stop-color="#0B8B8A"/>
+    </linearGradient>
+    <clipPath id="zayaTileClip"><rect x="0" y="0" width="512" height="512" rx="115"/></clipPath>
+  </defs>
+  <g clip-path="url(#zayaTileClip)">
+    <rect x="0" y="0" width="512" height="512" fill="url(#zayaTile)"/>
+    <circle cx="256" cy="200" r="150" fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="3"/>
+    <circle cx="256" cy="200" r="216" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="3"/>
+    <circle cx="256" cy="200" r="290" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="3"/>
+  </g>
+  <path d="M333.7 249.2 L256 372 L178.3 249.2 A92 92 0 1 1 333.7 249.2 Z" fill="#ffffff"/>
+  <circle cx="256" cy="200" r="56" fill="#FF7A45"/>
+  <polyline points="224,180 286,180 226,220 289,220" fill="none" stroke="#ffffff" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-08T17:43:51Z",
+  "title": "Design System: ZAYA",
+  "extensions": {
+    "shadows": [
+      { "name": "shared", "value": "0 16px 40px #1e2a4a16", "purpose": "Portrait, phone frame, diagram elements and dialog." }
+    ],
+    "motion": [
+      { "name": "action-hover", "value": "background .18s", "purpose": "Primary action hover feedback." },
+      { "name": "portrait", "value": "transform .25s ease-out", "purpose": "Existing mouse-driven hero tilt, disabled with reduced motion." },
+      { "name": "delivery-step", "value": "transform .45s ease-out", "purpose": "Follow the visitor-selected delivery step, disabled with reduced motion." }
+    ],
+    "breakpoints": [
+      { "name": "compact-desktop", "value": "1050px" },
+      { "name": "mobile-navigation", "value": "900px" },
+      { "name": "promo-stack", "value": "750px" },
+      { "name": "phone-content", "value": "650px" }
+    ]
+  },
+  "narrative": {
+    "northStar": "Everything near you.",
+    "overview": "Preserve the existing ZAYA identity while making its product and next steps easier to understand. PRODUCT.md owns facts; DESIGN.md owns visual primitives; surfaces/home.md owns homepage strategy.",
+    "keyCharacteristics": ["Light surfaces", "Official ZAYA branding", "Authentic Ethiopian context", "Readable product evidence", "Restrained motion"]
+  }
+}

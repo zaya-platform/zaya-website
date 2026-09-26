@@ -1,0 +1,46 @@
+---
+const icons = [
+ 'M6 8h12l1 12H5L6 8Zm3 0V6a3 3 0 0 1 6 0v2',
+ 'M3 10h18l-2-6H5l-2 6Zm2 0v10h14V10M9 20v-7h6v7',
+ 'm12 3 9 5v9l-9 5-9-5V8l9-5Zm0 9 9-4M12 12 3 8m9 4v10M7.5 5.5l9 5v5',
+ 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z',
+];
+---
+<figure class="neighbourhood" id="connections" data-neighbourhood data-selected="0" aria-labelledby="neighbourhood-title">
+  <h2 id="neighbourhood-title">Your neighbourhood, connected.</h2>
+  <div class="network-stage" data-network-stage>
+    <div class="network-fallback" aria-hidden="true">
+      <svg class="network-lines" viewBox="0 0 600 340" fill="none"><ellipse cx="300" cy="182" rx="236" ry="114" stroke="currentColor" stroke-width="1"/><ellipse cx="300" cy="182" rx="184" ry="82" stroke="currentColor" stroke-width="1"/><path d="M108 130Q175 120 300 166M492 130Q422 122 300 166M108 250Q210 252 300 166M492 250Q380 242 300 166" stroke-width="3" stroke="currentColor"/></svg>
+      <img class="network-mark" src="/brand-icon.svg" width="512" height="512" alt="" />
+      {icons.map((icon, i) => <div class={`network-node network-node-${i}`}><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d={icon}/></svg></div>)}
+    </div>
+    <div class="network-canvas" data-network-canvas aria-hidden="true"></div>
+  </div>
+  <figcaption class="network-scene-footer"><span>Illustrated ZAYA connections<br/><small>Product preview</small></span><button class="scene-motion" type="button" data-scene-motion hidden>Pause scene</button></figcaption>
+</figure>
+<script>import '../scripts/neighbourhood.ts';</script>
+<style>
+  .neighbourhood { min-width: 0; background: var(--mint); border-radius: var(--radius-panel); padding: 24px; }
+  .neighbourhood h2 { max-width: 20ch; font-size: clamp(23px,2.1vw,28px); line-height: 1.2; }
+  .network-stage { position: relative; height: clamp(300px,32vw,430px); touch-action: pan-y; }
+  .network-fallback, .network-canvas { position: absolute; inset: 0; }
+  .network-canvas { opacity: 0; transition: opacity .35s; pointer-events: none; }
+  .network-canvas :global(canvas) { display: block; width: 100%; height: 100%; }
+  .neighbourhood[data-renderer="3d"] .network-canvas { opacity: 1; }
+  .neighbourhood[data-renderer="3d"] .network-fallback { visibility: hidden; }
+  .network-lines { position: absolute; width: 100%; height: 100%; color: var(--teal-ink); opacity: .35; }
+  .network-mark { position: absolute; width: 25%; height: auto; top: 29%; left: 37.5%; transform: perspective(800px) rotateX(12deg) rotateZ(-8deg); filter: drop-shadow(0 16px 12px #1e2a4a25); }
+  .network-node { position: absolute; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 16px; color: var(--teal-ink); background: var(--cloud); box-shadow: 0 10px 22px #1e2a4a15; transition: background .2s, transform .2s; }
+  .network-node-0 { top: 29%; left: 9%; }.network-node-1 { top: 29%; right: 9%; }.network-node-2 { bottom: 18%; left: 13%; }.network-node-3 { bottom: 18%; right: 13%; }
+  .neighbourhood[data-selected="0"] .network-node-0, .neighbourhood[data-selected="1"] .network-node-1, .neighbourhood[data-selected="2"] .network-node-2, .neighbourhood[data-selected="3"] .network-node-3 { background: var(--coral); color: var(--navy); transform: translateY(-8px) scale(1.1); }
+  .network-scene-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .network-scene-footer { font-size: 12px; color: var(--teal-ink); line-height: 1.5; }
+  .network-scene-footer small { color: var(--muted); font-size: 12px; }
+  .scene-motion { flex-shrink: 0; min-height: 44px; padding: 6px 10px; border: 1px solid var(--teal-ink); border-radius: var(--radius-control); color: var(--teal-ink); background: transparent; font-size: 12px; }
+  .scene-motion[hidden] { display: none; }
+  @media(hover:hover) { .scene-motion:hover { background: var(--cloud); } }
+  @media(max-width: 900px) { .neighbourhood { width: 100%; max-width: 680px; margin-inline: auto; }.network-stage { height: 340px; } }
+  @media(max-width: 650px) { .neighbourhood { padding: 20px 16px 16px; }.neighbourhood h2 { font-size: 21px; max-width: 100%; }.network-stage { height: clamp(220px,65vw,300px); }.network-node { width: 44px; height: 44px; border-radius: 12px; } }
+  @media(prefers-reduced-motion:reduce) { .network-canvas,.network-node { transition: none; } }
+  @media(forced-colors:active) { .network-fallback { visibility: visible !important; }.network-canvas { display: none; } }
+</style>

@@ -1,0 +1,50 @@
+---
+const meanings = [
+  { letter: 'Z', word: 'Zonal', text: 'Discover shops in your chosen area.' },
+  { letter: 'A', word: 'Availability', text: 'See products and compare prices.' },
+  { letter: 'Y', word: 'Yours', text: 'Your choices. Your shop. Your records.' },
+  { letter: 'A', word: 'Access', text: 'Designed with local languages and low-data use in mind.' },
+];
+---
+
+<section class="brand-meaning-section section" id="meaning" aria-labelledby="meaning-title">
+  <div class="wrap">
+    <h2 id="meaning-title">What is ZAYA?</h2>
+    <p class="meaning-intro">ZAYA is being built to connect neighbourhood shop discovery with everyday tools for shop owners.</p>
+    <p class="meaning-instruction" id="meaning-instruction">Select a letter to explore the meaning behind the name.</p>
+    <div class="meaning-letters" aria-describedby="meaning-instruction">
+      {meanings.map((meaning, index) => <details class="meaning-disclosure" name="zaya-meaning" open={index === 0}>
+        <summary class="meaning-summary">
+          <span class="meaning-letter">{meaning.letter}</span>
+          <span class="meaning-word">{meaning.word}</span>
+          <svg class="meaning-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="meaning-explanation">{meaning.text}</p>
+      </details>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .brand-meaning-section { border-top: 1px solid var(--line); background: var(--cloud); }
+  .meaning-intro { max-width: 65ch; margin-top: 20px; font-size: 16px; line-height: 1.7; color: var(--navy); }
+  .meaning-instruction { margin-top: 12px; font-size: 14px; color: var(--muted); }
+  .meaning-letters { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 16px; margin-top: 28px; }
+  .meaning-disclosure { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--cloud); }
+  .meaning-disclosure[open] { border-color: var(--teal-ink); background: var(--mint); }
+  .meaning-summary { display: flex; align-items: center; justify-content: start; gap: 12px; min-height: 88px; padding: 16px; border-radius: inherit; list-style: none; color: var(--navy); line-height: 1.4; cursor: pointer; }
+  .meaning-summary::-webkit-details-marker { display: none; }
+  .meaning-summary::marker { content: ''; }
+  .meaning-summary span, .meaning-disclosure[open] .meaning-summary span { transform: none; }
+  .meaning-summary .meaning-letter { flex: 0 0 auto; font-size: 32px; font-weight: 600; line-height: 1.2; color: var(--teal-ink); }
+  .meaning-summary .meaning-word { min-width: 0; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
+  .meaning-chevron { flex: 0 0 20px; margin-inline-start: auto; color: var(--teal-ink); transition: transform .18s ease-out; }
+  .meaning-disclosure[open] .meaning-chevron { transform: rotate(180deg); }
+  .meaning-disclosure .meaning-explanation { padding: 0 16px 20px; margin: 0; font-size: 14px; line-height: 1.7; color: var(--navy); }
+  .meaning-summary:focus-visible { outline: 3px solid var(--plum); outline-offset: 4px; }
+  @media (hover: hover) { .meaning-summary:hover { background: var(--mint); } }
+  @media (min-width: 600px) { .meaning-letters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1050px) { .meaning-letters { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (prefers-reduced-motion: reduce) { .meaning-chevron { transition: none; } }
+  :global(.reduce-motion) .meaning-chevron { transition: none; }
+</style>

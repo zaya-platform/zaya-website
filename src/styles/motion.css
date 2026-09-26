@@ -1,0 +1,70 @@
+/* The official mark moves as one image; its artwork and colours stay intact. */
+.brand-wave .official-brand {
+  transform-origin: 20px 55%;
+  animation: zaya-brand-greeting 3s ease-in-out infinite;
+}
+
+.brand-wave-mark {
+  left: 0;
+  width: 46px;
+  height: 32px;
+  border-color: var(--teal);
+  border-right-color: transparent;
+  animation: zaya-brand-ripple 3s ease-out infinite;
+}
+
+.brand-wave:focus-within .official-brand,
+.brand-wave:focus-within .brand-wave-mark {
+  animation-play-state: paused;
+}
+
+@media (hover: hover) {
+  .brand-wave:hover .official-brand,
+  .brand-wave:hover .brand-wave-mark {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes zaya-brand-greeting {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  24% { transform: rotate(-1.8deg) translateY(-1.5px); }
+  52% { transform: rotate(1.5deg) translateY(1px); }
+  78% { transform: rotate(-.7deg) translateY(-.5px); }
+}
+
+@keyframes zaya-brand-ripple {
+  0% { opacity: 0; transform: translate(-4px, -50%) scale(.8); }
+  24% { opacity: .48; }
+  68%, 100% { opacity: 0; transform: translate(-12px, -50%) scale(1.22); }
+}
+
+/* One preference covers every CSS interaction, including component-scoped rules.
+   Keep the selected delivery position and disclosure states; only movement stops. */
+html.reduce-motion { scroll-behavior: auto !important; }
+body.motion-off *,
+body.motion-off *::before,
+body.motion-off *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+body.motion-off .brand-wave .official-brand,
+body.motion-off [data-tilt],
+body.motion-off .hero-ribbon a,
+body.motion-off .ribbon-arrow { transform: none !important; }
+body.motion-off .brand-wave-mark { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .brand-wave .official-brand,
+  [data-tilt],
+  .hero-ribbon a,
+  .ribbon-arrow { transform: none !important; }
+  .brand-wave-mark { display: none; }
+}

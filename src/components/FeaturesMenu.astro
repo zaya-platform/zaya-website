@@ -1,0 +1,33 @@
+---
+const groups = [
+  {title:'For shoppers', items:[
+    {label:'Browse neighbourhood shops', detail:'Discover shops in your chosen area', href:'#shoppers', role:'customer', screen:'0'},
+    {label:'Compare products & prices', detail:'Explore the comparison preview', href:'#shoppers', role:'customer', screen:'1'},
+  ]},
+  {title:'For merchants', items:[
+    {label:'Sales, stock & orders', detail:'Explore the merchant dashboard', href:'#merchants', role:'merchant', screen:'0'},
+    {label:'Customer credit', detail:'See the customer credit preview', href:'#merchants', role:'merchant', screen:'1'},
+  ]},
+  {title:'More to explore', items:[
+    {label:'Shop-managed delivery', detail:'Follow the delivery workflow', href:'#delivery'},
+    {label:'ZAYA Promo', detail:'Watch the brand story', href:'#promo'},
+    {label:'What is ZAYA?', detail:'Explore the meaning of each letter', href:'#meaning'},
+    {label:'RIDE', detail:'Planned experience', href:'#ride', planned:true},
+    {label:'Diaspora', detail:'Planned experience', href:'#diaspora', planned:true},
+  ]},
+];
+---
+<details class="features-dropdown" id="features-dropdown">
+  <summary class="features-toggle" aria-controls="feature-options">Features <svg class="features-chevron" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary>
+  <div id="feature-options" class="feature-options">
+    {groups.map(group => <div class="feature-group">
+      <p class="feature-group-title">{group.title}</p>
+      <ul aria-label={group.title}>
+        {group.items.map(item => <li><a href={item.href} data-feature-role={'role' in item ? item.role : undefined} data-feature-screen={'screen' in item ? item.screen : undefined}>
+          <span class="feature-name">{item.label}</span>
+          <span class:list={['feature-detail', {'feature-planned':'planned' in item && item.planned}]}>{item.detail}</span>
+        </a></li>)}
+      </ul>
+    </div>)}
+  </div>
+</details>

@@ -1,0 +1,137 @@
+{
+  "verified_at_utc": "2026-09-20T14:46:48.077Z",
+  "feature": "Explore ZAYA audience dropdown in the header, persistent homepage scene and responsive navigation",
+  "pages": 3,
+  "local_references_checked": 13,
+  "errors": [],
+  "astro_check": {
+    "files": 20,
+    "errors": 0,
+    "warnings": 0,
+    "hints": 0
+  },
+  "production_build": "passed",
+  "build_warning": "Optional dynamically imported Three.js chunk exceeds 500 KB minified.",
+  "optional_3d": {
+    "file": "network-scene.ClRNBwsq.js",
+    "bytes": 550853,
+    "gzip_bytes": 138483
+  },
+  "server_rendered_audience_links": 4,
+  "hero_overlay_menus": 0,
+  "browser_checks": {
+    "viewport_sizes": [
+      [
+        320,
+        568
+      ],
+      [
+        360,
+        740
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        768,
+        1024
+      ],
+      [
+        844,
+        390
+      ],
+      [
+        1280,
+        720
+      ],
+      [
+        1440,
+        900
+      ]
+    ],
+    "horizontal_overflow": false,
+    "explore_control_visible_in_header": true,
+    "small_phone_header_single_row": "passed",
+    "customer_link": "passed",
+    "merchant_link": "passed",
+    "shop_delivery_link": "passed",
+    "diaspora_link": "passed",
+    "menu_does_not_overlap_scene": "passed",
+    "canvas_remains_mounted_during_navigation": "passed",
+    "native_keyboard_arrow_and_escape": "passed",
+    "focus_return_after_tablet_resize": "passed",
+    "mobile_navigation_mutually_exclusive": "passed",
+    "phone_tablet_desktop_visual_review": "passed",
+    "observed_console_errors": 0
+  },
+  "markup_checks": {
+    "correct_html_body_order": true,
+    "noscript_style_blocks": 1
+  },
+  "publication": {
+    "verified_at_utc": "2026-09-20T14:46:48.067Z",
+    "site_id": "27ddebb4-de36-4728-8ef7-e291dd013de9",
+    "deploy_id": "6aaff1bf193c47a7fe80fa22",
+    "url": "https://zayaethiopia.netlify.app",
+    "unique_deploy_url": "https://6aaff1bf193c47a7fe80fa22--zayaethiopia.netlify.app",
+    "previous_deploy": "6aafec0798b6c0cc3548d493",
+    "feature": "Explore ZAYA audience dropdown in the header, persistent homepage scene and responsive navigation",
+    "checks": [
+      {
+        "route": "/",
+        "status": 200,
+        "matches_build": false,
+        "bytes": 37430,
+        "matches_after_host_metadata_removed": true,
+        "host_added_bytes": 536
+      },
+      {
+        "route": "/_astro/ExploreMenu.astro_astro_type_script_index_0_lang.DsLCQY5h.js",
+        "status": 200,
+        "matches_build": true,
+        "bytes": 1725
+      },
+      {
+        "route": "/_astro/index.3UzfTw9R.css",
+        "status": 200,
+        "matches_build": true,
+        "bytes": 20151
+      },
+      {
+        "route": "/_astro/index.astro_astro_type_script_index_0_lang.CAFxMKX5.js",
+        "status": 200,
+        "matches_build": true,
+        "bytes": 10095
+      },
+      {
+        "route": "/_astro/index.DKpWbJGD.css",
+        "status": 200,
+        "matches_build": true,
+        "bytes": 24660
+      },
+      {
+        "route": "/_astro/Neighbourhood.astro_astro_type_script_index_0_lang.69JeztrG.js",
+        "status": 200,
+        "matches_build": true,
+        "bytes": 3035
+      },
+      {
+        "route": "/_astro/network-scene.ClRNBwsq.js",
+        "status": 200,
+        "matches_build": true,
+        "bytes": 550853
+      }
+    ],
+    "live_browser_checks": {
+      "explore_audience_links": 4,
+      "hero_dropdowns": 0,
+      "scene_renderer": "3d",
+      "canvas_count": 1,
+      "expanded_menu_bottom": 229.68,
+      "scene_top_with_menu_open": 351.73,
+      "menu_covers_scene": false,
+      "observed_console_errors": 0
+    }
+  }
+}

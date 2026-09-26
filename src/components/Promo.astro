@@ -1,0 +1,134 @@
+---
+import promos from '../data/promos.json';
+import social from '../data/social.json';
+
+type Promo = { title: string; src: string; poster?: string; captions?: string; highQuality?: string };
+const videos = promos as Promo[];
+---
+
+<section class="section wrap promo-section" id="promo" aria-labelledby="promo-title">
+  <span id="film" class="legacy-anchor" aria-hidden="true"></span>
+  <div class="promo-copy">
+    <div class="promo-brand" aria-hidden="true"><img src="/brand-icon.svg" width="88" height="88" alt="" loading="lazy" /></div>
+    <h2 id="promo-title">ZAYA Promo</h2>
+    <p class="promo-intro">A short look at the ZAYA vision.</p>
+    <p>Watch the brand story when you have a moment. The video plays only when you choose.</p>
+    <p class="promo-context">This concept promo includes generated scenes and future experiences. RIDE and Diaspora remain planned; the real product previews are above.</p>
+    {social.channelUrl && <div class="youtube-links">
+      <a class="text-link" href={social.videoUrl || social.channelUrl} target="_blank" rel="noopener noreferrer" aria-label="Watch ZAYA Promo on YouTube (opens in a new tab)">Watch on YouTube <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" /></svg></a>
+      <a class="text-link" href={social.channelUrl} target="_blank" rel="noopener noreferrer" aria-label="Visit the ZAYA channel (opens in a new tab)">Visit the ZAYA channel</a>
+    </div>}
+  </div>
+  <div class="promo-videos">
+    {videos.map((video, index) => <article aria-label={video.title}>
+      {videos.length > 1 && <h3>{video.title}</h3>}
+      <video controls playsinline preload="none" width="1080" height="1920" poster={video.poster} aria-label={video.title} aria-describedby={`promo-note-${index}`}>
+        <source src={video.src} type="video/mp4" />
+        {video.captions && <track kind="captions" src={video.captions} srclang="en" label="English" />}
+        <p>Your browser cannot play this video. <a href={video.src}>Open ZAYA Promo</a>.</p>
+      </video>
+      <div class="playback-tools" hidden>
+        <button class="promo-play" type="button">Play ZAYA Promo</button>
+        {video.highQuality && <label for={`promo-quality-${index}`}>Video quality<select id={`promo-quality-${index}`}><option value={video.src}>1080p</option><option value={video.highQuality}>4K</option></select></label>}
+      </div>
+      <p class="promo-video-note" id={`promo-note-${index}`}>1080p uses less data. Choose 4K for a higher-resolution view.</p>
+      <p class="video-status" role="status" aria-atomic="true"></p>
+      <div class="video-error" hidden>
+        <p role="alert">The video couldn’t load. Try again, choose 1080p, or open the video directly.</p>
+        <div><button class="promo-retry" type="button">Try again</button><a href={video.src}>Open video</a></div>
+      </div>
+    </article>)}
+    {videos.length === 0 && <p>The promo is available on the ZAYA YouTube channel.</p>}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLVideoElement>('.promo-videos video').forEach(video => {
+    const parent = video.closest('article')!;
+    const play = parent.querySelector<HTMLButtonElement>('.promo-play')!;
+    const status = parent.querySelector<HTMLElement>('.video-status')!;
+    const error = parent.querySelector<HTMLElement>('.video-error')!;
+    const quality = parent.querySelector<HTMLSelectElement>('select');
+    let pendingMetadata: (() => void) | null = null;
+    let savedTime = 0;
+    let resumeAfterQuality = false;
+
+    parent.querySelector<HTMLElement>('.playback-tools')!.hidden = false;
+    const showError = () => { status.textContent = ''; error.hidden = false; };
+    const startPlayback = () => {
+      error.hidden = true;
+      video.play().catch((reason: DOMException) => { if (reason.name !== 'AbortError') showError(); });
+    };
+    video.addEventListener('waiting', () => { status.textContent = 'Loading video…'; });
+    video.addEventListener('playing', () => { status.textContent = ''; error.hidden = true; });
+    video.addEventListener('canplay', () => { status.textContent = ''; });
+    video.addEventListener('play', () => { play.textContent = 'Pause ZAYA Promo'; });
+    video.addEventListener('pause', () => { play.textContent = 'Play ZAYA Promo'; });
+    play.addEventListener('click', () => { if (video.paused) startPlayback(); else video.pause(); });
+    parent.querySelector<HTMLButtonElement>('.promo-retry')!.addEventListener('click', () => { video.load(); startPlayback(); });
+
+    quality?.addEventListener('change', () => {
+      if (!pendingMetadata) {
+        savedTime = video.currentTime;
+        resumeAfterQuality = !video.paused;
+      } else {
+        video.removeEventListener('loadedmetadata', pendingMetadata);
+      }
+      error.hidden = true;
+      status.textContent = 'Loading selected quality…';
+      pendingMetadata = () => {
+        pendingMetadata = null;
+        if (Number.isFinite(video.duration)) video.currentTime = Math.min(savedTime, video.duration);
+        if (resumeAfterQuality) startPlayback();
+        else status.textContent = '';
+      };
+      video.addEventListener('loadedmetadata', pendingMetadata, { once: true });
+      video.preload = 'metadata';
+      video.src = quality.value;
+      error.querySelector<HTMLAnchorElement>('a')!.href = quality.value;
+      video.load();
+    });
+    video.addEventListener('error', showError);
+    video.querySelector('source')?.addEventListener('error', showError);
+  });
+</script>
+
+<style>
+  .promo-section { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .85fr); align-items: center; gap: clamp(32px, 6vw, 80px); border-top: 1px solid var(--line); }
+  .legacy-anchor { position: absolute; top: 0; }
+  .promo-copy { max-width: 38rem; }
+  .promo-brand { display: inline-block; margin: 0 0 24px 8px; transform: perspective(700px) rotateY(-12deg) rotateZ(-5deg); filter: drop-shadow(7px 10px 8px #1e2a4a18); }
+  .promo-copy h2 { margin-bottom: 20px; }
+  .promo-copy p { font-size: 16px; margin-top: 16px; }
+  .promo-copy .promo-intro { font-size: 20px; color: var(--navy); }
+  .promo-copy .promo-context { font-size: 14px; color: var(--muted); }
+  .youtube-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; margin-top: 24px; }
+  .youtube-links a { min-height: 44px; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+  .youtube-links svg { flex-shrink: 0; }
+  .promo-videos { display: grid; gap: 32px; min-width: 0; }
+  .promo-videos article { width: 100%; max-width: 360px; margin-inline: auto; }
+  .promo-videos h3 { font-size: 20px; margin-bottom: 16px; }
+  .promo-videos video { display: block; width: 100%; height: auto; max-width: 304px; margin-inline: auto; aspect-ratio: 9 / 16; border-radius: 16px; background: var(--mint, #e4f4f2); object-fit: contain; }
+  .playback-tools { display: flex; align-items: end; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
+  .playback-tools[hidden], .video-error[hidden] { display: none; }
+  .promo-play, .promo-retry { min-height: 48px; border: 0; border-radius: 10px; padding: 12px 16px; background: var(--coral); color: var(--navy); font-size: 14px; font-weight: 600; line-height: 1.5; }
+  .playback-tools label { display: grid; gap: 4px; font-size: 12px; color: var(--navy); }
+  .playback-tools select { min-height: 48px; min-width: 88px; padding: 10px; border: 1px solid var(--teal-ink, #087976); border-radius: 10px; background: var(--cloud); color: var(--navy); font: inherit; font-size: 14px; }
+  .playback-tools select:focus-visible { outline: 3px solid var(--plum); outline-offset: 4px; }
+  .promo-video-note { margin-top: 16px; font-size: 12px; line-height: 1.6; color: var(--muted); }
+  .video-status { min-height: 1.5em; margin-top: 8px; font-size: 14px; color: var(--muted); }
+  .video-error { margin-top: 8px; font-size: 14px; }
+  .video-error > div { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
+  .video-error a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 4px; }
+  @media (hover: hover) { .promo-play:hover, .promo-retry:hover { background: #ff8a5c; } }
+  @media (max-width: 750px) {
+    .promo-section { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .promo-brand { margin-bottom: 16px; }
+    .promo-brand img { width: 72px; height: 72px; }
+    .promo-copy .promo-intro { font-size: 18px; }
+    .promo-videos article { max-width: 340px; }
+    .promo-videos video { max-width: 280px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .promo-brand { transform: none; } }
+  :global(.reduce-motion) .promo-brand { transform: none; }
+</style>
