@@ -1,13 +1,26 @@
 {
-  "verified_at_utc": "2026-09-26T17:05:00.000Z",
+  "verified_at_utc": "2026-09-26T18:12:00.000Z",
   "environment": {
     "machine": "development workstation (transfer target), Node v24.19.0",
-    "astro_check": { "files": 24, "errors": 0, "warnings": 0, "hints": 0 },
-    "unit_tests": { "files": ["test/jev-triage.test.mjs", "test/triage-questions.test.mjs", "test/question-match.test.mjs"], "pass": 21, "fail": 0 },
+    "astro_check": {
+      "files": 24,
+      "errors": 0,
+      "warnings": 0,
+      "hints": 0
+    },
+    "unit_tests": {
+      "files": [
+        "test/jev-triage.test.mjs",
+        "test/triage-questions.test.mjs",
+        "test/question-match.test.mjs"
+      ],
+      "pass": 21,
+      "fail": 0
+    },
     "production_build": "passed (3 pages; only the known optional-Three.js chunk-size warning)",
     "preview": "http://localhost:4341 HTTP 200"
   },
-  "feature": "Instant answers for bank questions (zero network), conservative paraphrase matching, honest labelling (instant = teal/mint published-information; AI review = plum tag per D-022); hero scene pointer tilt clamped <=5 deg, scroll camera drift, calm pulses on all four paths, projected tooltips; calm micro-interactions",
+  "feature": "3D visual QA pass (motion-enabled via production-chunk instantiation, test browser only) + bundled Noto Sans Ethiopic subset",
   "browser_checks": {
     "browser": "Chromium-based in-app browser; reports prefers-reduced-motion: reduce (device otherwise capable). Trusted keyboard injection unavailable here; native page-side events used as documented.",
     "chip_shows_answer_directly": "diaspora chip: answer panel visible immediately with label 'Answered from ZAYA's published information', question heading, answer text, mailto subject 'ZAYA diaspora enquiry'; AI panel hidden",
@@ -17,17 +30,73 @@
     "edit_clears": "editing hides subtitle, answer panel, and chip pressed-state; provenance cleared so fallback routes general",
     "fallback_and_offline": "function-absent and simulated-offline both produce the friendly status, fallback panel, honest note, intact correctly-addressed mailto; no retries",
     "scene": "reduced-motion environment keeps the static fallback first-class (no Three.js download); tooltips correctly hidden without the 3D scene; pause/motion controls present and OS-disabled as designed. 3D-only behaviours (tooltips, drift, pulses) are code-verified and could not render in this environment.",
-    "viewports": ["360x740", "390x844", "768x1024", "844x390 landscape", "720x450 (200% zoom approximation)", "1280x900 — no horizontal overflow at any size"],
+    "viewports": [
+      "360x740",
+      "390x844",
+      "768x1024",
+      "844x390 landscape",
+      "720x450 (200% zoom approximation)",
+      "1280x900 — no horizontal overflow at any size"
+    ],
     "micro_interactions": "hover lift and FAQ details-content animation defined with transitions fully disabled under prefers-reduced-motion and the site motion-off class",
     "observed_console_errors": 0,
-    "screenshots": "phone 360x740 instant answer panel; desktop promo section with both entries (previous task evidence retained)"
+    "screenshots": "phone 360x740 instant answer panel; desktop promo section with both entries (previous task evidence retained)",
+    "three_d_qa": {
+      "method": "This test browser permanently reports prefers-reduced-motion, so the real production scene chunk (network-scene.BPxfhOh4.js) was manually instantiated on the live page (setRunning(true)) — the equivalent of forcing no-preference, test-browser only, per A3.",
+      "results": {
+        "canvas_mounted": "444x323, data-renderer=3d, fallback hidden",
+        "scene_renders": "platform, logo hub, four distinct nodes with rings, connection paths, district blocks — screenshot captured; brand-faithful, no layout shift or overlap",
+        "tooltips": "projectNode() verified; tooltip visually correct above the shopping-bag node with name + benefit line (screenshot). NOTE: the lifecycle wiring in neighbourhood.ts could not be exercised end-to-end here because it captured the real media query at load (its internal scene stays undefined under reduced motion); the wiring mirrors the working selection/pause paths and was code-reviewed.",
+        "selection": "scene stays mounted through audience selection (zaya:audiencechange)",
+        "pause_control": "in reduced-motion the site correctly shows \"Motion is off\" disabled (OS-driven); the toggle wiring mirrors the reviewed paths",
+        "tilt": "pointer parallax clamped by stage geometry to [-1,1] x 0.085 rad = 4.87 deg (<= 5)",
+        "drift_pulses": "code-verified (camera drift 0.16/0.28 units; calm pulses on all four paths, selected brighter/faster) — motion not capturable beyond static screenshots here"
+      },
+      "reduced_motion_mode": {
+        "three_chunk_fetched": false,
+        "fallback_first_class": true,
+        "tips_hidden": true,
+        "motion_control": "Motion is off (disabled, OS-driven)"
+      }
+    },
+    "regression_after_font": {
+      "instant_answer_zero_network": true,
+      "paraphrase_instant": true,
+      "different_question_review_fallback": true,
+      "explore_4": true,
+      "video_preload_none": true,
+      "tiktok_and_share_meta": true,
+      "both_promos": true,
+      "viewports_overflow_free": [
+        "360x740",
+        "390x844",
+        "768x1024",
+        "844x390",
+        "720x450"
+      ],
+      "console_errors": 0
+    }
   },
-  "page_weight": { "before": "145,590 B (142.2 KB)", "after": "157,109 B (153.4 KB)", "delta": "+11.5 KB", "budget": "~400 KB initial transfer — respected" },
+  "page_weight": {
+    "without_ethiopic_glyphs": "157,109 B (153.4 KB)",
+    "homepage_with_amharic_title": "355,433 B (347.1 KB)",
+    "budget": "~400 KB — respected; privacy/terms pages never fetch the font"
+  },
   "not_reverified_in_this_session": {
     "three_d_scene_visuals": "reduced-motion environment never loads Three.js (correct behaviour); 3D tooltips/drift/pulses are code-verified only",
     "keyboard_trusted_input": "unavailable in this browser; native button/link semantics plus programmatic focus verified",
     "true_200pct_browser_zoom": "approximated by halved viewport",
     "physical_devices": "none available"
   },
-  "publication": { "see": "DEPLOYMENT.json (live verification + single approved live Jev POST recorded there, 2026-09-26)" }
+  "publication": {
+    "see": "DEPLOYMENT.json (live verification + single approved live Jev POST recorded there, 2026-09-26)"
+  },
+  "ethiopic_font": {
+    "file": "public/fonts/noto-sans-ethiopic-subset.woff2",
+    "bytes": 198324,
+    "variable": "one file serves weights 100-900 (Ethiopic subset; latin excluded)",
+    "license": "SIL OFL 1.1 (Google Fonts, v50)",
+    "rendering_proof": "document.fonts.check('700 20px Noto Sans Ethiopic', Amharic sample) === true; font fetched on the homepage; Amharic promo title renders in it (screenshot)",
+    "swap": "font-display: swap declared; throttled-reload simulation unavailable in this browser"
+  }
 }

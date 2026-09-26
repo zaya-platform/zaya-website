@@ -1,44 +1,101 @@
 {
-  "verified_at_utc": "2026-09-26T17:10:00.000Z",
+  "verified_at_utc": "2026-09-26T18:15:00.000Z",
   "site_id": "27ddebb4-de36-4728-8ef7-e291dd013de9",
   "deploy_id": null,
-  "deploy_id_note": "Deploy triggered by Git push of feat/jev-instant-answers (c86d846) to main, fast-forward from 19ac680, with owner approval granted in advance. Netlify deploy ID not retrievable (no Netlify API credentials here); publication verified by live content checks below.",
+  "deploy_id_note": "Deploy triggered by Git push of feat/visual-qa-ethiopic-font (bf2516d) to main, fast-forward from f9fda88, owner-approved (A1: deploy if changed). Netlify deploy ID not retrievable here. The 3D QA pass found NO defects, so the deploy contains only the Ethiopic webfont change. No function changes — no live Jev POST needed per A4.",
   "rollback": {
-    "pre_merge_main_sha": "19ac6806164dec7b6960d15df286d17b99ca4ce7",
-    "plan": "git push git@github.com:zaya-platform/zaya-website.git 19ac6806164dec7b6960d15df286d17b99ca4ce7:main (force, pinned) restores the previous generation; archive/august-2026-main (6b13ba1) remains untouched."
+    "pre_merge_main_sha": "f9fda888be02f2eabca0eb5e1ade4b446653c1d9",
+    "plan": "git push git@github.com:zaya-platform/zaya-website.git f9fda888be02f2eabca0eb5e1ade4b446653c1d9:main (force, pinned) restores the previous generation."
   },
   "url": "https://zayaethiopia.netlify.app",
-  "previous_deploy": "19ac680 generation",
+  "previous_deploy": "f9fda88 generation",
   "repository_state": {
-    "main": "c86d846 (instant answers + scene enhancements)",
-    "feat_jev_instant_answers": "c86d846",
-    "feat_jev_common_questions": "19ac680 (previous generation, retained)",
+    "main": "bf2516d (Ethiopic webfont; 3D QA passed with no defects)",
+    "feat_visual_qa_ethiopic_font": "bf2516d",
+    "feat_jev_instant_answers": "f9fda88 (previous generation marker)",
     "archive": "archive/august-2026-main preserved at 6b13ba1"
   },
-  "feature": "Jev instant answers: 22 published answers shown immediately for bank questions (chip directly, exact/paraphrase typed via conservative token-overlap matching >= 0.8, zero network calls, never auto-sends); AI review kept for everything else with a plum D-022 tag and teal/mint labelling for instant answers; hero scene gains <=5 deg pointer tilt (now clamped independently), subtle scroll camera drift, calm pulses on all four paths, and projected hover/touch/selection tooltips; calm micro-interactions with instant reduced-motion behaviour",
+  "feature": "Amharic/Ethiopic rendering: bundled Noto Sans Ethiopic (Ethiopic-subset variable woff2, SIL OFL 1.1) with font-display: swap and Ethiopic unicode-range — downloads only when Ethiopic glyphs render. 3D visual QA pass (motion enabled in the test browser via the production chunk): no defects found, no scene changes.",
   "live_checks": [
-    { "route": "/", "status": 200, "chips": 22, "answer_panel": true, "answer_label": "Answered from ZAYA's published information", "ai_tag": true, "subtitle_element": true, "enquiry_anchor": true, "prefill_triggers": 9, "promo_video_entries": 1, "amharic_card": true, "tiktok_link": true, "og_site_name": true, "twitter_card": true, "explore_audience_links": 4, "robots_meta": "noindex, follow" },
-    { "route": "/privacy/", "status": 200 },
-    { "route": "/terms/", "status": 200 },
-    { "route": "/videos/zaya-promo-1080.mp4", "status": 206, "method": "range request 0-1023" },
-    { "route": "/videos/zaya-promo-4k.mp4", "status": 206, "method": "range request 0-1023" },
-    { "route": "/images/zaya-share-1200x630.png", "status": 200 },
-    { "route": "/.netlify/functions/jev-triage", "method": "GET", "status": 405 },
-    { "route": "/robots.txt", "status": 200, "body": "User-agent: * Disallow: /" }
+    {
+      "route": "/",
+      "status": 200,
+      "chips": 22,
+      "answer_panel": true,
+      "answer_label": "Answered from ZAYA's published information",
+      "ai_tag": true,
+      "subtitle_element": true,
+      "enquiry_anchor": true,
+      "prefill_triggers": 9,
+      "promo_video_entries": 1,
+      "amharic_card": true,
+      "tiktok_link": true,
+      "og_site_name": true,
+      "twitter_card": true,
+      "explore_audience_links": 4,
+      "robots_meta": "noindex, follow"
+    },
+    {
+      "route": "/privacy/",
+      "status": 200
+    },
+    {
+      "route": "/terms/",
+      "status": 200
+    },
+    {
+      "route": "/videos/zaya-promo-1080.mp4",
+      "status": 206,
+      "method": "range request 0-1023"
+    },
+    {
+      "route": "/videos/zaya-promo-4k.mp4",
+      "status": 206,
+      "method": "range request 0-1023"
+    },
+    {
+      "route": "/images/zaya-share-1200x630.png",
+      "status": 200
+    },
+    {
+      "route": "/.netlify/functions/jev-triage",
+      "method": "GET",
+      "status": 405
+    },
+    {
+      "route": "/robots.txt",
+      "status": 200,
+      "body": "User-agent: * Disallow: /"
+    },
+    {
+      "check": "bundled ethiopic font file",
+      "route": "/fonts/noto-sans-ethiopic-subset.woff2",
+      "status": 200,
+      "bytes": 198324
+    },
+    {
+      "check": "built CSS references the font-face",
+      "evidence": "live /_astro/index.BQCnnphP.css contains the \"Noto Sans Ethiopic\" @font-face with noto-sans-ethiopic-subset.woff2 and unicode-range U+1200-1399"
+    }
   ],
   "live_jev_test_a3": {
     "attempt": "exactly one POST, no retries; free-typed NON-bank message ('My shop is in Nifas Silk Lafto and I want to ask about the merchant pilot.')",
     "http_status": 200,
-    "response": { "route": "merchant", "routeConfidence": 1, "urgency": 0.75, "humanReview": 0.25, "needsReview": false },
+    "response": {
+      "route": "merchant",
+      "routeConfidence": 1,
+      "urgency": 0.75,
+      "humanReview": 0.25,
+      "needsReview": false
+    },
     "shape_matches_contract": true,
     "route_correct_for_message": true
   },
   "page_weight": {
     "budget": "~400 KB initial transfer",
-    "before_bytes": 145590,
-    "after_bytes": 157109,
-    "delta_bytes": 11519,
-    "scope": "index.html + synchronous JS + CSS + self-hosted Poppins woff2; excludes the opt-in lazy Three.js chunk and media"
+    "before_bytes": 157109,
+    "after_bytes": 355433,
+    "note": "157,109 B without Ethiopic glyphs; the 198,324 B font downloads only on pages rendering Ethiopic text (the homepage includes the Amharic short title). Both figures inside budget. Swap behaviour declared (font-display: swap); network throttling unavailable in this test browser."
   },
   "not_done_in_this_session": {
     "three_d_scene_in_browser": "This environment reports prefers-reduced-motion, so the lazy Three.js scene correctly never loads here; scene changes are code-verified and the fallback was exercised at every viewport. Tooltips therefore could not be observed visually in-browser.",
