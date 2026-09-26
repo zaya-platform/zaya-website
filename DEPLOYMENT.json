@@ -1,28 +1,39 @@
 {
-  "verified_at_utc": "2026-09-26T08:05:00.000Z",
+  "verified_at_utc": "2026-09-26T10:45:00.000Z",
   "site_id": "27ddebb4-de36-4728-8ef7-e291dd013de9",
   "deploy_id": null,
-  "deploy_id_note": "Deploy triggered by Git push of site/september-2026 (commit 347e8c6) to main with owner approval; Netlify deploy ID was not retrievable in this session (no Netlify API credentials on this machine). Publication verified by live content checks below.",
-  "url": "https://zayaethiopia.netlify.app",
-  "previous_deploy": "6aaff1bf193c47a7fe80fa22",
-  "repository_state": {
-    "main": "347e8c6 (September 2026 site; first Git-triggered publication of this generation)",
-    "site_september_2026_branch": "347e8c6",
-    "archive": "archive/august-2026-main preserved at 6b13ba1 (August CMS/admin generation)"
+  "deploy_id_note": "Deploy triggered by Git push of feat/jev-common-questions (85d6ea4) to main, fast-forward from 2b971a9, with owner approval granted in advance (consolidated go-live prompt, A1). Netlify deploy ID not retrievable (no Netlify API credentials on this machine); publication verified by live content checks below.",
+  "rollback": {
+    "pre_merge_main_sha": "2b971a9",
+    "plan": "git push git@github.com:zaya-platform/zaya-website.git 2b971a9:main (force, pinned) restores the previous generation; archive/august-2026-main (6b13ba1) remains untouched."
   },
-  "feature": "September 2026 site: TikTok profile link, sharing metadata (og:site_name, twitter:card, dedicated 1200x630 share image), hardened role-panel headings",
+  "url": "https://zayaethiopia.netlify.app",
+  "previous_deploy": "2b971a9 generation (published earlier on 26 September)",
+  "repository_state": {
+    "main": "85d6ea4 (Jev common questions + Amharic short)",
+    "feat_jev_common_questions": "85d6ea4",
+    "archive": "archive/august-2026-main preserved at 6b13ba1"
+  },
+  "feature": "Jev enquiry enhancements: 22-question chip bank with suggested-question subtitles, audience/FAQ prefills via #enquiry, zero-credit fallback panel (friendly failure, provenance routing, honest labels, fallback mailto, single attempt); Amharic YouTube short added as an honest AI-labelled card",
   "live_checks": [
-    { "route": "/", "status": 200, "contains_tiktok_link": true, "explore_audience_links": 4, "og_site_name": "ZAYA App Ethiopia", "twitter_card": "summary_large_image", "og_image": "/images/zaya-share-1200x630.png", "robots_meta": "noindex, follow" },
+    { "route": "/", "status": 200, "chips": 22, "chip_groups": 6, "subtitle_element": true, "enquiry_anchor": true, "audience_ctas": 4, "faq_ask_links": 5, "promo_video_entries": 1, "amharic_card_entries": 1, "amharic_link": "https://www.youtube.com/shorts/FwcmnX3GMaY", "tiktok_link": true, "og_site_name": true, "twitter_card": true, "explore_audience_links": 4, "robots_meta": "noindex, follow" },
     { "route": "/privacy/", "status": 200 },
     { "route": "/terms/", "status": 200 },
     { "route": "/videos/zaya-promo-1080.mp4", "status": 206, "method": "range request 0-1023" },
     { "route": "/videos/zaya-promo-4k.mp4", "status": 206, "method": "range request 0-1023" },
-    { "route": "/images/zaya-share-1200x630.png", "status": 200, "bytes": 22561 },
-    { "route": "/.netlify/functions/jev-triage", "method": "GET", "status": 405, "expected": "405 (POST-only function present)" },
+    { "route": "/images/zaya-share-1200x630.png", "status": 200 },
+    { "route": "/.netlify/functions/jev-triage", "method": "GET", "status": 405 },
     { "route": "/robots.txt", "status": 200, "body": "User-agent: * Disallow: /" }
   ],
+  "live_jev_test_a3": {
+    "attempt": "exactly one POST, no retries, approved bank question (merchant pilot)",
+    "http_status": 200,
+    "response": { "route": "merchant", "routeConfidence": 1, "urgency": 0.89, "humanReview": 0.17, "needsReview": false },
+    "shape_matches_contract": true,
+    "route_correct_for_message": true
+  },
   "not_done_in_this_session": {
-    "jev_post_test": "No live POST with a real message: requires the owner's JEV_API_KEY authorization and consumes external API credits.",
-    "three_d_scene": "Not re-verified in a browser here: the development environment reports prefers-reduced-motion, and overriding an accessibility setting was not appropriate. Covered by code-path checks and the 20/25 September live evidence."
+    "browser_flow_on_live": "Behavioural browser verification was performed on the local build (identical commit); live checks are content/endpoint level.",
+    "account_actions": "No sign-ins, social posting, or API balance changes (owner-only actions)."
   }
 }

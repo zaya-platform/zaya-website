@@ -1,61 +1,55 @@
 {
-  "verified_at_utc": "2026-09-26T07:55:00.000Z",
+  "verified_at_utc": "2026-09-26T10:40:00.000Z",
   "environment": {
-    "machine": "development workstation (transfer target), Node v24.19.0 system / v24.21.0 local runtime",
-    "npm_ci": "passed (allowScripts approval recorded in package.json for esbuild x2 and sharp on npm 11+)",
+    "machine": "development workstation (transfer target), Node v24.19.0",
+    "npm_ci": "reproducible (allowScripts recorded in package.json for esbuild x2 and sharp)",
     "astro_check": { "files": 20, "errors": 0, "warnings": 0, "hints": 0 },
-    "jev_unit_tests": { "file": "test/jev-triage.test.mjs", "pass": 2, "fail": 0 },
-    "production_build": "passed (3 pages)",
+    "unit_tests": { "command": "node --test test/jev-triage.test.mjs test/triage-questions.test.mjs", "pass": 14, "fail": 0, "note": "node --test test/ (directory argument) is unreliable on this Node/Windows combo; pass explicit file paths" },
+    "production_build": "passed (3 pages; only the known optional-Three.js chunk-size warning)",
     "preview": "http://localhost:4341 HTTP 200"
   },
-  "feature": "September 2026 refinements verified on the local build: TikTok footer link, sharing metadata and share image, hardened role-panel headings",
+  "feature": "Jev common questions (22 chips in 6 groups), suggested-question subtitles, audience/FAQ prefills via #enquiry, zero-credit fallback; Amharic YouTube short as an honest AI-labelled card",
   "browser_checks": {
-    "browser": "Chromium-based in-app browser; IMPORTANT: this environment reports prefers-reduced-motion: reduce (device otherwise capable: 8 GB, 20 threads, WebGL available), so the site correctly served the static fallback throughout",
-    "explore_dropdown": {
-      "opens": true,
-      "audience_links": [
-        { "href": "#shoppers", "name": "Customers", "status": "In device testing", "targetPx": 109 },
-        { "href": "#merchants", "name": "Merchants", "status": "In device testing", "targetPx": 109 },
-        { "href": "#delivery", "name": "Riders", "status": "In device testing", "targetPx": 109 },
-        { "href": "#diaspora", "name": "Diaspora", "status": "Planned · not available", "targetPx": 109 }
-      ],
-      "each_link_selects_audience_and_scrolls": "verified for all four: hash set, panel closes, section top at 224px, customer tab auto-selected where applicable",
-      "scene_stays_mounted": true,
-      "escape_closes_and_returns_focus": true
+    "browser": "Chromium-based in-app browser; reports prefers-reduced-motion: reduce (device otherwise capable). Trusted keyboard injection is unavailable in this environment (also observed 26 Sep morning session); native page-side events were used for behavioural checks, as anticipated by the advisor. Keyboard semantics rely on native <button>/<a> defaults plus programmatic focus()+select(), which were verified working.",
+    "chip_prefill": "merchant chip: textarea filled, subtitle 'Suggested question — Shop owners: …', aria-pressed=true, focus+full selection, status 'Question added — edit it or choose Review my message.'",
+    "chip_targets": "all 22 chips >= 44px at every viewport",
+    "audience_ctas": "delivery CTA verified: hash #enquiry, section in view, textarea prefilled, subtitle shown, focus on textarea; customer/merchant/diaspora CTAs verified present in build and live HTML with correct routes/questions",
+    "faq_ask_links": "5 links; RIDE link verified in-browser: prefilled 'Is ZAYA RIDE the same as shop delivery, or a separate service?' with subtitle group 'Diaspora & RIDE'",
+    "edit_clears_provenance": "editing after prefill hides the subtitle, clears chip aria-pressed, and later failure routes to General with the general fallback note",
+    "zero_credit_fallback_function_absent": {
+      "result": "friendly status 'Smart review is unavailable right now. Nothing has been sent — continue by email below…', fallback panel shown, route from chip provenance (Merchant support), AI-only Priority/Next-step cells hidden, honest note shown, mailto subject 'ZAYA merchant enquiry' with fallback body note",
+      "attempts": "exactly 1 fetch per press, no retries"
     },
-    "reduced_motion_fallback": {
-      "three_js_chunk_fetched": false,
-      "static_fallback_rendered": true,
-      "motion_control_present_and_disabled_by_os_preference": true
-    },
-    "promo_video": {
-      "attributes": { "controls": true, "playsinline": true, "preload": "none", "poster": "/images/zaya-promo-cover.webp" },
-      "no_video_data_before_user_action": true,
-      "user_initiated_playback": "started and progressed (3.14s → 4.35s observed), control toggled Play→Pause",
-      "quality_switch_to_4k": "loads /videos/zaya-promo-4k.mp4 and resumes playback; position carried over (resumed playback during observation, exact frame not asserted)"
-    },
-    "enquiry_failure_path": {
-      "context": "astro preview has no Netlify functions, so the submit exercises the real failure path",
-      "outcome": "error caught, button restored to 'Review my message', result panel stayed hidden, nothing sent, all 4 mailto links intact",
-      "cosmetic_finding": "with the function endpoint absent the status shows the raw JSON-parse message instead of a friendly sentence; on Netlify proper the function exists — recommended hardening, not changed in this session"
-    },
+    "simulated_offline": "fetch overridden to reject: same friendly fallback, general route for free-typed text",
+    "edit_then_failure": "route falls back to 'General ZAYA enquiry' with 'showing the general enquiry route' note; user text carried into mailto body",
     "viewports": [
-      { "size": "360x740", "horizontal_overflow": false, "explore_visible_in_header": true, "menu_toggle": true },
-      { "size": "390x844", "horizontal_overflow": false, "explore_visible_in_header": true, "menu_toggle": true },
-      { "size": "768x1024", "horizontal_overflow": false, "explore_visible_in_header": true, "menu_toggle": true },
-      { "size": "844x390 landscape", "horizontal_overflow": false, "explore_visible_in_header": true, "menu_toggle": true },
-      { "size": "720x450 (200% zoom approximation)", "horizontal_overflow": false, "explore_visible_in_header": true, "menu_toggle": true },
-      { "size": "1280x720", "horizontal_overflow": false, "explore_visible_in_header": true, "menu_toggle": false },
-      { "size": "1440x900", "horizontal_overflow": false, "explore_visible_in_header": true, "menu_toggle": false }
+      { "size": "360x740", "horizontal_overflow": false },
+      { "size": "390x844", "horizontal_overflow": false },
+      { "size": "768x1024", "horizontal_overflow": false },
+      { "size": "844x390 landscape", "horizontal_overflow": false },
+      { "size": "720x450 (200% zoom approximation)", "horizontal_overflow": false },
+      { "size": "1280x900", "horizontal_overflow": false }
     ],
+    "regression": {
+      "explore_dropdown_links": 4,
+      "promo_video_preload": "none; no MP4 bytes before user-initiated play; playback progressed (controls showed 0:01/0:49 after test play)",
+      "promo_entries": "2 (1 video + 1 Amharic YouTube card), existing promo entry unchanged",
+      "tiktok_link": true,
+      "share_metadata": "og:site_name, twitter:card, 1200x630 share image all present"
+    },
     "observed_console_errors": 0,
-    "screenshots": "phone 360x740 with dropdown open captured for evidence"
+    "screenshots": "phone 360x740 chip group (active chip visible) and desktop promo section with both entries"
+  },
+  "bug_found_and_fixed_during_verification": {
+    "issue": "chip listeners were initially queried via form.querySelectorAll but the chip group sits outside the form (per spec) — zero listeners attached",
+    "fix": "document-level query; rebuilt and fully re-verified",
+    "commit": "included in 85d6ea4"
   },
   "not_reverified_in_this_session": {
-    "three_d_scene_rendering": "environment forces prefers-reduced-motion; overriding an accessibility setting was not appropriate. Import gating re-verified in code; live 3D evidence stands from 20 Sep deploy checks and 25 Sep advisor audit.",
-    "physical_devices": "no real phones/tablets available on this machine",
-    "true_200pct_browser_zoom": "approximated by halving the desktop viewport (720x450)",
-    "jev_success_path": "requires owner-authorized JEV_API_KEY; unit tests cover redaction and safe fallback"
+    "keyboard_trusted_input": "injected trusted keys unavailable in this browser; native semantics + programmatic focus verified instead",
+    "true_200pct_browser_zoom": "approximated by halving the desktop viewport",
+    "physical_devices": "none available",
+    "amharic_font_rendering": "Ethiopic title renders via system fallback (verified visually); a bundled Ethiopic font remains documented future work"
   },
-  "publication": { "see": "DEPLOYMENT.json (live verification recorded there, 2026-09-26)" }
+  "publication": { "see": "DEPLOYMENT.json (live verification + single approved live Jev POST recorded there, 2026-09-26)" }
 }
