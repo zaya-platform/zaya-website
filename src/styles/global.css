@@ -53,3 +53,6 @@ footer{padding-block:40px 20px}.footer-top,.footer-bottom{display:flex;align-ite
 @media(prefers-reduced-motion:reduce){.brand-wave .official-brand,.brand-wave-mark{animation:none}.brand-wave-mark{display:none}.hero-ribbon a,.ribbon-arrow{transition:none}}
 .reduce-motion .brand-wave .official-brand,.reduce-motion .brand-wave-mark{animation:none}.reduce-motion .brand-wave-mark{display:none}
 @media(forced-colors:active){.status,.phone,.button,.role-tabs button[aria-selected=true]{border:1px solid CanvasText}}
+
+/* Enquiry anchor, FAQ ask links (26 September 2026) */
+.legacy-anchor{position:absolute;top:0}.contact-section{position:relative}.faq-ask{display:inline-flex;align-items:center;min-height:44px;margin-left:10px;padding-inline:8px;font-size:13px;font-weight:600;color:var(--teal-ink);text-decoration:underline;text-underline-offset:4px}

@@ -1,72 +1,190 @@
+import questions from '../data/triage-questions.json';
+
+type BankQuestion = { route: string; label: string; group: string; question: string };
+type TriageReply = { route?: unknown; routeConfidence?: unknown; urgency?: unknown; humanReview?: unknown; needsReview?: unknown };
+
+const bank = questions as BankQuestion[];
+
+const routeLabels: Record<string, string> = {
+  customer_order: 'Shopping and orders',
+  merchant: 'Merchant support',
+  delivery: 'Delivery support',
+  ride: 'RIDE enquiry',
+  diaspora: 'Diaspora enquiry',
+  payment_account: 'Payment or account support',
+  general: 'General ZAYA enquiry',
+};
+
+const reducedMotion = (): boolean =>
+  matchMedia('(prefers-reduced-motion: reduce)').matches ||
+  document.documentElement.classList.contains('reduce-motion');
+
 const form = document.querySelector<HTMLFormElement>('#zaya-triage-form');
 
 if (form) {
   const message = form.querySelector<HTMLTextAreaElement>('#triage-message');
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   const status = form.querySelector<HTMLElement>('[data-triage-status]');
+  const hint = form.querySelector<HTMLElement>('[data-triage-hint]');
   const result = document.querySelector<HTMLElement>('#triage-result');
   const routeText = result?.querySelector<HTMLElement>('[data-triage-route]');
+  const urgencyCell = result?.querySelector<HTMLElement>('[data-triage-priority-cell]');
   const urgencyText = result?.querySelector<HTMLElement>('[data-triage-urgency]');
+  const reviewCell = result?.querySelector<HTMLElement>('[data-triage-review-cell]');
   const reviewText = result?.querySelector<HTMLElement>('[data-triage-review]');
+  const fallbackNote = result?.querySelector<HTMLElement>('[data-triage-fallback-note]');
   const emailLink = result?.querySelector<HTMLAnchorElement>('[data-triage-email]');
+  const enquiryAnchor = document.getElementById('enquiry');
 
-  const routeLabels: Record<string, string> = {
-    customer_order: 'Shopping and orders',
-    merchant: 'Merchant support',
-    delivery: 'Delivery support',
-    ride: 'RIDE enquiry',
-    diaspora: 'Diaspora enquiry',
-    payment_account: 'Payment or account support',
-    general: 'General ZAYA enquiry',
+  // Set while the message is exactly a bank question (chip or CTA); cleared as soon as it is edited.
+  let bankRoute: string | null = null;
+
+  const setStatus = (text: string): void => {
+    if (status) status.textContent = text;
   };
 
-  form.addEventListener('submit', async (event) => {
+  const clearChipStates = (except?: HTMLButtonElement): void => {
+    document.querySelectorAll<HTMLButtonElement>('.triage-chip[aria-pressed="true"]').forEach(chip => {
+      if (chip !== except) chip.setAttribute('aria-pressed', 'false');
+    });
+  };
+
+  const applyQuestion = (question: BankQuestion, chip?: HTMLButtonElement): void => {
+    if (!message) return;
+    bankRoute = question.route;
+    message.value = question.question;
+    if (hint) {
+      hint.textContent = `Suggested question — ${question.group}: ${question.question}`;
+      hint.hidden = false;
+    }
+    clearChipStates(chip);
+    if (chip) chip.setAttribute('aria-pressed', 'true');
+    setStatus('Question added — edit it or choose Review my message.');
+    message.focus();
+    message.select();
+  };
+
+  // The chip group sits outside the form (between the intro copy and the form), so query the document.
+  document.querySelectorAll<HTMLButtonElement>('.triage-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const question = bank.find(entry => entry.question === chip.dataset.question);
+      if (question) applyQuestion(question, chip);
+    });
+  });
+
+  // Audience CTAs and FAQ "Ask this" links anywhere on the page.
+  document.addEventListener('click', event => {
+    const trigger = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[data-triage-prefill]');
+    if (!trigger || !message) return;
+    const question = bank.find(entry => entry.question === trigger.dataset.question);
+    if (!question) return;
+    event.preventDefault();
+    applyQuestion(question);
+    enquiryAnchor?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    history.pushState(null, '', '#enquiry');
+  });
+
+  message?.addEventListener('input', () => {
+    bankRoute = null;
+    if (hint) hint.hidden = true;
+    clearChipStates();
+  });
+
+  const setEmailLink = (route: string, text: string, viaFallback: boolean): void => {
+    if (!emailLink) return;
+    const subject = encodeURIComponent(`ZAYA ${route} enquiry`);
+    const body = viaFallback
+      ? `${text}\n\nSent via the website enquiry fallback.`
+      : `${text}\n\nSuggested website route: ${routeLabels[route] || routeLabels.general}`;
+    emailLink.href = `mailto:zayaapp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const showFallback = (text: string): void => {
+    const route = bankRoute && routeLabels[bankRoute] ? bankRoute : 'general';
+    if (routeText) routeText.textContent = routeLabels[route] || routeLabels.general;
+    if (urgencyCell) urgencyCell.hidden = true;
+    if (reviewCell) reviewCell.hidden = true;
+    if (fallbackNote) {
+      fallbackNote.textContent = bankRoute
+        ? 'Smart review is unavailable — suggestion based on your selected question.'
+        : 'Smart review is unavailable — showing the general enquiry route.';
+      fallbackNote.hidden = false;
+    }
+    setEmailLink(route, text, true);
+    setStatus('Smart review is unavailable right now. Nothing has been sent — continue by email below, or try again later.');
+    if (result) {
+      result.hidden = false;
+      result.focus();
+    }
+  };
+
+  form.addEventListener('submit', async event => {
     event.preventDefault();
     const text = message?.value.trim() || '';
     if (!message || !submit || !status || !result || text.length < 12) {
       message?.focus();
-      if (status) status.textContent = 'Please tell us a little more so we can guide you.';
+      setStatus('Please tell us a little more so we can guide you.');
       return;
     }
 
     submit.disabled = true;
     submit.textContent = 'Reviewing…';
-    status.textContent = 'Finding the right ZAYA route for your message.';
+    setStatus('Finding the right ZAYA route for your message.');
     result.hidden = true;
+
+    // One attempt per press — never auto-retried. The client cutoff mirrors the server's 12s limit.
+    const controller = new AbortController();
+    const cutoff = setTimeout(() => controller.abort(), 12_000);
 
     try {
       const response = await fetch('/.netlify/functions/jev-triage', {
         method: 'POST',
+        signal: controller.signal,
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ message: text }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'The reviewer is unavailable.');
+      const data = (await response.json().catch(() => null)) as (TriageReply & { error?: string }) | null;
 
-      const route = routeLabels[data.route] || routeLabels.general;
-      const urgency = data.urgency >= 2.5
+      if (!response.ok) {
+        if (response.status === 400 && data?.error) {
+          setStatus(data.error);
+          return;
+        }
+        showFallback(text);
+        return;
+      }
+      if (!data || typeof data.route !== 'string' || !routeLabels[data.route]) {
+        showFallback(text);
+        return;
+      }
+
+      const route: string = data.route;
+      const urgency = Number(data.urgency ?? 0);
+      const humanReview = Number(data.humanReview ?? 0);
+      const needsReview = data.needsReview === true || Number(data.routeConfidence ?? 0) < 0.72;
+      const urgencyLabel = urgency >= 2.5
         ? 'High suggested priority'
-        : data.urgency >= 1.5
+        : urgency >= 1.5
           ? 'Elevated suggested priority'
           : 'Normal suggested priority';
-      const human = data.humanReview >= 0.7 || data.needsReview
+      const humanLabel = humanReview >= 0.7 || needsReview
         ? 'Personal review recommended'
         : 'Standard enquiry';
 
-      if (routeText) routeText.textContent = route;
-      if (urgencyText) urgencyText.textContent = urgency;
-      if (reviewText) reviewText.textContent = human;
-      if (emailLink) {
-        const subject = encodeURIComponent(`ZAYA ${route} enquiry`);
-        const body = encodeURIComponent(`${text}\n\nSuggested website route: ${route}`);
-        emailLink.href = `mailto:zayaapp@gmail.com?subject=${subject}&body=${body}`;
-      }
-      status.textContent = 'Your message has been reviewed. Nothing has been sent to the ZAYA team yet.';
+      if (routeText) routeText.textContent = routeLabels[route];
+      if (urgencyText) urgencyText.textContent = urgencyLabel;
+      if (reviewText) reviewText.textContent = humanLabel;
+      if (urgencyCell) urgencyCell.hidden = false;
+      if (reviewCell) reviewCell.hidden = false;
+      if (fallbackNote) fallbackNote.hidden = true;
+      setEmailLink(route, text, false);
+      setStatus('Your message has been reviewed. Nothing has been sent to the ZAYA team yet.');
       result.hidden = false;
       result.focus();
-    } catch (error) {
-      status.textContent = error instanceof Error ? error.message : 'The reviewer is unavailable. Please use email instead.';
+    } catch {
+      showFallback(text);
     } finally {
+      clearTimeout(cutoff);
       submit.disabled = false;
       submit.textContent = 'Review my message';
     }

@@ -2,7 +2,7 @@
 import promos from '../data/promos.json';
 import social from '../data/social.json';
 
-type Promo = { title: string; src: string; poster?: string; captions?: string; highQuality?: string };
+type Promo = { title: string; src?: string; poster?: string; captions?: string; highQuality?: string; link?: string; label?: string; cta?: string };
 const videos = promos as Promo[];
 ---
 
@@ -20,24 +20,30 @@ const videos = promos as Promo[];
     </div>}
   </div>
   <div class="promo-videos">
-    {videos.map((video, index) => <article aria-label={video.title}>
-      {videos.length > 1 && <h3>{video.title}</h3>}
-      <video controls playsinline preload="none" width="1080" height="1920" poster={video.poster} aria-label={video.title} aria-describedby={`promo-note-${index}`}>
-        <source src={video.src} type="video/mp4" />
-        {video.captions && <track kind="captions" src={video.captions} srclang="en" label="English" />}
-        <p>Your browser cannot play this video. <a href={video.src}>Open ZAYA Promo</a>.</p>
-      </video>
-      <div class="playback-tools" hidden>
-        <button class="promo-play" type="button">Play ZAYA Promo</button>
-        {video.highQuality && <label for={`promo-quality-${index}`}>Video quality<select id={`promo-quality-${index}`}><option value={video.src}>1080p</option><option value={video.highQuality}>4K</option></select></label>}
-      </div>
-      <p class="promo-video-note" id={`promo-note-${index}`}>1080p uses less data. Choose 4K for a higher-resolution view.</p>
-      <p class="video-status" role="status" aria-atomic="true"></p>
-      <div class="video-error" hidden>
-        <p role="alert">The video couldn’t load. Try again, choose 1080p, or open the video directly.</p>
-        <div><button class="promo-retry" type="button">Try again</button><a href={video.src}>Open video</a></div>
-      </div>
-    </article>)}
+    {videos.map((video, index) => video.link
+      ? <article class="promo-external" aria-label={video.title}>
+          <h3>{video.title}</h3>
+          <p class="promo-external-label">{video.label}</p>
+          <a class="text-link" href={video.link} target="_blank" rel="noopener noreferrer">{video.cta || 'Watch on YouTube'} <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" /></svg></a>
+        </article>
+      : <article aria-label={video.title}>
+          {videos.length > 1 && <h3>{video.title}</h3>}
+          <video controls playsinline preload="none" width="1080" height="1920" poster={video.poster} aria-label={video.title} aria-describedby={`promo-note-${index}`}>
+            <source src={video.src} type="video/mp4" />
+            {video.captions && <track kind="captions" src={video.captions} srclang="en" label="English" />}
+            <p>Your browser cannot play this video. <a href={video.src}>Open ZAYA Promo</a>.</p>
+          </video>
+          <div class="playback-tools" hidden>
+            <button class="promo-play" type="button">Play ZAYA Promo</button>
+            {video.highQuality && <label for={`promo-quality-${index}`}>Video quality<select id={`promo-quality-${index}`}><option value={video.src}>1080p</option><option value={video.highQuality}>4K</option></select></label>}
+          </div>
+          <p class="promo-video-note" id={`promo-note-${index}`}>1080p uses less data. Choose 4K for a higher-resolution view.</p>
+          <p class="video-status" role="status" aria-atomic="true"></p>
+          <div class="video-error" hidden>
+            <p role="alert">The video couldn’t load. Try again, choose 1080p, or open the video directly.</p>
+            <div><button class="promo-retry" type="button">Try again</button><a href={video.src}>Open video</a></div>
+          </div>
+        </article>)}
     {videos.length === 0 && <p>The promo is available on the ZAYA YouTube channel.</p>}
   </div>
 </section>
@@ -107,6 +113,10 @@ const videos = promos as Promo[];
   .youtube-links svg { flex-shrink: 0; }
   .promo-videos { display: grid; gap: 32px; min-width: 0; }
   .promo-videos article { width: 100%; max-width: 360px; margin-inline: auto; }
+  .promo-external { padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+  .promo-external h3 { font-size: 20px; margin-bottom: 12px; }
+  .promo-external-label { font-size: 12px; line-height: 1.65; color: var(--muted); margin-bottom: 12px; }
+  .promo-external .text-link { min-height: 44px; font-size: 14px; }
   .promo-videos h3 { font-size: 20px; margin-bottom: 16px; }
   .promo-videos video { display: block; width: 100%; height: auto; max-width: 304px; margin-inline: auto; aspect-ratio: 9 / 16; border-radius: 16px; background: var(--mint, #e4f4f2); object-fit: contain; }
   .playback-tools { display: flex; align-items: end; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 16px; }

@@ -1,11 +1,34 @@
+---
+import questions from '../data/triage-questions.json';
+
+type BankQuestion = { route: string; label: string; group: string; question: string };
+const bank = questions as BankQuestion[];
+const groupOrder = ['Shopping', 'Shop owners', 'Delivery', 'Diaspora & RIDE', 'Account & safety', 'General'];
+const groups = groupOrder
+  .map(name => ({ name, questions: bank.filter(q => q.group === name) }))
+  .filter(group => group.questions.length > 0);
+---
 <section class="triage-card" aria-labelledby="triage-title">
   <div class="triage-copy">
     <span class="status">Guided enquiry · preview</span>
     <h3 id="triage-title">Tell us what you need.</h3>
-    <p>ZAYA can suggest the right enquiry route before you contact the team.</p>
+    <p>ZAYA can suggest the right enquiry route before you contact the team. Choose a common question to start, or write your own.</p>
+  </div>
+  <div class="triage-chips" role="group" aria-label="Common questions — selecting one fills in your message">
+    {groups.map(group => (
+      <div class="chip-group">
+        <h4>{group.name}</h4>
+        <div class="chip-row">
+          {group.questions.map(q => (
+            <button type="button" class="triage-chip" data-route={q.route} data-question={q.question} data-group={q.group} aria-pressed="false">{q.label}</button>
+          ))}
+        </div>
+      </div>
+    ))}
   </div>
   <form id="zaya-triage-form">
     <label for="triage-message">Your message</label>
+    <p class="triage-hint" data-triage-hint hidden></p>
     <textarea id="triage-message" name="message" minlength="12" maxlength="1200" rows="5" placeholder="For example: My shop is in Nifas Silk Lafto and I want to ask about the merchant pilot." required></textarea>
     <div class="triage-actions">
       <button class="button" type="submit">Review my message</button>
@@ -14,8 +37,9 @@
   </form>
   <div class="triage-result" id="triage-result" tabindex="-1" hidden>
     <p><span>Best route</span><strong data-triage-route>General ZAYA enquiry</strong></p>
-    <p><span>Priority</span><strong data-triage-urgency>Normal review</strong></p>
-    <p><span>Next step</span><strong data-triage-review>Standard enquiry</strong></p>
+    <p data-triage-priority-cell><span>Priority</span><strong data-triage-urgency>Normal review</strong></p>
+    <p data-triage-review-cell><span>Next step</span><strong data-triage-review>Standard enquiry</strong></p>
+    <p class="triage-fallback-note" data-triage-fallback-note hidden>Smart review is unavailable.</p>
     <a class="button" data-triage-email href="mailto:zayaapp@gmail.com">Continue by email</a>
   </div>
   <p class="triage-privacy">Do not include passwords, payment-card details, identification numbers or an exact home address. When you select “Review my message,” the text is analysed by an external AI decision service. Personal contact patterns are removed before analysis where possible.</p>
@@ -27,10 +51,19 @@
   .triage-result[hidden]{display:none}
   .triage-card{width:min(900px,100%);margin:40px auto 0;padding:32px;text-align:left;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--cloud);box-shadow:var(--shadow)}
   .triage-copy{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px 20px}.triage-copy h3{font-size:30px}.triage-copy p{grid-column:2;color:var(--muted)}
+  .triage-chips{margin-top:24px;display:grid;gap:16px}
+  .chip-group h4{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px}
+  .triage-chip{min-height:44px;padding:10px 14px;border:1px solid var(--teal-ink);border-radius:30px;background:var(--surface);color:var(--teal-ink);font-size:14px;font-weight:500;line-height:1.5}
+  @media(hover:hover){.triage-chip:hover{background:var(--mint)}}
+  .triage-chip[aria-pressed="true"]{background:var(--mint);box-shadow:inset 0 -3px 0 var(--teal-ink);font-weight:600}
   #zaya-triage-form{margin-top:24px}#zaya-triage-form label{display:block;font-size:14px;font-weight:600;margin-bottom:8px}
+  .triage-hint{margin:0 0 8px;padding:10px 12px;border-radius:10px;background:var(--mint);color:var(--teal-ink);font-size:13px;line-height:1.6}
+  .triage-hint[hidden]{display:none}
   #triage-message{width:100%;min-height:132px;resize:vertical;padding:16px;border:1px solid var(--line);border-radius:var(--radius-control);background:white;color:var(--navy);font:inherit;line-height:1.6}
   #triage-message:focus{border-color:var(--teal-ink)}.triage-actions{display:flex;align-items:center;gap:16px;margin-top:16px}.triage-actions p{font-size:13px;color:var(--muted)}
-  .triage-result{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}.triage-result p{padding:14px;border-radius:12px;background:var(--mint)}.triage-result span,.triage-result strong{display:block}.triage-result span{font-size:12px;color:var(--muted)}.triage-result strong{font-size:14px;margin-top:5px}.triage-result .button{grid-column:1/-1;justify-self:start}
+  .triage-result{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px;padding-top:24px;border-top:1px solid var(--line)}.triage-result p{padding:14px;border-radius:12px;background:var(--mint)}.triage-result p[hidden]{display:none}.triage-result span,.triage-result strong{display:block}.triage-result span{font-size:12px;color:var(--muted)}.triage-result strong{font-size:14px;margin-top:5px}.triage-result .button{grid-column:1/-1;justify-self:start}
+  .triage-fallback-note{grid-column:1/-1;background:transparent;padding:0;font-size:13px;color:var(--muted)}
   .triage-privacy{margin-top:20px;font-size:12px;line-height:1.65;color:var(--muted)}
   @media(max-width:650px){.triage-card{padding:24px 16px}.triage-copy{display:block}.triage-copy h3{margin-top:18px}.triage-copy p{margin-top:10px}.triage-actions{align-items:stretch;flex-direction:column}.triage-result{grid-template-columns:1fr}.triage-result .button{width:100%}}
 </style>
