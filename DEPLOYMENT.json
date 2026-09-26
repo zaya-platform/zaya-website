@@ -1,65 +1,28 @@
 {
-  "verified_at_utc": "2026-09-20T14:46:48.067Z",
+  "verified_at_utc": "2026-09-26T08:05:00.000Z",
   "site_id": "27ddebb4-de36-4728-8ef7-e291dd013de9",
-  "deploy_id": "6aaff1bf193c47a7fe80fa22",
+  "deploy_id": null,
+  "deploy_id_note": "Deploy triggered by Git push of site/september-2026 (commit 347e8c6) to main with owner approval; Netlify deploy ID was not retrievable in this session (no Netlify API credentials on this machine). Publication verified by live content checks below.",
   "url": "https://zayaethiopia.netlify.app",
-  "unique_deploy_url": "https://6aaff1bf193c47a7fe80fa22--zayaethiopia.netlify.app",
-  "previous_deploy": "6aafec0798b6c0cc3548d493",
-  "feature": "Explore ZAYA audience dropdown in the header, persistent homepage scene and responsive navigation",
-  "checks": [
-    {
-      "route": "/",
-      "status": 200,
-      "matches_build": false,
-      "bytes": 37430,
-      "matches_after_host_metadata_removed": true,
-      "host_added_bytes": 536
-    },
-    {
-      "route": "/_astro/ExploreMenu.astro_astro_type_script_index_0_lang.DsLCQY5h.js",
-      "status": 200,
-      "matches_build": true,
-      "bytes": 1725
-    },
-    {
-      "route": "/_astro/index.3UzfTw9R.css",
-      "status": 200,
-      "matches_build": true,
-      "bytes": 20151
-    },
-    {
-      "route": "/_astro/index.astro_astro_type_script_index_0_lang.CAFxMKX5.js",
-      "status": 200,
-      "matches_build": true,
-      "bytes": 10095
-    },
-    {
-      "route": "/_astro/index.DKpWbJGD.css",
-      "status": 200,
-      "matches_build": true,
-      "bytes": 24660
-    },
-    {
-      "route": "/_astro/Neighbourhood.astro_astro_type_script_index_0_lang.69JeztrG.js",
-      "status": 200,
-      "matches_build": true,
-      "bytes": 3035
-    },
-    {
-      "route": "/_astro/network-scene.ClRNBwsq.js",
-      "status": 200,
-      "matches_build": true,
-      "bytes": 550853
-    }
+  "previous_deploy": "6aaff1bf193c47a7fe80fa22",
+  "repository_state": {
+    "main": "347e8c6 (September 2026 site; first Git-triggered publication of this generation)",
+    "site_september_2026_branch": "347e8c6",
+    "archive": "archive/august-2026-main preserved at 6b13ba1 (August CMS/admin generation)"
+  },
+  "feature": "September 2026 site: TikTok profile link, sharing metadata (og:site_name, twitter:card, dedicated 1200x630 share image), hardened role-panel headings",
+  "live_checks": [
+    { "route": "/", "status": 200, "contains_tiktok_link": true, "explore_audience_links": 4, "og_site_name": "ZAYA App Ethiopia", "twitter_card": "summary_large_image", "og_image": "/images/zaya-share-1200x630.png", "robots_meta": "noindex, follow" },
+    { "route": "/privacy/", "status": 200 },
+    { "route": "/terms/", "status": 200 },
+    { "route": "/videos/zaya-promo-1080.mp4", "status": 206, "method": "range request 0-1023" },
+    { "route": "/videos/zaya-promo-4k.mp4", "status": 206, "method": "range request 0-1023" },
+    { "route": "/images/zaya-share-1200x630.png", "status": 200, "bytes": 22561 },
+    { "route": "/.netlify/functions/jev-triage", "method": "GET", "status": 405, "expected": "405 (POST-only function present)" },
+    { "route": "/robots.txt", "status": 200, "body": "User-agent: * Disallow: /" }
   ],
-  "live_browser_checks": {
-    "explore_audience_links": 4,
-    "hero_dropdowns": 0,
-    "scene_renderer": "3d",
-    "canvas_count": 1,
-    "expanded_menu_bottom": 229.68,
-    "scene_top_with_menu_open": 351.73,
-    "menu_covers_scene": false,
-    "observed_console_errors": 0
+  "not_done_in_this_session": {
+    "jev_post_test": "No live POST with a real message: requires the owner's JEV_API_KEY authorization and consumes external API credits.",
+    "three_d_scene": "Not re-verified in a browser here: the development environment reports prefers-reduced-motion, and overriding an accessibility setting was not appropriate. Covered by code-path checks and the 20/25 September live evidence."
   }
 }
