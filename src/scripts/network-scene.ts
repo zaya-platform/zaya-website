@@ -9,6 +9,7 @@ import {
 export type NetworkScene = {
   select: (index: number) => void;
   setRunning: (enabled: boolean) => void;
+  projectNode: (index: number, out: { x: number; y: number }) => boolean;
   dispose: () => void;
 };
 
@@ -110,6 +111,7 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
   const paths: QuadraticBezierCurve3[] = [];
   const pathMaterials: MeshBasicMaterial[] = [];
   const pulses: Mesh[] = [];
+  const pulseMaterials: MeshBasicMaterial[] = [];
   positions.forEach((position,i) => {
     const node = new Group(); node.position.copy(position); world.add(node); nodes.push(node);
     cylinder(.59,.14,white,node,0,.01,0);
@@ -125,7 +127,10 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
     const pm = new MeshBasicMaterial({color: colors[i], transparent: true, opacity: .3});
     materials.add(pm); pathMaterials.push(pm);
     mesh(new TubeGeometry(path,24,.026,5,false),pm,world,0,0,0);
-    const pulse = mesh(new SphereGeometry(.085,10,8),orange,world,0,0,0);
+    // Every connection carries a calm travelling pulse; the selected path stays brighter and quicker.
+    const pulseMaterial = new MeshBasicMaterial({color: colors[i], transparent: true, opacity: .38});
+    materials.add(pulseMaterial); pulseMaterials.push(pulseMaterial);
+    const pulse = mesh(new SphereGeometry(.085,10,8),pulseMaterial,world,0,0,0);
     pulses.push(pulse);
   });
   // Shopping bag, storefront, delivery parcel and globe: four distinct silhouettes.
@@ -150,8 +155,13 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
 
   function render() { if (!disposed) renderer.render(scene,camera); }
   function pose(time: number, animated: boolean) {
-    world.rotation.y += ((animated ? px*.085 + scrollDepth*.06 : 0)-world.rotation.y)*.07;
+    // Pointer tilt stays within 5 degrees (px/py are clamped to [-1,1] by the stage size).
+    world.rotation.y += ((animated ? px*.085 : 0)-world.rotation.y)*.07;
     world.rotation.x += ((animated ? py*.035 : 0)-world.rotation.x)*.07;
+    // Scroll-linked camera drift: a subtle pan of the view, independent of the pointer tilt.
+    const drift = animated ? scrollDepth : 0;
+    camera.position.y += ((7 + drift*.28) - camera.position.y)*.06;
+    camera.position.x += ((7 + drift*.16) - camera.position.x)*.06;
     nodes.forEach((node,i) => {
       const active = i===selected;
       const target = active ? .24 : 0;
@@ -163,8 +173,10 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
       selectionHalos[i].scale.setScalar(animated && active ? 1 + Math.sin(time*1.6)*.035 : 1);
       pathMaterials[i].color.set(active ? coral : colors[i]);
       pathMaterials[i].opacity = active ? 1 : .14;
-      pulses[i].visible = active;
-      pulses[i].position.copy(paths[i].getPoint(animated ? (time*.22)%1 : .55));
+      pulseMaterials[i].color.set(active ? coral : colors[i]);
+      pulseMaterials[i].opacity = animated ? (active ? 1 : .38) : .22;
+      pulses[i].visible = true;
+      pulses[i].position.copy(paths[i].getPoint(animated ? (active ? time*.22 : time*.12 + i*.27)%1 : .5));
     });
     logo.position.y = 1.1 + (animated ? Math.sin(time*1.5)*.045 : 0);
     logoMaterial.rotation = animated ? Math.sin(time*1.4)*.018 : 0;
@@ -210,9 +222,19 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
   window.addEventListener('scroll',scroll,{passive:true});
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();stage.dispatchEvent(new Event('zaya:scene-lost'));});
   pose(0,false); resize();
+  const projected = new Vector3();
   return {
     select(index) { selected=index; pose(elapsed,running); render(); },
     setRunning,
+    projectNode(index, out) {
+      if (disposed) return false;
+      projected.copy(nodes[index].position);
+      projected.y += .85;
+      projected.project(camera);
+      out.x = (projected.x*.5+.5)*host.clientWidth;
+      out.y = (-projected.y*.5+.5)*host.clientHeight;
+      return projected.z < 1;
+    },
     dispose() {
       if(disposed) return;
       disposed=true; running=false; cancelAnimationFrame(frame); resizeObserver.disconnect();

@@ -17,11 +17,58 @@ if (root) {
   let localPaused = false;
   let active = 0;
 
+  // Scene tooltips: short benefits shown on hover/touch of a node and briefly when an
+  // audience is selected (the keyboard path runs through the accessible header control).
+  const tips = Array.from(root.querySelectorAll<HTMLElement>('[data-scene-tip]'));
+  let tipTimer = 0;
+  function positionTip(index: number) {
+    if (!scene || !tips[index]) return;
+    const point = { x: 0, y: 0 };
+    if (!scene.projectNode(index, point)) return;
+    tips[index].style.left = `${Math.round(point.x)}px`;
+    tips[index].style.top = `${Math.round(point.y)}px`;
+  }
+  function showTip(index: number, temporary = false) {
+    if (!scene) return;
+    tips.forEach((tip, ti) => { tip.hidden = ti !== index; });
+    positionTip(index);
+    window.clearTimeout(tipTimer);
+    if (temporary) tipTimer = window.setTimeout(hideTips, 4000);
+  }
+  function hideTips() {
+    window.clearTimeout(tipTimer);
+    tips.forEach(tip => { tip.hidden = true; });
+  }
+  function nearestNode(clientX: number, clientY: number): number {
+    if (!scene) return -1;
+    const rect = stage.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    let nearest = -1;
+    let nearestDist = 64;
+    for (let index = 0; index < 4; index += 1) {
+      const point = { x: 0, y: 0 };
+      if (!scene.projectNode(index, point)) continue;
+      const dist = Math.hypot(point.x - x, point.y - y);
+      if (dist < nearestDist) { nearestDist = dist; nearest = index; }
+    }
+    return nearest;
+  }
+  function pointerTip(event: PointerEvent) {
+    const index = nearestNode(event.clientX, event.clientY);
+    if (index >= 0) showTip(index);
+    else hideTips();
+  }
+  stage.addEventListener('pointermove', pointerTip, { passive: true });
+  stage.addEventListener('pointerdown', pointerTip, { passive: true });
+  stage.addEventListener('pointerleave', hideTips);
+
   const motionAllowed = () => !localPaused && !reduced.matches && !document.documentElement.classList.contains('reduce-motion');
   function select(index: number) {
     active = index;
     root!.dataset.selected = String(index);
     scene?.select(index);
+    showTip(index, true);
   }
   // The header can highlight a connection without replacing or hiding this scene.
   window.addEventListener('zaya:audiencechange', event => {
@@ -58,6 +105,7 @@ if (root) {
     pause.textContent = systemOff ? 'Motion is off' : localPaused ? 'Resume scene' : 'Pause scene';
     pause.title = systemOff ? 'Motion is disabled by your device or the website motion control.' : '';
     root!.dataset.motion = permitted ? 'on' : 'off';
+    if (!scene || !permitted) hideTips();
     scene?.setRunning(permitted && visible && !document.hidden);
     if (!scene && permitted) void loadScene();
   }

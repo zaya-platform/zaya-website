@@ -1,6 +1,7 @@
 import questions from '../data/triage-questions.json';
+import { matchBankQuestion } from './question-match';
 
-type BankQuestion = { route: string; label: string; group: string; question: string };
+type BankQuestion = { route: string; label: string; group: string; question: string; answer: string };
 type TriageReply = { route?: unknown; routeConfidence?: unknown; urgency?: unknown; humanReview?: unknown; needsReview?: unknown };
 
 const bank = questions as BankQuestion[];
@@ -34,6 +35,11 @@ if (form) {
   const reviewText = result?.querySelector<HTMLElement>('[data-triage-review]');
   const fallbackNote = result?.querySelector<HTMLElement>('[data-triage-fallback-note]');
   const emailLink = result?.querySelector<HTMLAnchorElement>('[data-triage-email]');
+  const aiTag = result?.querySelector<HTMLElement>('[data-ai-tag]');
+  const answerPanel = document.querySelector<HTMLElement>('#triage-answer');
+  const answerQuestion = answerPanel?.querySelector<HTMLElement>('[data-answer-question]');
+  const answerText = answerPanel?.querySelector<HTMLElement>('[data-answer-text]');
+  const answerEmail = answerPanel?.querySelector<HTMLAnchorElement>('[data-answer-email]');
   const enquiryAnchor = document.getElementById('enquiry');
 
   // Set while the message is exactly a bank question (chip or CTA); cleared as soon as it is edited.
@@ -49,7 +55,25 @@ if (form) {
     });
   };
 
-  const applyQuestion = (question: BankQuestion, chip?: HTMLButtonElement): void => {
+  const showInstantAnswer = (entry: BankQuestion): void => {
+    if (!answerPanel) return;
+    if (answerQuestion) answerQuestion.textContent = entry.question;
+    if (answerText) answerText.textContent = entry.answer;
+    if (answerEmail) {
+      const subject = `ZAYA ${entry.route} enquiry`;
+      const body = `${entry.question}\n\nAnswered from ZAYA's published information.`;
+      answerEmail.href = `mailto:zayaapp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+    if (result) result.hidden = true;
+    answerPanel.hidden = false;
+    setStatus('Answered from ZAYA\'s published information — nothing has been sent.');
+  };
+
+  const hideAnswer = (): void => {
+    if (answerPanel) answerPanel.hidden = true;
+  };
+
+  const applyQuestion = (question: BankQuestion, chip?: HTMLButtonElement, showAnswer = false): void => {
     if (!message) return;
     bankRoute = question.route;
     message.value = question.question;
@@ -59,6 +83,9 @@ if (form) {
     }
     clearChipStates(chip);
     if (chip) chip.setAttribute('aria-pressed', 'true');
+    if (result) result.hidden = true;
+    if (showAnswer) showInstantAnswer(question);
+    else hideAnswer();
     setStatus('Question added — edit it or choose Review my message.');
     message.focus();
     message.select();
@@ -67,8 +94,8 @@ if (form) {
   // The chip group sits outside the form (between the intro copy and the form), so query the document.
   document.querySelectorAll<HTMLButtonElement>('.triage-chip').forEach(chip => {
     chip.addEventListener('click', () => {
-      const question = bank.find(entry => entry.question === chip.dataset.question);
-      if (question) applyQuestion(question, chip);
+    const question = bank.find(entry => entry.question === chip.dataset.question);
+    if (question) applyQuestion(question, chip, true);
     });
   });
 
@@ -87,6 +114,7 @@ if (form) {
   message?.addEventListener('input', () => {
     bankRoute = null;
     if (hint) hint.hidden = true;
+    hideAnswer();
     clearChipStates();
   });
 
@@ -104,6 +132,7 @@ if (form) {
     if (routeText) routeText.textContent = routeLabels[route] || routeLabels.general;
     if (urgencyCell) urgencyCell.hidden = true;
     if (reviewCell) reviewCell.hidden = true;
+    if (aiTag) aiTag.hidden = true;
     if (fallbackNote) {
       fallbackNote.textContent = bankRoute
         ? 'Smart review is unavailable — suggestion based on your selected question.'
@@ -131,6 +160,23 @@ if (form) {
     submit.textContent = 'Reviewing…';
     setStatus('Finding the right ZAYA route for your message.');
     result.hidden = true;
+
+    // Instant answers: a bank question (exact or clearly the same) answers immediately,
+    // with no network call at all. Anything less certain uses the normal review flow.
+    const instant = matchBankQuestion(text, bank);
+    if (instant) {
+      submit.disabled = false;
+      submit.textContent = 'Review my message';
+      const chip = Array.from(form.querySelectorAll<HTMLButtonElement>('.triage-chip'))
+        .find(candidate => candidate.dataset.question === instant.question);
+      bankRoute = instant.route;
+      clearChipStates(chip ?? undefined);
+      if (chip) chip.setAttribute('aria-pressed', 'true');
+      showInstantAnswer(instant);
+      return;
+    }
+    hideAnswer();
+    if (aiTag) aiTag.hidden = false;
 
     // One attempt per press — never auto-retried. The client cutoff mirrors the server's 12s limit.
     const controller = new AbortController();
@@ -177,6 +223,7 @@ if (form) {
       if (urgencyCell) urgencyCell.hidden = false;
       if (reviewCell) reviewCell.hidden = false;
       if (fallbackNote) fallbackNote.hidden = true;
+      if (aiTag) aiTag.hidden = false;
       setEmailLink(route, text, false);
       setStatus('Your message has been reviewed. Nothing has been sent to the ZAYA team yet.');
       result.hidden = false;

@@ -56,3 +56,12 @@ footer{padding-block:40px 20px}.footer-top,.footer-bottom{display:flex;align-ite
 
 /* Enquiry anchor, FAQ ask links (26 September 2026) */
 .legacy-anchor{position:absolute;top:0}.contact-section{position:relative}.faq-ask{display:inline-flex;align-items:center;min-height:44px;margin-left:10px;padding-inline:8px;font-size:13px;font-weight:600;color:var(--teal-ink);text-decoration:underline;text-underline-offset:4px}
+
+/* Micro-interactions (26 September 2026) — calm hover/focus feedback; fully instant under reduced motion. */
+.button,.triage-chip{transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.button:hover,.triage-chip:hover{transform:translateY(-1px);box-shadow:0 8px 18px #1e2a4a14}
+.button:active,.triage-chip:active{transform:translateY(0);box-shadow:none}
+.faqs details::details-content{block-size:0;overflow:hidden;transition:block-size .25s ease,content-visibility .25s;transition-behavior:allow-discrete}
+.faqs details[open]::details-content{block-size:auto}
+@media(prefers-reduced-motion:reduce){.button,.triage-chip{transition:none}.button:hover,.triage-chip:hover{transform:none;box-shadow:none}.faqs details::details-content{transition:none}}
+.reduce-motion .button,.reduce-motion .triage-chip{transition:none}.reduce-motion .button:hover,.reduce-motion .triage-chip:hover{transform:none;box-shadow:none}.reduce-motion .faqs details::details-content{transition:none}
