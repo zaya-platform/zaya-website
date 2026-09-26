@@ -22,6 +22,12 @@ The current site identifies these as captures from 23 August 2026, using seeded 
 
 ## Official brand and typography
 
+## Official brand and typography
+
+### Ethiopic webfont — 26 September 2026
+
+`public/fonts/noto-sans-ethiopic-subset.woff2` — **Noto Sans Ethiopic**, Ethiopic unicode-range subset (variable weight file, serves 100–900), downloaded from Google Fonts (`fonts.googleapis.com`, file version v50, hash-URL `7cHAv50vjIepfJVOZZgcpQ5B9FBTH9KGNfhSTgtoow1KVnIv4gckut2Q.woff2`). License: **SIL Open Font License 1.1**. Served with `font-display: swap` and `unicode-range` (U+1200-1399 etc.), so it downloads only when Ethiopic glyphs are rendered — pages without Amharic text never fetch it. Wired into the existing "Noto Sans Ethiopic" stack position (ahead of Nyala/Arial fallbacks); Poppins remains the Latin typeface. 198,324 bytes.
+
 The July 7, 2026 master assets in the current connected repository supersede the older D: Brand Story Sheet used in the first local draft.
 
 - Repository: https://github.com/zaya-platform/zaya-website (reviewed main revision 6b13ba1154962010dc3da2e04d8ad9d03e9581ce).
