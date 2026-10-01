@@ -145,3 +145,26 @@ test('low route confidence flags needsReview', async () => {
   const body = JSON.parse(response.body);
   assert.equal(body.needsReview, true);
 });
+
+// --- personal-detail removal covers the phone formats Ethiopians actually write ---
+
+test('removes Ethio telecom, Safaricom and landline numbers in common written formats', async () => {
+  const { removePersonalDetails } = await import('../netlify/functions/jev-triage.mjs');
+  const numbers = [
+    '0911234567', '+251911234567', '251911234567', '00251911234567',
+    '0711234567', '+251711234567', '+251 711 234 567',
+    '+251 91 283 5922', '0911 23 45 67', '091-123-4567', '0911.234.567', '(+251) 911 234 567', '+251 (0) 911 234 567',
+    '011 551 2345', '+251 11 551 2345', '0115512345',
+    '911234567', '711234567',
+  ];
+  for (const number of numbers) {
+    const cleaned = removePersonalDetails(`Please call me on ${number} today.`);
+    assert.equal(cleaned, 'Please call me on [phone removed] today.', number);
+  }
+});
+
+test('leaves ordinary numbers, dates and prices untouched', async () => {
+  const { removePersonalDetails } = await import('../netlify/functions/jev-triage.mjs');
+  const ordinary = 'I ordered 12 items for 1,250 birr on 2026-09-26 at 10:30; order 4512 for 3 shops in Bole.';
+  assert.equal(removePersonalDetails(ordinary), ordinary);
+});

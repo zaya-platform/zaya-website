@@ -10,11 +10,18 @@ export type NetworkScene = {
   select: (index: number) => void;
   setRunning: (enabled: boolean) => void;
   projectNode: (index: number, out: { x: number; y: number }) => boolean;
+  /** True (once) when the last pointer gesture turned the model, so it is not also treated as a tap. */
+  consumeDrag: () => boolean;
   dispose: () => void;
 };
 
+const RIDERS = 2;
+const TURN_LIMIT = .7; // radians either side of the resting view (about 40 degrees)
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const smoothstep = (value: number) => { const t = clamp(value, 0, 1); return t * t * (3 - 2 * t); };
+
 /** Optional, local-only illustration. All product information and controls live in HTML. */
-export function createNetworkScene(host: HTMLElement, stage: HTMLElement): NetworkScene {
+export function createNetworkScene(host: HTMLElement, stage: HTMLElement, onRender?: () => void): NetworkScene {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('webgl2', { alpha: true, antialias: true, powerPreference: 'low-power' });
   if (!context) throw new Error('Use the static neighbourhood illustration.');
@@ -95,6 +102,8 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
   let elapsed = 0;
   let selected = 0;
   let px = 0, py = 0, scrollDepth = 0;
+  // Drag to turn: the visitor's own rotation, eased back to the resting view after a quiet spell.
+  let turn = 0, dragId: number | null = null, dragStartX = 0, dragStartTurn = 0, dragged = false, lastTurned = -Infinity;
   const loader = new TextureLoader();
   loader.load('/brand-icon.svg', texture => {
     if (disposed) { texture.dispose(); return; }
@@ -133,6 +142,25 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
     const pulse = mesh(new SphereGeometry(.085,10,8),pulseMaterial,world,0,0,0);
     pulses.push(pulse);
   });
+  // Shop-managed delivery: with Riders selected, a dotted route runs from the storefront to the
+  // shopper and a parcel travels along it. It is an illustration of the workflow, not live tracking.
+  const courierRoute = new QuadraticBezierCurve3(new Vector3(-.15,.2,-1.45), new Vector3(-1,.3,-1), new Vector3(-1.45,.2,-.15));
+  const routeMaterial = new MeshBasicMaterial({ color: coral, transparent: true, opacity: 0 });
+  materials.add(routeMaterial);
+  const routeDots: Mesh[] = [];
+  const dotGeometry = new SphereGeometry(.032,8,6);
+  for (let i = 0; i < 11; i++) {
+    const dot = mesh(dotGeometry, routeMaterial, world, 0, 0, 0);
+    dot.position.copy(courierRoute.getPoint(.04 + i * .092));
+    routeDots.push(dot);
+  }
+  const courier = new Group(); world.add(courier);
+  cylinder(.2,.05,sea,courier,0,.02,0);
+  const courierParcel = box(.27,.22,.27,orange,courier,0,.17,0);
+  box(.06,.225,.275,white,courier,0,.17,0);
+  courierParcel.rotation.y = .2;
+  let riderWeight = 0;
+
   // Shopping bag, storefront, delivery parcel and globe: four distinct silhouettes.
   box(.62,.7,.38,sea,nodes[0],0,.49,0);
   const handle = mesh(new TorusGeometry(.17,.025,8,20,Math.PI),ink,nodes[0],0,.84,0);
@@ -153,10 +181,15 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
   latitude.rotation.x = Math.PI/2;
   cylinder(.14,.28,ink,nodes[3],0,.25,0);
 
-  function render() { if (!disposed) renderer.render(scene,camera); }
-  function pose(time: number, animated: boolean) {
-    // Pointer tilt stays within 5 degrees (px/py are clamped to [-1,1] by the stage size).
-    world.rotation.y += ((animated ? px*.085 : 0)-world.rotation.y)*.07;
+  const lifts = positions.map(() => 0);
+  const sizes = positions.map(() => .94);
+  function render() { if (disposed) return; renderer.render(scene,camera); onRender?.(); }
+  function pose(time: number, animated: boolean, delta = 0) {
+    // Selection changes glide over roughly half a second while animating, and snap when static.
+    const glide = animated ? 1 - Math.pow(.0008, delta) : 1;
+    if (animated && dragId === null && time - lastTurned > 6) turn += (0 - turn) * Math.min(1, delta * .9);
+    // Pointer tilt stays within 5 degrees (px/py are clamped to [-1,1] by the stage size); a drag adds the visitor's turn.
+    world.rotation.y += ((animated ? turn + px*.085 : 0)-world.rotation.y)*(dragId === null ? .07 : .25);
     world.rotation.x += ((animated ? py*.035 : 0)-world.rotation.x)*.07;
     // Scroll-linked camera drift: a subtle pan of the view, independent of the pointer tilt.
     const drift = animated ? scrollDepth : 0;
@@ -164,10 +197,10 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
     camera.position.x += ((7 + drift*.16) - camera.position.x)*.06;
     nodes.forEach((node,i) => {
       const active = i===selected;
-      const target = active ? .24 : 0;
-      node.position.y = animated ? target + (active ? Math.sin(time*1.6)*.04 : 0) : target;
-      const scale = active ? 1.22 : .94;
-      node.scale.setScalar(scale);
+      lifts[i] += ((active ? .24 : 0) - lifts[i]) * glide;
+      sizes[i] += ((active ? 1.22 : .94) - sizes[i]) * glide;
+      node.position.y = lifts[i] + (animated && active ? Math.sin(time*1.6)*.04 : 0);
+      node.scale.setScalar(sizes[i]);
       (rings[i].material as MeshStandardMaterial).color.set(active?coral:colors[i]);
       selectionHalos[i].visible = active;
       selectionHalos[i].scale.setScalar(animated && active ? 1 + Math.sin(time*1.6)*.035 : 1);
@@ -180,19 +213,31 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
     });
     logo.position.y = 1.1 + (animated ? Math.sin(time*1.5)*.045 : 0);
     logoMaterial.rotation = animated ? Math.sin(time*1.4)*.018 : 0;
+    // The delivery route fades in for Riders; the parcel waits at the shop, travels, then arrives.
+    riderWeight += ((selected === RIDERS ? 1 : 0) - riderWeight) * glide;
+    routeMaterial.opacity = riderWeight * .75;
+    routeDots.forEach(dot => { dot.visible = riderWeight > .01; });
+    courier.visible = riderWeight > .01;
+    const cycle = (time % 4.6) / 4.6;
+    const progress = animated ? smoothstep((cycle - .14) / .68) : .5;
+    courier.position.copy(courierRoute.getPoint(progress));
+    courier.position.y += animated ? Math.abs(Math.sin(progress * Math.PI * 6)) * .035 : 0;
+    const departing = animated ? clamp(cycle / .1, 0, 1) : 1;
+    const arriving = animated ? clamp((cycle - .82) / .18, 0, 1) : 0;
+    courier.scale.setScalar(riderWeight * (.1 + .9 * departing) * (1 - arriving * .9));
   }
   function tick(now: number) {
     if (!running || disposed) return;
     const delta = Math.min((now-lastTime)/1000,.05); lastTime = now;
     elapsed += delta;
-    pose(elapsed,true); render();
+    pose(elapsed,true,delta); render();
     frame = requestAnimationFrame(tick);
   }
   function setRunning(enabled: boolean) {
     if (disposed || running===enabled) return;
     running=enabled; cancelAnimationFrame(frame);
     if (enabled) { lastTime=performance.now(); frame=requestAnimationFrame(tick); }
-    else { world.rotation.set(0,0,0); pose(elapsed,false); render(); }
+    else { turn = 0; dragged = false; endDrag(); world.rotation.set(0,0,0); pose(elapsed,false); render(); }
   }
   function resize() {
     if(disposed) return;
@@ -205,7 +250,26 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
     camera.updateProjectionMatrix();
     renderer.setSize(width,height,false); render();
   }
+  function pointerDown(event: PointerEvent) {
+    if (!running || (event.pointerType==='mouse' && event.button!==0)) return;
+    dragId = event.pointerId; dragStartX = event.clientX; dragStartTurn = turn; dragged = false;
+  }
+  function endDrag(event?: PointerEvent) {
+    if (event && event.pointerId!==dragId) return;
+    if (dragId!==null && stage.hasPointerCapture?.(dragId)) stage.releasePointerCapture(dragId);
+    dragId = null; delete stage.dataset.dragging;
+  }
   function pointer(event: PointerEvent) {
+    if (running && event.pointerId===dragId) {
+      const distance = event.clientX-dragStartX;
+      // A small movement is still a tap; beyond it the gesture turns the model. Vertical
+      // touch movement stays a page scroll (the stage uses touch-action: pan-y).
+      if (dragged || Math.abs(distance) > 6) {
+        if (!dragged) { dragged = true; stage.dataset.dragging = ''; stage.setPointerCapture?.(event.pointerId); }
+        turn = clamp(dragStartTurn + distance/Math.max(stage.clientWidth,1)*2.4, -TURN_LIMIT, TURN_LIMIT);
+        lastTurned = elapsed;
+      }
+    }
     if (!running || event.pointerType==='touch') return;
     const b=stage.getBoundingClientRect();
     px=((event.clientX-b.left)/b.width-.5)*2;
@@ -217,7 +281,10 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
     if(running) scrollDepth=Math.max(-1,Math.min(1,stage.getBoundingClientRect().top/window.innerHeight));
   }
   const resizeObserver=new ResizeObserver(resize); resizeObserver.observe(host);
+  stage.addEventListener('pointerdown',pointerDown,{passive:true});
   stage.addEventListener('pointermove',pointer,{passive:true});
+  stage.addEventListener('pointerup',endDrag);
+  stage.addEventListener('pointercancel',endDrag);
   stage.addEventListener('pointerleave',resetPointer);
   window.addEventListener('scroll',scroll,{passive:true});
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();stage.dispatchEvent(new Event('zaya:scene-lost'));});
@@ -228,17 +295,21 @@ export function createNetworkScene(host: HTMLElement, stage: HTMLElement): Netwo
     setRunning,
     projectNode(index, out) {
       if (disposed) return false;
-      projected.copy(nodes[index].position);
+      // World position, so tooltips follow the node when the model is turned or tilted.
+      nodes[index].getWorldPosition(projected);
       projected.y += .85;
       projected.project(camera);
       out.x = (projected.x*.5+.5)*host.clientWidth;
       out.y = (-projected.y*.5+.5)*host.clientHeight;
       return projected.z < 1;
     },
+    consumeDrag() { const was = dragged; dragged = false; return was; },
     dispose() {
       if(disposed) return;
       disposed=true; running=false; cancelAnimationFrame(frame); resizeObserver.disconnect();
-      stage.removeEventListener('pointermove',pointer); stage.removeEventListener('pointerleave',resetPointer);
+      stage.removeEventListener('pointerdown',pointerDown); stage.removeEventListener('pointermove',pointer);
+      stage.removeEventListener('pointerup',endDrag); stage.removeEventListener('pointercancel',endDrag);
+      stage.removeEventListener('pointerleave',resetPointer); endDrag();
       window.removeEventListener('scroll',scroll);
       geometries.forEach(g=>g.dispose()); materials.forEach(m=>m.dispose()); textures.forEach(t=>t.dispose());
       renderer.dispose(); canvas.remove();

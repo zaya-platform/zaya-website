@@ -43,9 +43,36 @@ const deliveryDescriptions=[
  'The shop’s own deliverer collects the order and takes it to the customer.',
  'The delivery outcome is recorded and cash collection is settled against the order.'
 ];
-document.querySelectorAll<HTMLButtonElement>('[data-delivery]').forEach(button=>button.addEventListener('click',()=>{
- const step=Number(button.dataset.delivery);
+const deliverySteps=[...document.querySelectorAll<HTMLButtonElement>('[data-delivery]')];
+const showDeliveryStep=(step:number)=>{
  document.querySelector<HTMLElement>('.ride-visual')!.dataset.stage=String(step);
  document.querySelector('.delivery-description')!.textContent=deliveryDescriptions[step];
- document.querySelectorAll('[data-delivery]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+ deliverySteps.forEach((b,i)=>b.setAttribute('aria-pressed',String(i===step)));
+};
+// "Play the journey" walks the three steps in order; any manual step choice stops it.
+const journeyButton=document.querySelector<HTMLButtonElement>('[data-delivery-play]');
+const journeyLabel=journeyButton?.querySelector('span');
+let journeyTimer=0;
+const stopJourney=(label='Replay the journey')=>{
+ window.clearTimeout(journeyTimer);journeyTimer=0;
+ if(journeyLabel)journeyLabel.textContent=label;
+ journeyButton?.removeAttribute('data-playing');
+};
+const playJourney=(step=0)=>{
+ showDeliveryStep(step);
+ if(step>=deliverySteps.length-1){stopJourney();return;}
+ journeyTimer=window.setTimeout(()=>playJourney(step+1),2200);
+};
+deliverySteps.forEach((button,step)=>button.addEventListener('click',()=>{
+ if(journeyTimer)stopJourney('Play the journey');
+ showDeliveryStep(step);
 }));
+if(journeyButton){
+ journeyButton.hidden=false;
+ journeyButton.addEventListener('click',()=>{
+  if(journeyTimer){stopJourney('Play the journey');return;}
+  journeyButton.setAttribute('data-playing','');
+  if(journeyLabel)journeyLabel.textContent='Stop the journey';
+  playJourney(0);
+ });
+}

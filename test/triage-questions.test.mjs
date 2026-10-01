@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { removePersonalDetails } from '../netlify/functions/jev-triage.mjs';
 
 const bank = JSON.parse(readFileSync(
   fileURLToPath(new URL('../src/data/triage-questions.json', import.meta.url)),
@@ -22,9 +23,9 @@ test('every entry has valid route, group, label shape and safe content', () => {
     assert.ok(VALID_GROUPS.has(entry.group), `valid group: ${entry.group}`);
     assert.match(entry.label, /^\S+( \S+){1,3}$/, `label 2-4 words: ${entry.label}`);
     assert.ok(entry.question.length >= 12 && entry.question.length <= 1200, `question length: ${entry.question}`);
-    assert.ok(!/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(`${entry.question} ${entry.label}`), 'no email patterns');
-    assert.ok(!/(?:\+?251|0)?9\d{8}\b/.test(`${entry.question} ${entry.label}`), 'no phone patterns');
-    assert.ok(!/\b(?:\d[ -]*?){13,19}\b/.test(`${entry.question} ${entry.label}`), 'no card patterns');
+    // The same filter the server applies: a bank question must reach the reviewer unchanged.
+    const visible = `${entry.question} ${entry.label}`;
+    assert.equal(removePersonalDetails(visible), visible, 'no email, phone or card patterns');
   }
 });
 

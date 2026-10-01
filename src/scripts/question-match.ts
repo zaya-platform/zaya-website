@@ -38,15 +38,28 @@ export function similarityToBankQuestion(typed: string, bankQuestion: string): n
   return shared / bankTokens.length;
 }
 
+/** Share of the typed text's significant tokens that the bank question also contains (0..1). */
+export function typedCoveredByBankQuestion(typed: string, bankQuestion: string): number {
+  const typedTokens = [...new Set(significantTokens(typed))];
+  const bankTokens = new Set(significantTokens(bankQuestion));
+  if (typedTokens.length === 0) return 0;
+  let covered = 0;
+  for (const token of typedTokens) if (bankTokens.has(token)) covered += 1;
+  return covered / typedTokens.length;
+}
+
 /**
  * Returns the matching bank entry when the typed text is the same question
  * (exact after normalisation, or token overlap >= 0.8 of the bank question).
- * Anything less certain returns null — the review flow handles it instead.
+ * The typed text must also be mostly that question (>= 0.6 of its own tokens):
+ * a longer message that merely contains a bank question carries a different
+ * request and goes to the review flow. Anything less certain returns null.
  */
 export function matchBankQuestion<T extends MatchableQuestion>(
   typed: string,
   bank: readonly T[],
   threshold = 0.8,
+  minTypedCoverage = 0.6,
 ): T | null {
   const normalizedTyped = normalizeText(typed);
   if (normalizedTyped.length === 0) return null;
@@ -62,5 +75,6 @@ export function matchBankQuestion<T extends MatchableQuestion>(
       best = entry;
     }
   }
-  return bestScore >= threshold ? best : null;
+  if (!best || bestScore < threshold) return null;
+  return typedCoveredByBankQuestion(typed, best.question) >= minTypedCoverage ? best : null;
 }

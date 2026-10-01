@@ -10,9 +10,16 @@ const json = (statusCode, body) => ({
   body: JSON.stringify(body),
 });
 
-const removePersonalDetails = (value) => value
+// Ethiopian numbers have nine national digits. With a +251 / 00251 / 251 or 0 prefix any of
+// them is a phone number (mobile 9…/7…, landline 11…–58…); without one, only the mobile
+// shapes 9… (Ethio telecom) and 7… (Safaricom) are. Spaces, dots and dashes may separate digits.
+const PREFIXED_PHONE = /(?<![\d+])(?:\(?(?:\+|00)?251\)?[\s.-]*(?:\(0\)[\s.-]*)?|0)[1-9](?:[\s.-]?\d){8}(?!\d)/g;
+const BARE_MOBILE = /(?<![\d+])[79](?:[\s.-]?\d){8}(?!\d)/g;
+
+export const removePersonalDetails = (value) => value
   .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[email removed]')
-  .replace(/(?:\+?251|0)?9\d{8}\b/g, '[phone removed]')
+  .replace(PREFIXED_PHONE, '[phone removed]')
+  .replace(BARE_MOBILE, '[phone removed]')
   .replace(/\b(?:\d[ -]*?){13,19}\b/g, '[number removed]');
 
 export async function handler(event) {
