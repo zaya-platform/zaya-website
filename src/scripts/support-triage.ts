@@ -1,5 +1,6 @@
 import questions from '../data/triage-questions.json';
 import { matchBankQuestion } from './question-match';
+import { instantAnswerMailto, reviewedEnquiryMailto } from './enquiry-mail';
 
 type BankQuestion = { route: string; label: string; group: string; question: string; answer: string };
 type TriageReply = { route?: unknown; routeConfidence?: unknown; urgency?: unknown; humanReview?: unknown; needsReview?: unknown };
@@ -55,15 +56,11 @@ if (form) {
     });
   };
 
-  const showInstantAnswer = (entry: BankQuestion): void => {
+  const showInstantAnswer = (entry: BankQuestion, typed = entry.question): void => {
     if (!answerPanel) return;
     if (answerQuestion) answerQuestion.textContent = entry.question;
     if (answerText) answerText.textContent = entry.answer;
-    if (answerEmail) {
-      const subject = `ZAYA ${entry.route} enquiry`;
-      const body = `${entry.question}\n\nAnswered from ZAYA's published information.`;
-      answerEmail.href = `mailto:zayaapp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    }
+    if (answerEmail) answerEmail.href = instantAnswerMailto(entry, typed);
     if (result) result.hidden = true;
     answerPanel.hidden = false;
     setStatus('Answered from ZAYA\'s published information — nothing has been sent.');
@@ -120,11 +117,7 @@ if (form) {
 
   const setEmailLink = (route: string, text: string, viaFallback: boolean): void => {
     if (!emailLink) return;
-    const subject = encodeURIComponent(`ZAYA ${route} enquiry`);
-    const body = viaFallback
-      ? `${text}\n\nSent via the website enquiry fallback.`
-      : `${text}\n\nSuggested website route: ${routeLabels[route] || routeLabels.general}`;
-    emailLink.href = `mailto:zayaapp@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    emailLink.href = reviewedEnquiryMailto(route, routeLabels[route] || routeLabels.general, text, viaFallback);
   };
 
   const showFallback = (text: string): void => {
@@ -167,12 +160,13 @@ if (form) {
     if (instant) {
       submit.disabled = false;
       submit.textContent = 'Review my message';
-      const chip = Array.from(form.querySelectorAll<HTMLButtonElement>('.triage-chip'))
+      // The chips sit outside the form, so look them up in the document.
+      const chip = Array.from(document.querySelectorAll<HTMLButtonElement>('.triage-chip'))
         .find(candidate => candidate.dataset.question === instant.question);
       bankRoute = instant.route;
       clearChipStates(chip ?? undefined);
       if (chip) chip.setAttribute('aria-pressed', 'true');
-      showInstantAnswer(instant);
+      showInstantAnswer(instant, text);
       return;
     }
     hideAnswer();

@@ -64,3 +64,20 @@ test('every bank answer carries a valid route and non-empty text', () => {
 test('normalisation strips punctuation and collapses whitespace', () => {
   assert.equal(normalizeText('  Hello,   WORLD!!! ---'), 'hello world');
 });
+
+test('a longer message that only starts with a bank question is NOT answered instantly', () => {
+  // The visitor's real problem (a double charge, a threat) must reach the review flow,
+  // not be swallowed by a canned "not available yet" answer.
+  const urgent = [
+    'Can I order from a neighbourhood shop and pay when I receive it? I already paid twice and the deliverer threatened me, please help urgently.',
+    'How will I find shops near me and compare prices with ZAYA? Also someone charged my card twice yesterday and my account was hacked.',
+    'What happens if a delivery is late or the address is hard to find? My delivery is three hours late right now and the food is spoiling.',
+  ];
+  for (const typed of urgent) assert.equal(matchBankQuestion(typed, bank), null, typed);
+});
+
+test('a bank question with a few polite extra words still answers instantly', () => {
+  const match = matchBankQuestion('Hi, can I receive launch updates by email please?', bank);
+  assert.ok(match);
+  assert.equal(match.label, 'Email updates');
+});
