@@ -22,6 +22,7 @@ The preview command above serves the build at http://127.0.0.1:4341. Dependencie
 
 ```powershell
 npm run check
+npm test
 npm run build
 npm run preview -- --port 4341
 ```
@@ -109,3 +110,9 @@ Production build verification and the actual tested viewport sizes are recorded 
 Official channel: https://www.youtube.com/@ZAYAAppEthiopia
 Public promo: https://youtube.com/shorts/UUYVk6rHZbs
 The homepage player includes the original promo plus a four-second branded channel closing card. Social URLs are in src/data/social.json.
+
+## Interactive scene and enquiry fixes (October 2026)
+
+The hero scene now has its own explorer: four highlight buttons (Customers, Merchants, Riders, Diaspora) with a detail card giving each one's availability status and a link to its section. Visitors can drag to turn the 3D model and tap a shape to select it; selecting Riders shows a parcel travelling a dotted route from the shop to the shopper. The delivery section gains a “Play the journey” control. Reduced motion, data saver and low-capacity devices keep the static diagram, where the explorer and tapping still work. `DESIGN.md` records the details.
+
+Guided-enquiry fixes in the same change: email subjects are no longer double-encoded; a long message that only begins with a bank question goes to the review flow instead of a canned answer, and instant-answer emails keep the visitor's own words; the redaction filter now removes Ethiopian mobile (09…/07…) and landline numbers written with or without +251/0 prefixes and spaces, dots or dashes. `npm test` runs the unit tests (`test/*.test.mjs`).

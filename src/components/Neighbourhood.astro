@@ -5,11 +5,12 @@ const icons = [
  'm12 3 9 5v9l-9 5-9-5V8l9-5Zm0 9 9-4M12 12 3 8m9 4v10M7.5 5.5l9 5v5',
  'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z',
 ];
-const sceneTips = [
-  { name: 'Customers', description: 'Find nearby shops and compare prices.' },
-  { name: 'Merchants', description: 'Sales, stock, orders and credit in one place.' },
-  { name: 'Riders', description: 'Shop-managed delivery, recorded in the app.' },
-  { name: 'Diaspora', description: 'Everyday essentials for family — planned.' },
+// One record per connection: the scene tooltip, the explorer button and its detail card.
+const audiences = [
+  { name: 'Customers', tip: 'Find nearby shops and compare prices.', detail: 'Browse shops in your chosen area and compare products and prices before deciding where to shop.', status: 'In device testing', href: '#shoppers', cta: 'See the shopper app screens', role: 'customer' },
+  { name: 'Merchants', tip: 'Sales, stock, orders and credit in one place.', detail: 'Record sales, track stock, manage orders and keep customer credit organised in one place.', status: 'In device testing', href: '#merchants', cta: 'See the merchant tools', role: 'merchant' },
+  { name: 'Riders', tip: 'Shop-managed delivery, recorded in the app.', detail: 'Shop-managed delivery: the shop’s own deliverer takes the order to the customer and completion is recorded.', status: 'In device testing', href: '#delivery', cta: 'Follow the delivery journey' },
+  { name: 'Diaspora', tip: 'Everyday essentials for family — planned.', detail: 'Providing everyday essentials for family in Ethiopia through neighbourhood shops. Not a money-transfer service.', status: 'Planned · not available', href: '#diaspora', cta: 'Read about the plan', planned: true },
 ];
 ---
 <figure class="neighbourhood" id="connections" data-neighbourhood data-selected="0" aria-labelledby="neighbourhood-title">
@@ -22,16 +23,33 @@ const sceneTips = [
     </div>
     <div class="network-canvas" data-network-canvas aria-hidden="true"></div>
     <div class="scene-tips" aria-hidden="true">
-      {sceneTips.map(tip => <div class="scene-tip" data-scene-tip hidden><strong>{tip.name}</strong><span>{tip.description}</span></div>)}
+      {audiences.map(audience => <div class="scene-tip" data-scene-tip hidden><strong>{audience.name}</strong><span>{audience.tip}</span></div>)}
     </div>
   </div>
-  <figcaption class="network-scene-footer"><span>Illustrated ZAYA connections<br/><small>Product preview</small></span><button class="scene-motion" type="button" data-scene-motion hidden>Pause scene</button></figcaption>
+  <div class="scene-explorer" data-scene-explorer hidden>
+    <div class="scene-picks" role="group" aria-label="Highlight a connection in the illustration">
+      {audiences.map((audience, i) => <button type="button" class="scene-pick" data-scene-pick={i} aria-pressed={i === 0 ? 'true' : 'false'}><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d={icons[i]}/></svg><span>{audience.name}</span></button>)}
+    </div>
+    <div class="scene-details">
+      {audiences.map((audience, i) => <div class="scene-detail" data-scene-detail={i} data-active={i === 0 ? '' : undefined}>
+        <p class="scene-detail-head"><strong>{audience.name}</strong><span class:list={['scene-status', { 'scene-status-planned': audience.planned }]}>{audience.status}</span></p>
+        <p class="scene-detail-text">{audience.detail}</p>
+        <a class="scene-detail-link" href={audience.href} data-feature-role={audience.role} data-feature-screen={audience.role ? '0' : undefined}>{audience.cta}<span aria-hidden="true"> →</span></a>
+      </div>)}
+    </div>
+    <p class="scene-announce" aria-live="polite" data-scene-announce></p>
+  </div>
+  <figcaption class="network-scene-footer"><span>Illustrated ZAYA connections<br/><small>Product preview</small><small class="scene-hint" data-scene-hint hidden>Drag to turn · tap a shape</small></span><button class="scene-motion" type="button" data-scene-motion hidden>Pause scene</button></figcaption>
 </figure>
 <script>import '../scripts/neighbourhood.ts';</script>
 <style>
   .neighbourhood { min-width: 0; background: var(--mint); border-radius: var(--radius-panel); padding: 24px; }
   .neighbourhood h2 { max-width: 20ch; font-size: clamp(23px,2.1vw,28px); line-height: 1.2; }
-  .network-stage { position: relative; height: clamp(300px,32vw,430px); touch-action: pan-y; }
+  .network-stage { position: relative; height: clamp(250px,25vw,350px); touch-action: pan-y; }
+  .neighbourhood[data-renderer="3d"][data-motion="on"] .network-stage { cursor: grab; }
+  .neighbourhood[data-renderer="3d"][data-motion="on"] .network-stage[data-hover-node] { cursor: pointer; }
+  .neighbourhood[data-renderer="3d"] .network-stage[data-dragging] { cursor: grabbing; }
+  .neighbourhood:not([data-renderer="3d"]) .network-node { cursor: pointer; }
   .network-fallback, .network-canvas { position: absolute; inset: 0; }
   .network-canvas { opacity: 0; transition: opacity .35s; pointer-events: none; }
   .scene-tips { position: absolute; inset: 0; pointer-events: none; }
@@ -47,14 +65,35 @@ const sceneTips = [
   .network-node { position: absolute; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 16px; color: var(--teal-ink); background: var(--cloud); box-shadow: 0 10px 22px #1e2a4a15; transition: background .2s, transform .2s; }
   .network-node-0 { top: 29%; left: 9%; }.network-node-1 { top: 29%; right: 9%; }.network-node-2 { bottom: 18%; left: 13%; }.network-node-3 { bottom: 18%; right: 13%; }
   .neighbourhood[data-selected="0"] .network-node-0, .neighbourhood[data-selected="1"] .network-node-1, .neighbourhood[data-selected="2"] .network-node-2, .neighbourhood[data-selected="3"] .network-node-3 { background: var(--coral); color: var(--navy); transform: translateY(-8px) scale(1.1); }
+  .scene-explorer { display: grid; gap: 12px; margin: 4px 0 16px; container-type: inline-size; }
+  .scene-explorer[hidden] { display: none; }
+  /* Two by two unless the panel itself is wide enough for one row of whole words. */
+  .scene-picks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  @container (min-width: 500px) { .scene-picks { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .scene-pick { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; min-height: 44px; padding: 6px 8px; border: 1px solid var(--teal-ink); border-radius: var(--radius-control); background: var(--cloud); color: var(--teal-ink); font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .scene-pick svg { flex: 0 0 20px; }
+  .scene-pick span { min-width: 0; }
+  .scene-pick[aria-pressed="true"] { background: var(--coral); border-color: var(--coral); color: var(--navy); font-weight: 600; }
+  @media (hover: hover) { .scene-pick[aria-pressed="false"]:hover { background: var(--surface); } }
+  .scene-details { display: grid; }
+  .scene-detail { grid-area: 1 / 1; display: grid; align-content: start; gap: 4px; padding: 12px 14px; border-radius: var(--radius-control); background: var(--cloud); }
+  .scene-detail:not([data-active]) { visibility: hidden; }
+  .scene-detail-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0; font-size: 15px; color: var(--navy); }
+  .scene-status { padding: 1px 10px; border: 1px solid var(--teal-ink); border-radius: 30px; color: var(--teal-ink); font-size: 12px; font-weight: 500; }
+  .scene-status-planned { border-color: var(--muted); color: var(--muted); }
+  .scene-detail-text { margin: 0; font-size: 14px; line-height: 1.6; color: var(--muted); }
+  .scene-detail-link { justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--navy); text-decoration: underline; text-underline-offset: 4px; }
+  .scene-announce { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .network-scene-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .network-scene-footer { font-size: 12px; color: var(--teal-ink); line-height: 1.5; }
   .network-scene-footer small { color: var(--muted); font-size: 12px; }
+  .scene-hint { display: block; }
+  .scene-hint[hidden] { display: none; }
   .scene-motion { flex-shrink: 0; min-height: 44px; padding: 6px 10px; border: 1px solid var(--teal-ink); border-radius: var(--radius-control); color: var(--teal-ink); background: transparent; font-size: 12px; }
   .scene-motion[hidden] { display: none; }
   @media(hover:hover) { .scene-motion:hover { background: var(--cloud); } }
   @media(max-width: 900px) { .neighbourhood { width: 100%; max-width: 680px; margin-inline: auto; }.network-stage { height: 340px; } }
-  @media(max-width: 650px) { .neighbourhood { padding: 20px 16px 16px; }.neighbourhood h2 { font-size: 21px; max-width: 100%; }.network-stage { height: clamp(220px,65vw,300px); }.network-node { width: 44px; height: 44px; border-radius: 12px; } }
+  @media(max-width: 650px) { .scene-detail { padding: 10px 12px; }.neighbourhood { padding: 20px 16px 16px; }.neighbourhood h2 { font-size: 21px; max-width: 100%; }.network-stage { height: clamp(220px,65vw,300px); }.network-node { width: 44px; height: 44px; border-radius: 12px; } }
   @media(prefers-reduced-motion:reduce) { .network-canvas,.network-node { transition: none; } }
-  @media(forced-colors:active) { .network-fallback { visibility: visible !important; }.network-canvas { display: none; } }
+  @media(forced-colors:active) { .network-fallback { visibility: visible !important; }.network-canvas { display: none; }.scene-pick[aria-pressed="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; border-color: Highlight; } }
 </style>
